@@ -1,7 +1,7 @@
 # CAB302 - Electronic Trading Platform
 ## Group of Three #10
 - Zachary Nicoll, n10214453
-- Nicholas Illi, 
+- Nicholas Ilii, n10223436
 - Rory Denis, 
 
 ## Dependencies

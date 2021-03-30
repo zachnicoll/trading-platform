@@ -2,7 +2,7 @@
 ## Group of Three #10
 - Zachary Nicoll, n10214453
 - Nicholas Ilii, n10223436
-- Rory Denis, 
+- Rory Denis, n10468391
 
 ## Dependencies
 

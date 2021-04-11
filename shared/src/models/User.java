@@ -4,6 +4,14 @@ import exceptions.ApiException;
 
 import javax.naming.AuthenticationException;
 
+/**
+ * Class for storing and manipulating User information locally and on the server.
+ * Can be used for simply displaying User information to Admins, or operating as
+ * an authenticate User currently logged-in to the client.
+ *
+ * @see OrganisationalUnit
+ * @see AccountType
+ */
 public class User {
     /**
      * UUID String identifying the User.

@@ -40,7 +40,7 @@ public class User {
      * @param accountType Representation of privileges given to User
      * @param organisationalUnit Organisational Unit the User belongs to
      */
-    User (String userId, String username, AccountType accountType, OrganisationalUnit organisationalUnit) {
+    public User(String userId, String username, AccountType accountType, OrganisationalUnit organisationalUnit) {
         this.userId = userId;
         this.username = username;
         this.accountType = accountType;

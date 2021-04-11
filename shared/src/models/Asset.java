@@ -1,7 +1,7 @@
 package models;
 
 /**
- * Pairs an AssetType with a quantity. Used for storing how
+ * Pairs an AssetType with a given quantity. Used for storing how
  * much of a given AssetType an OrganisationUnit has. This de-couples
  * directly using the AssetType class inside the OrganisationalUnit class.
  * Is the equivalent of the asset-orgunit table in the database.

@@ -36,8 +36,12 @@ public class Asset {
      * Decrease the quantity of the AssetType by a given amount. Used in conjunction
      * with SELL orders.
      * @param quantity value to decrease quantity by
+     * @throws ArithmeticException if resulting quantity would be less than 0
      */
-    public void subtractQuantity (Integer quantity) {
+    public void subtractQuantity (Integer quantity) throws ArithmeticException {
+        if (this.quantity - quantity < 0) {
+            throw new ArithmeticException();
+        }
         this.quantity -= quantity;
     }
 
@@ -46,8 +50,12 @@ public class Asset {
      * with OrganisationalUnit.updateAssetQuantity() Admin operation.
      * @see OrganisationalUnit
      * @param quantity value to set quantity to
+     * @throws ArithmeticException if quantity is less than 0
      */
-    public void setQuantity(Integer quantity) {
+    public void setQuantity(Integer quantity) throws ArithmeticException {
+        if (quantity < 0) {
+            throw new ArithmeticException();
+        }
         this.quantity = quantity;
     }
 

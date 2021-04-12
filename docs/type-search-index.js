@@ -1,1 +1,0 @@
-typeSearchIndex = [{"p":"models","l":"AccountType"},{"l":"All Classes","u":"allclasses-index.html"},{"p":"exceptions","l":"ApiException"},{"p":"models","l":"AssetType"},{"p":"<Unnamed>","l":"Main"},{"p":"models","l":"OrganisationalUnit"},{"p":"models","l":"Trade"},{"p":"models","l":"User"}];updateSearchResults();

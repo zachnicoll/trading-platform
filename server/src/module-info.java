@@ -1,0 +1,3 @@
+module server {
+    opens server;
+}

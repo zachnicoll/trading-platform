@@ -57,11 +57,13 @@ public class User {
 
     /**
      * Hash the given password and make a request to the /login API endpoint - if
-     * successful, the JWT token provided by the server will be stored in the User.
+     * successful, the JWT token provided by the server will be returned.
+     * @param username Username of the User to be logged-in
      * @param password String will be hashed before being sent to server
+     * @return authentication token as a string
      * @throws AuthenticationException if login is unsuccessful
      */
-    public void Login(String password) throws AuthenticationException {
+    public static String Login(String username, String password) throws AuthenticationException {
         /**
          * Hash password before sending to API
          */
@@ -74,7 +76,7 @@ public class User {
          * Set authenticationToken as token supplied by server
          */
 
-        return;
+        return "";
     }
 
     /**

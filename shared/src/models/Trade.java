@@ -29,7 +29,7 @@ public class Trade {
     /**
      * Price for a single asset of type AssetType
      */
-    private Integer pricePerAsset;
+    private Float pricePerAsset;
 
     /**
      * Date that the trade order was opened
@@ -45,7 +45,7 @@ public class Trade {
      * @param pricePerAsset price for a single asset of type AssetType
      * @param date date that the trade order was opened
      */
-    public Trade (TradeType tradeType, OrganisationalUnit organisationalUnit, AssetType assetType, Integer quantity, Integer pricePerAsset, Date date) {
+    public Trade (TradeType tradeType, OrganisationalUnit organisationalUnit, AssetType assetType, Integer quantity, Float pricePerAsset, Date date) {
         this.tradeType = tradeType;
         this.organisationalUnit = organisationalUnit;
         this.assetType = assetType;
@@ -82,7 +82,7 @@ public class Trade {
      * Get the price of each asset set for this Trade
      * @return the Trade's BUY/SELL price for a single asset
      */
-    public Integer getPricePerAsset() {
+    public Float getPricePerAsset() {
         return pricePerAsset;
     }
 

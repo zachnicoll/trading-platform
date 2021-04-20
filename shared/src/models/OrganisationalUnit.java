@@ -24,7 +24,7 @@ public class OrganisationalUnit {
     /**
      * Current credit balance of the Organisational Unit.
      */
-    private Double creditBalance;
+    private Float creditBalance;
 
     /**
      * List of Assets the Organisational Unit owns.
@@ -39,7 +39,7 @@ public class OrganisationalUnit {
      * @param creditBalance Current balance of the Organisational Unit
      * @param assets List of Assets the Organisational Unit owns
      */
-    public OrganisationalUnit(String unitId, String unitName, Double creditBalance, List<Asset> assets) {
+    public OrganisationalUnit(String unitId, String unitName, Float creditBalance, List<Asset> assets) {
         this.unitId = unitId;
         this.unitName = unitName;
         this.creditBalance = creditBalance;
@@ -66,7 +66,7 @@ public class OrganisationalUnit {
      * @param newBalance New credit balance to set
      * @throws ApiException if the API request fails while updating
      */
-    public void updateCreditBalance(Double newBalance) throws ApiException {
+    public void updateCreditBalance(Float newBalance) throws ApiException {
         /**
          * Update OU credit balance on API, throw APIException if fails
          */
@@ -108,8 +108,8 @@ public class OrganisationalUnit {
      * @throws ApiException thrown if API request fails
      * @throws InvalidTransactionException thrown if the total price of the purchase exceeds the OU's credit balance
      */
-    public void purchaseAsset(Double pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
-        final Double totalPrice = pricePerAsset * quantity;
+    public void purchaseAsset(Float pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
+        final Float totalPrice = pricePerAsset * quantity;
         if (totalPrice > creditBalance) {
             throw new InvalidTransactionException();
         }
@@ -138,8 +138,8 @@ public class OrganisationalUnit {
      * @throws ApiException thrown if API request fails
      * @throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
      */
-    public void sellAsset(Double pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
-        final Double totalPrice = pricePerAsset * quantity;
+    public void sellAsset(Float pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
+        final Float totalPrice = pricePerAsset * quantity;
         Asset existingAsset = findExistingAsset(assetType);
 
         if (existingAsset == null || existingAsset.getQuantity() < quantity) {

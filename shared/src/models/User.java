@@ -3,6 +3,7 @@ package models;
 import exceptions.ApiException;
 
 import javax.naming.AuthenticationException;
+import java.util.UUID;
 
 /**
  * Class for storing and manipulating User information locally and on the server.
@@ -17,7 +18,7 @@ public class User {
      * UUID String identifying the User.
      * Unique.
      */
-    private final String userId;
+    private final UUID userId;
 
     /**
      * Username displayed publicly to identify User.
@@ -33,7 +34,7 @@ public class User {
     /**
      * Organisational Unit the User belongs to.
      */
-    private OrganisationalUnit organisationalUnit;
+    private UUID organisationalUnitId;
 
     /**
      * JWT token supplied by the server upon logging-in.
@@ -46,13 +47,13 @@ public class User {
      * @param userId Unique identifier for User
      * @param username Displayed name of User
      * @param accountType Representation of privileges given to User
-     * @param organisationalUnit Organisational Unit the User belongs to
+     * @param organisationalUnitId The ID of the Organisational Unit the User belongs to
      */
-    public User(String userId, String username, AccountType accountType, OrganisationalUnit organisationalUnit) {
+    public User(UUID userId, String username, AccountType accountType, UUID organisationalUnitId) {
         this.userId = userId;
         this.username = username;
         this.accountType = accountType;
-        this.organisationalUnit = organisationalUnit;
+        this.organisationalUnitId = organisationalUnitId;
     }
 
     /**
@@ -106,23 +107,27 @@ public class User {
      * Update a User's attribute via the /user endpoint. If successful, the User object
      * will also be updated.
      * @param newAccountType updated AccountType
-     * @param newOrganisationalUnit updated OrganisationalUnit
+     * @param newOrganisationalUnitId updated OrganisationalUnit
      * @throws ApiException if an error occurs while making the API request
      */
-    public void updateUser(AccountType newAccountType, OrganisationalUnit newOrganisationalUnit) throws ApiException {
+    public void updateUser(AccountType newAccountType, UUID newOrganisationalUnitId) throws ApiException {
         /**
          * Make PUT API request here to update User, this API request throws ApiException
          */
 
         accountType = newAccountType;
-        organisationalUnit = newOrganisationalUnit;
+        organisationalUnitId = newOrganisationalUnitId;
     }
 
     /**
      * Change a User's password via the /user/[userId]/change-password endpoint
      * @throws ApiException if an error occurs while making the API request
      */
-    public void changePassword(String password) throws ApiException {
+    public void changePassword(String password, String confirmPassword) throws ApiException, AuthenticationException {
+        if (password.compareTo(confirmPassword) != 0) {
+            throw new AuthenticationException();
+        }
+
         /**
          * Hash the password
          */
@@ -131,6 +136,14 @@ public class User {
          * Make POST request to the API to update password
          */
         return;
+    }
+
+    /**
+     * Set a User's authentication token after calling the static User.Login() method.
+     * @param authenticationToken JWT token as a String
+     */
+    public void setAuthenticationToken(String authenticationToken) {
+        this.authenticationToken = authenticationToken;
     }
 
     /**
@@ -145,8 +158,8 @@ public class User {
      * Get the OrganisationalUnit of the User for displaying.
      * @return the User's OrganisationalUnit
      */
-    public OrganisationalUnit getOrganisationalUnit() {
-        return organisationalUnit;
+    public UUID getOrganisationalUnitId() {
+        return organisationalUnitId;
     }
 
     /**
@@ -161,7 +174,7 @@ public class User {
      * Get the User ID of the User for displaying
      * @return the User's ID
      */
-    public String getUserId() {
+    public UUID getUserId() {
         return userId;
     }
 }

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.UUID;
+
 /**
  * Class for storing the UUID and Name of an AssetType. Quantity
  * of the AssetType is NOT stored here.
@@ -10,7 +12,7 @@ public class AssetType {
      * UUID String identifying the AssetType.
      * Unique.
      */
-    private String assetTypeId;
+    private UUID assetTypeId;
 
     /**
      * Name displayed publicly to identify AssetType.
@@ -23,7 +25,7 @@ public class AssetType {
      * @param assetTypeId Unique identifier for AssetType
      * @param assetName Displayed name of the AssetType
      */
-    public AssetType(String assetTypeId, String assetName) {
+    public AssetType(UUID assetTypeId, String assetName) {
         this.assetTypeId = assetTypeId;
         this.assetName = assetName;
     }
@@ -40,7 +42,7 @@ public class AssetType {
      *  Get the AssetType's unique identifier.
      * @return the AssetType's UUID
      */
-    public String getAssetTypeId() {
+    public UUID getAssetTypeId() {
         return assetTypeId;
     }
 }

@@ -1,5 +1,7 @@
 package models;
 
+import java.util.UUID;
+
 /**
  * Pairs an AssetType with a given quantity. Used for storing how
  * much of a given AssetType an OrganisationUnit has. This de-couples
@@ -19,7 +21,7 @@ public class Asset {
      * Get the UUID of the stored AssetType.
      * @return UUID string of associated AssetType
      */
-    public String getAssetTypeId() {
+    public UUID getAssetTypeId() {
         return assetType.getAssetTypeId();
     }
 

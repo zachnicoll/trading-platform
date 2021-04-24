@@ -1,8 +1,8 @@
 package models;
 
-import exceptions.ApiException;
-import exceptions.InvalidTransactionException;
+import exceptions.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,7 +30,7 @@ public class OrganisationalUnit {
      * List of Assets the Organisational Unit owns.
      * @see Asset
      */
-    private List<Asset> assets;
+    private ArrayList<Asset> assets;
 
     /**
      * Construct a new OrganisationalUnit with given information, most likely provided by the API.
@@ -39,7 +39,7 @@ public class OrganisationalUnit {
      * @param creditBalance Current balance of the Organisational Unit
      * @param assets List of Assets the Organisational Unit owns
      */
-    public OrganisationalUnit(String unitId, String unitName, Float creditBalance, List<Asset> assets) {
+    public OrganisationalUnit(String unitId, String unitName, Float creditBalance, ArrayList<Asset> assets) {
         this.unitId = unitId;
         this.unitName = unitName;
         this.creditBalance = creditBalance;

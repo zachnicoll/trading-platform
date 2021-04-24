@@ -1,0 +1,5 @@
+rootProject.name = 'cab-302-trading-platform'
+include 'server'
+include 'client'
+include 'shared'
+

@@ -1,7 +1,6 @@
 package models;
 
 import exceptions.ApiException;
-
 import javax.naming.AuthenticationException;
 import java.util.UUID;
 

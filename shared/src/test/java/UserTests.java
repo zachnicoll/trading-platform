@@ -1,12 +1,9 @@
-package tests;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-import exceptions.ApiException;
 import models.AccountType;
 import models.User;
+import exceptions.*;
 import org.junit.jupiter.api.*;
-
 import javax.naming.AuthenticationException;
 import java.util.UUID;
 

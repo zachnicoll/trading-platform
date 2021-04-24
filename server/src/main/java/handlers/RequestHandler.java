@@ -22,7 +22,20 @@ public abstract class RequestHandler implements HttpHandler {
             case "DELETE":
                 handleDelete(t);
                 break;
+            default:
+                // Respond with 404 Not Found if unsupported method received
+                t.sendResponseHeaders(404, 0);
+                t.getResponseBody().close();
+                break;
         }
+    }
+
+    /**
+     * TODO: Might be able to remove this once all methods have been implemented
+     */
+    protected void respondNotImplemented(HttpExchange t) throws IOException {
+        t.sendResponseHeaders(501, 0);
+        t.getResponseBody().close();
     }
 
     /**

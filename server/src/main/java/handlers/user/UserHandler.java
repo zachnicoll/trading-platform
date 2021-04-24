@@ -18,16 +18,16 @@ public class UserHandler extends RequestHandler {
 
     @Override
     protected void handlePost(HttpExchange t) throws IOException {
-
+        respondNotImplemented(t);
     }
 
     @Override
     protected void handlePut(HttpExchange t) throws IOException {
-
+        respondNotImplemented(t);
     }
 
     @Override
     protected void handleDelete(HttpExchange t) throws IOException {
-
+        respondNotImplemented(t);
     }
 }

@@ -1,19 +1,20 @@
-package handlers.orgunit;
+package handlers.assettype;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
-import models.Asset;
-import models.OrganisationalUnit;
+import models.AccountType;
+import models.AssetType;
+import models.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.UUID;
 
-public class OrgUnitHandler extends RequestHandler {
+public class AssetTypeHandler extends RequestHandler {
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
-        ArrayList<Asset> assets = new ArrayList<>();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit("org-unit-id", "Org Unit Name", 1000.0f, assets);
-        writeResponseBody(t, organisationalUnit);
+        AssetType assetType = new AssetType(UUID.randomUUID().toString(), "some_asset_name");
+        writeResponseBody(t, assetType);
     }
 
     @Override

@@ -1,19 +1,22 @@
-package handlers.orgunit;
+package handlers.trades;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
-import models.Asset;
-import models.OrganisationalUnit;
+import models.AccountType;
+import models.Trade;
+import models.TradeType;
+import models.User;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
-public class OrgUnitHandler extends RequestHandler {
+public class TradesHandler extends RequestHandler {
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
-        ArrayList<Asset> assets = new ArrayList<>();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit("org-unit-id", "Org Unit Name", 1000.0f, assets);
-        writeResponseBody(t, organisationalUnit);
+        Trade trade = new Trade(TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
+        writeResponseBody(t, trade);
     }
 
     @Override

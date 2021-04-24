@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Date;
+import java.util.UUID;
 
 /**
  * Class for storing and retrieving a Trade's information.
@@ -14,12 +15,12 @@ public class Trade {
     /**
      * The OrganisationalUnit that placed the Trade order
      */
-    private OrganisationalUnit organisationalUnit;
+    private UUID organisationalUnitId;
 
     /**
      * The AssetType that is being bought/sold
      */
-    private AssetType assetType;
+    private UUID assetTypeId;
 
     /**
      * Quantity of AssetType to buy or sell
@@ -39,16 +40,16 @@ public class Trade {
     /**
      * Construct a new User with given information, most likely provided by the API.
      * @param tradeType whether the trade is a BUY or SELL order
-     * @param organisationalUnit the OrganisationalUnit that placed the Trade order
-     * @param assetType the AssetType that is being bought/sold
+     * @param organisationalUnitId the OrganisationalUnit that placed the Trade order
+     * @param assetTypeId the AssetType that is being bought/sold
      * @param quantity quantity of AssetType to buy or sell
      * @param pricePerAsset price for a single asset of type AssetType
      * @param date date that the trade order was opened
      */
-    public Trade (TradeType tradeType, OrganisationalUnit organisationalUnit, AssetType assetType, Integer quantity, Float pricePerAsset, Date date) {
+    public Trade (TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date date) {
         this.tradeType = tradeType;
-        this.organisationalUnit = organisationalUnit;
-        this.assetType = assetType;
+        this.organisationalUnitId = organisationalUnitId;
+        this.assetTypeId = assetTypeId;
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
         this.date = date;
@@ -58,8 +59,8 @@ public class Trade {
      * Get the AssetType of the Trade
      * @return the Trade's AssetType
      */
-    public AssetType getAssetType() {
-        return assetType;
+    public UUID getAssetType() {
+        return assetTypeId;
     }
 
     /**
@@ -98,7 +99,7 @@ public class Trade {
      * Get the OrganisationalUnit that opened this Trade
      * @return the Trade's OrganisationUnit
      */
-    public OrganisationalUnit getOrganisationalUnit() {
-        return organisationalUnit;
+    public UUID getOrganisationalUnit() {
+        return organisationalUnitId;
     }
 }

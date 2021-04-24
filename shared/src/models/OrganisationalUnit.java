@@ -47,11 +47,47 @@ public class OrganisationalUnit {
     }
 
     /**
+     * Get the UnitID of the OU
+     * @return the OU's UnitID
+     */
+    public String getUnitId()
+    {
+        return unitId;
+    }
+
+    /**
+     * Get the UnitName of the OU
+     * @return the OU's UnitName
+     */
+    public String getUnitName()
+    {
+        return unitName;
+    }
+
+    /**
+     * Get the CreditBalance of the OU
+     * @return the OU's CreditBalance
+     */
+    public Float getCreditBalance()
+    {
+        return creditBalance;
+    }
+
+    /**
+     * Get the Assets of the OU
+     * @return the OU's Assets
+     */
+    public List<Asset> getAssets()
+    {
+        return assets;
+    }
+
+    /**
      * Determine if this OU already owns an AssetType that matches the given AssetType ID.
      * @param assetType AssetType to match in the list of Assets
      * @return The matching Asset if it already exists, null if not
      */
-    private Asset findExistingAsset(AssetType assetType) {
+    public Asset findExistingAsset(AssetType assetType) {
         for (Asset asset : assets) {
             if (asset.getAssetTypeId() == assetType.getAssetTypeId()) {
                 return asset;

@@ -11,6 +11,7 @@ import models.AssetType;
 
 import org.junit.jupiter.api.*;
 
+import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -129,8 +130,9 @@ public class OrganisationalUnitTests {
     @Test
     public void updateAssetQuantityOwned() throws ApiException
     {
-        assets.add(asset);
+        organisationalUnit.updateAssetQuantity(assetType, 15);
 
+        assertEquals(15, organisationalUnit.findExistingAsset(assetType).getQuantity());
 
     }
 
@@ -140,7 +142,12 @@ public class OrganisationalUnitTests {
     @Test
     public void updateAssetQuantityNotOwned() throws ApiException
     {
+        String localAssetTypeId = UUID.randomUUID().toString();
+        String localAssetName = "another_test_asset";
+        AssetType localAssetType = new AssetType(localAssetTypeId.toString(), localAssetName);
 
+        organisationalUnit.updateAssetQuantity(localAssetType, 25);
+        assertEquals(25, organisationalUnit.findExistingAsset(localAssetType).getQuantity());
     }
 
     /*
@@ -153,25 +160,56 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 13: Purchase an OU's Asset : Succeed
+     * Test 13: Purchase an OU's Asset : Succeed Existing
      */
     @Test
-    public void purchaseAssetSucceed() throws ApiException, InvalidTransactionException
+    public void purchaseAssetSucceedExisting() throws ApiException, InvalidTransactionException
     {
+        Float PRICE_PER = 2.50f;
+        int quantity = 100;
 
+        organisationalUnit.purchaseAsset(PRICE_PER, assetType, quantity);
+        assertEquals(750.5f, organisationalUnit.getCreditBalance());
+        assertEquals(110, organisationalUnit.findExistingAsset(assetType).getQuantity());
     }
 
     /*
-     * Test 14: Purchase an OU's Asset : Fail
+     * Test 14: Purchase an OU's Asset : Succeed New
+     */
+    @Test
+    public void purchaseAssetSucceedNew() throws ApiException, InvalidTransactionException
+    {
+        Float PRICE_PER = 2f;
+        int quantity = 200;
+
+        String localAssetTypeId = UUID.randomUUID().toString();
+        String localAssetName = "another_test_asset";
+        AssetType localAssetType = new AssetType(localAssetTypeId.toString(), localAssetName);
+
+        organisationalUnit.purchaseAsset(PRICE_PER, localAssetType, quantity);
+        assertEquals(600.5f, organisationalUnit.getCreditBalance());
+        assertEquals(200, organisationalUnit.findExistingAsset(localAssetType).getQuantity());
+    }
+
+    /*
+     * Test 15: Purchase an OU's Asset : Fail
      */
     @Test
     public void purchaseAssetFail() throws ApiException, InvalidTransactionException
     {
+        Float PRICE_PER = 100f;
+        int quantity = 12;
+
+        // TODO: Make this fail correctly when InvalidTransactionException is complete
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.purchaseAsset(PRICE_PER, assetType, quantity);
+        });
+
 
     }
 
     /*
-     * Test 15: Purchase an OU's Asset : Invalid
+     * Test 16: Purchase an OU's Asset : Invalid
      */
     @Test
     public void purchaseAssetInvalid() throws ApiException, InvalidTransactionException
@@ -180,25 +218,54 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 16: Sell an OU's Asset : Succeed
+     * Test 17: Sell an OU's Asset : Succeed
      */
     @Test
     public void sellAssetSucceed() throws ApiException, InvalidTransactionException
     {
+        Float PRICE_PER = 5f;
+        int quantity = 5;
 
+        organisationalUnit.sellAsset(PRICE_PER, assetType, quantity);
+
+        assertEquals(1025.5f, organisationalUnit.getCreditBalance());
+        assertEquals(5, organisationalUnit.findExistingAsset(assetType).getQuantity());
     }
 
     /*
-     * Test 17: Sell an OU's Asset : Fail
+     * Test 18: Sell an OU's Asset : Fail Missing Asset
      */
     @Test
-    public void sellAssetFail() throws ApiException, InvalidTransactionException
+    public void sellAssetFailMissingAsset() throws ApiException, InvalidTransactionException
     {
+        Float PRICE_PER = 5f;
+        int quantity = 5;
 
+        String localAssetTypeId = UUID.randomUUID().toString();
+        String localAssetName = "another_test_asset";
+        AssetType localAssetType = new AssetType(localAssetTypeId.toString(), localAssetName);
+        // TODO: Make this fail correctly when InvalidTransactionException is complete
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.sellAsset(PRICE_PER, localAssetType, quantity);
+        });
     }
 
     /*
-     * Test 18: Sell an OU's Asset : Invalid
+     * Test 19: Sell an OU's Asset : Fail Quantity
+     */
+    @Test
+    public void sellAssetFailQuantity() throws ApiException, InvalidTransactionException
+    {
+        Float PRICE_PER = 5f;
+        int quantity = 11;
+        // TODO: Make this fail correctly when InvalidTransactionException is complete
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.sellAsset(PRICE_PER, assetType, quantity);
+        });
+    }
+
+    /*
+     * Test 20: Sell an OU's Asset : Invalid
      */
     @Test
     public void sellAssetInvalid() throws ApiException, InvalidTransactionException

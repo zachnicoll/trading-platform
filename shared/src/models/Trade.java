@@ -26,7 +26,7 @@ public class Trade {
     /**
      * The AssetType that is being bought/sold
      */
-    private AssetType assetType;
+    private UUID assetTypeId;
 
     /**
      * Quantity of AssetType to buy or sell
@@ -48,16 +48,16 @@ public class Trade {
      * @param tradeId Unique UUID identifier for each trade
      * @param tradeType whether the trade is a BUY or SELL order
      * @param organisationalUnitId the OrganisationalUnit that placed the Trade order
-     * @param assetType the AssetType that is being bought/sold
+     * @param assetTypeId the AssetType that is being bought/sold
      * @param quantity quantity of AssetType to buy or sell
      * @param pricePerAsset price for a single asset of type AssetType
      * @param date date that the trade order was opened
      */
-    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, AssetType assetType, Integer quantity, Float pricePerAsset, Date date) {
+    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date date) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
         this.organisationalUnitId = organisationalUnitId;
-        this.assetType = assetType;
+        this.assetTypeId = assetTypeId;
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
         this.date = date;
@@ -77,8 +77,8 @@ public class Trade {
      * Get the AssetType of the Trade
      * @return the Trade's AssetType
      */
-    public AssetType getAssetType() {
-        return assetType;
+    public UUID getAssetType() {
+        return assetTypeId;
     }
 
     /**

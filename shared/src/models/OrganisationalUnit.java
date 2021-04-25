@@ -95,7 +95,7 @@ public class OrganisationalUnit {
         if (existingAsset != null) {
             existingAsset.setQuantity(newQuantity);
         } else {
-            assets.add(new Asset(assetType, newQuantity));
+            assets.add(new Asset(assetType.getAssetTypeId(), newQuantity));
         }
     }
 
@@ -125,7 +125,7 @@ public class OrganisationalUnit {
         if (existingAsset != null) {
             existingAsset.addQuantity(quantity);
         } else {
-            assets.add(new Asset(assetType, quantity));
+            assets.add(new Asset(assetType.getAssetTypeId(), quantity));
         }
     }
 

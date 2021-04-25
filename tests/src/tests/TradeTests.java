@@ -18,7 +18,7 @@ public class TradeTests {
      * Test 0: Declaring Trade objects
      */
 
-    AssetType assetType;
+    UUID assetTypeId;
     List<Asset> listAssets = new ArrayList<Asset>();
 
     Trade trade;
@@ -41,7 +41,7 @@ public class TradeTests {
                 tradeId,
                 tradeType,
                 organisationalUnitId,
-                assetType,
+                assetTypeId,
                 quantity,
                 pricePerAsset,
                 date
@@ -59,7 +59,7 @@ public class TradeTests {
      */
     @Test
     public void getTradeAssetType() {
-        assertEquals(trade.getAssetType(), assetType);
+        assertEquals(trade.getAssetType(), assetTypeId);
     }
 
     /* Test 4: Get trade's tradeType "BUY"

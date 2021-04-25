@@ -1,5 +1,3 @@
-package tests;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 import exceptions.ApiException;
@@ -9,10 +7,8 @@ import models.OrganisationalUnit;
 import models.Asset;
 import models.AssetType;
 
-import models.User;
 import org.junit.jupiter.api.*;
 
-import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;

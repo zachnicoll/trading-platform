@@ -1,27 +1,24 @@
-
-import static org.junit.jupiter.api.Assertions.*;
-
 import models.Asset;
 import models.AssetType;
 import org.junit.jupiter.api.*;
+
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class AssetTests {
 
 
-
-
     /*
      * Test 0: Declaring Asset objects
      */
-
     final Integer ASSET_QUANTITY = 20;
     Asset asset;
     Integer quantity = ASSET_QUANTITY;
-    String assetTypeId = UUID.randomUUID().toString();
+    UUID assetTypeId = UUID.randomUUID();
     String assetName = "test_asset";
-    AssetType assetType = new AssetType(assetTypeId.toString(), assetName);
+    AssetType assetType = new AssetType(assetTypeId, assetName);
 
     /* Test 1: Constructing an Asset object
      */

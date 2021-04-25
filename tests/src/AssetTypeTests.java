@@ -1,8 +1,10 @@
-import static org.junit.jupiter.api.Assertions.*;
-
 import models.AssetType;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AssetTypeTests {
 
@@ -12,7 +14,7 @@ public class AssetTypeTests {
      * Test 0: Declaring Asset objects
      */
     AssetType assetType;
-    String assetTypeId = UUID.randomUUID().toString();
+    UUID assetTypeId = UUID.randomUUID();
     String assetName = "test_asset";
 
 
@@ -23,7 +25,7 @@ public class AssetTypeTests {
     @Test
     public void setUpAssetType() {
         assetType = new AssetType(
-                assetTypeId.toString(),
+                assetTypeId,
                 assetName);
     }
 

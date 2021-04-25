@@ -13,9 +13,18 @@ import handlers.user.UserHandler;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
+/**
+ * Wrapper class for a HttpServer object to ensure that correct routes are constructed
+ * every time. Required encapsulation for testing the server as well.
+ */
 public class RestApi {
     private final HttpServer httpServer;
 
+    /**
+     * Create a new HttpServer object and assign internally. The HttpServer's contexts for various
+     * routes are created also. Server port configuration is performed here.
+     * @throws IOException
+     */
     public RestApi() throws IOException {
         /**
          * TODO: Import socket address from config/environment file
@@ -36,10 +45,16 @@ public class RestApi {
         httpServer.setExecutor(null);
     }
 
+    /**
+     * Start the server.
+     */
     public void start() {
         httpServer.start();
     }
 
+    /**
+     * Stop the server.
+     */
     public void stop() {
         httpServer.stop(0);
     }

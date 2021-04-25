@@ -10,6 +10,10 @@ import java.util.UUID;
 
 public class UserHandler extends RequestHandler {
 
+    public UserHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         User user = new User(UUID.randomUUID(), "user_123", AccountType.USER, UUID.randomUUID());

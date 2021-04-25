@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class OrgUnitHandler extends RequestHandler {
+    public OrgUnitHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         ArrayList<Asset> assets = new ArrayList<>();

@@ -12,6 +12,10 @@ import java.util.UUID;
 
 public class AssetsHandler extends RequestHandler {
 
+    public AssetsHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         ArrayList<Asset> assets = new ArrayList<>();

@@ -2,13 +2,13 @@ package handlers.refresh;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
-import models.AccountType;
-import models.User;
-
 import java.io.IOException;
-import java.util.UUID;
 
 public class RefreshHandler extends RequestHandler {
+
+    public RefreshHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
 
     @Override
     protected void handleGet(HttpExchange t) throws IOException {

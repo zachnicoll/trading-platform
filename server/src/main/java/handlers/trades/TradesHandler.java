@@ -13,6 +13,10 @@ import java.util.UUID;
 
 public class TradesHandler extends RequestHandler {
 
+    public TradesHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         Trade trade = new Trade(TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());

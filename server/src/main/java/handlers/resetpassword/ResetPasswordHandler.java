@@ -10,6 +10,10 @@ import java.util.UUID;
 
 public class ResetPasswordHandler extends RequestHandler {
 
+    public ResetPasswordHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         writeResponseBody(t, null);

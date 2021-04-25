@@ -11,6 +11,10 @@ import java.util.UUID;
 
 public class AssetTypeHandler extends RequestHandler {
 
+    public AssetTypeHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         AssetType assetType = new AssetType(UUID.randomUUID().toString(), "some_asset_name");

@@ -11,6 +11,10 @@ import java.util.UUID;
 
 public class LoginHandler extends RequestHandler {
 
+    public LoginHandler(boolean requiresAuth) {
+        super(requiresAuth);
+    }
+
     @Override
     protected void handleGet(HttpExchange t) throws IOException {
         AuthenticationToken authenticationToken = new AuthenticationToken("aaaabbbbccccdddd--ffff");

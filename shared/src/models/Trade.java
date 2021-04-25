@@ -21,7 +21,7 @@ public class Trade {
     /**
      * The OrganisationalUnit that placed the Trade order
      */
-    private OrganisationalUnit organisationalUnit;
+    private final UUID organisationalUnitId;
 
     /**
      * The AssetType that is being bought/sold
@@ -47,16 +47,16 @@ public class Trade {
      * Construct a new User with given information, most likely provided by the API.
      * @param tradeId Unique UUID identifier for each trade
      * @param tradeType whether the trade is a BUY or SELL order
-     * @param organisationalUnit the OrganisationalUnit that placed the Trade order
+     * @param organisationalUnitId the OrganisationalUnit that placed the Trade order
      * @param assetType the AssetType that is being bought/sold
      * @param quantity quantity of AssetType to buy or sell
      * @param pricePerAsset price for a single asset of type AssetType
      * @param date date that the trade order was opened
      */
-    public Trade (UUID tradeId, TradeType tradeType, OrganisationalUnit organisationalUnit, AssetType assetType, Integer quantity, Float pricePerAsset, Date date) {
+    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, AssetType assetType, Integer quantity, Float pricePerAsset, Date date) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
-        this.organisationalUnit = organisationalUnit;
+        this.organisationalUnitId = organisationalUnitId;
         this.assetType = assetType;
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
@@ -124,7 +124,7 @@ public class Trade {
      * Get the OrganisationalUnit that opened this Trade
      * @return the Trade's OrganisationUnit
      */
-    public OrganisationalUnit getOrganisationalUnit() {
-        return organisationalUnit;
+    public UUID getOrganisationalUnit() {
+        return organisationalUnitId;
     }
 }

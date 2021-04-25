@@ -1,7 +1,8 @@
 package tests;
 
 import models.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,21 +17,18 @@ public class TradeTests {
     /*
      * Test 0: Declaring Trade objects
      */
+
     AssetType assetType;
     List<Asset> listAssets = new ArrayList<Asset>();
 
     Trade trade;
     UUID tradeId = UUID.randomUUID();
+    UUID organisationalUnitId = UUID.randomUUID();
     TradeType tradeType = TradeType.BUY;
     Integer quantity = 10;
     Float pricePerAsset = 10f;
-    Date date = new Date("01/01/1990");
-
-    //Create OrganisationalUnit object for trade
-    OrganisationalUnit organisationalUnit =
-            new OrganisationalUnit(UUID.randomUUID(),
-                    "test_unit",
-                    100f,listAssets);
+    Date date = new Date("01/01/1990") {
+    };
 
 
 
@@ -42,7 +40,7 @@ public class TradeTests {
         trade = new Trade(
                 tradeId,
                 tradeType,
-                organisationalUnit,
+                organisationalUnitId,
                 assetType,
                 quantity,
                 pricePerAsset,
@@ -107,7 +105,7 @@ public class TradeTests {
      */
     @Test
     public void getTradesOrganisationalUnit() {
-        assertEquals(trade.getOrganisationalUnit(), organisationalUnit);
+        assertEquals(trade.getOrganisationalUnit(), organisationalUnitId);
     }
 
 }

@@ -23,6 +23,12 @@ public class TradesHandler extends RequestHandler {
 
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException {
+        /*
+         * Example of how to block route method if Admin AccountType is required.
+         * TODO: remove this when route is implemented correctly.
+         */
+        checkIsAdmin(exchange);
+
         Trade trade = new Trade(TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
         writeResponseBody(exchange, trade);
     }

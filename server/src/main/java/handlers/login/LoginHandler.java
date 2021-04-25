@@ -6,6 +6,7 @@ import com.auth0.jwt.exceptions.JWTCreationException;
 import com.sun.net.httpserver.HttpExchange;
 import errors.JsonError;
 import handlers.RequestHandler;
+import models.AccountType;
 import models.AuthenticationToken;
 
 import java.io.IOException;
@@ -55,6 +56,7 @@ public class LoginHandler extends RequestHandler {
                     .withExpiresAt(tokenExpiryTime()) // Expires in 24 hours
                     // TODO: Use actual User's UUID for this when DB setup
                     .withSubject(UUID.randomUUID().toString())
+                    .withClaim("type", AccountType.USER.toString())
                     .sign(algorithm);
 
             AuthenticationToken authenticationToken = new AuthenticationToken(token);

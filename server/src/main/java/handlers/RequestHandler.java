@@ -6,9 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import com.sun.net.httpserver.*;
 import errors.JsonError;
 
 import java.io.IOException;
@@ -17,60 +15,63 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ *
+ */
 public abstract class RequestHandler implements HttpHandler {
     protected boolean requiresAuth;
-    private Pattern authorizationHeaderRegex = Pattern.compile("Bearer .+");
-    private String AUTHORIZATION_HEADER_NAME = "Authorization";
+    private final Pattern authorizationHeaderRegex = Pattern.compile("Bearer .+");
 
     public RequestHandler(boolean requiresAuth) {
         this.requiresAuth = requiresAuth;
     }
 
-    public void handle(HttpExchange t) throws IOException {
+    public void handle(HttpExchange exchange) throws IOException {
         try {
+            /*
+             * If this RequestHandler requires authentication (JWT token in request header),
+             * check if the token is valid before continuing. If the token is invalid, the request will
+             * be resolved with a 403 - Not Authorised response code.
+             */
             if (requiresAuth) {
-                checkIsAuthorised(t);
+                checkIsAuthorised(exchange);
             }
 
-            switch (t.getRequestMethod()) {
-                case "GET":
-                    handleGet(t);
-                    break;
-                case "POST":
-                    handlePost(t);
-                    break;
-                case "PUT":
-                    handlePut(t);
-                    break;
-                case "DELETE":
-                    handleDelete(t);
-                    break;
-                default:
+            /*
+             * Based on the request's HTTP method, pass the HttpExchange to the correct handler.
+             */
+            switch (exchange.getRequestMethod()) {
+                case "GET" -> handleGet(exchange);
+                case "POST" -> handlePost(exchange);
+                case "PUT" -> handlePut(exchange);
+                case "DELETE" -> handleDelete(exchange);
+                default -> {
                     // Respond with 404 Not Found if unsupported method received
-                    t.sendResponseHeaders(404, 0);
-                    t.getResponseBody().close();
-                    break;
+                    exchange.sendResponseHeaders(404, 0);
+                    exchange.getResponseBody().close();
+                }
             }
         } catch (Exception e) {
-            /**
+            /*
              * A 'catch-all' error message sent back to client if an uncaught exception occurs.
              * This can still throw an IOException while sending the message back - if this happens,
              * there's probably something wrong with the code.
              */
             JsonError jsonError = new JsonError("A server-side exception occurred while resolving this request: " + e.getMessage());
-            writeResponseBody(t, jsonError, 500);
+            writeResponseBody(exchange, jsonError, 500);
         }
     }
 
-    private String getTokenFromHeader(HttpExchange t) throws JWTVerificationException {
-        Headers headers = t.getRequestHeaders();
+    private String getTokenFromHeader(HttpExchange exchange) throws JWTVerificationException {
+        Headers headers = exchange.getRequestHeaders();
+        String AUTHORIZATION_HEADER_NAME = "Authorization";
 
         if (headers.containsKey(AUTHORIZATION_HEADER_NAME)) {
             String rawToken = headers.get(AUTHORIZATION_HEADER_NAME).get(0);
             Matcher authHeaderMatcher = authorizationHeaderRegex.matcher(rawToken);
 
             if (authHeaderMatcher.find()) {
-                // Remove 'Bearer' string;
+                // Remove 'Bearer ' from token string
                 return rawToken.split("Bearer ")[1];
             } else {
                 throw new JWTVerificationException("Authorisation header not formatted correctly!");
@@ -80,34 +81,46 @@ public abstract class RequestHandler implements HttpHandler {
         }
     }
 
-    private void checkIsAuthorised(HttpExchange t) throws IOException {
+    private void checkIsAuthorised(HttpExchange exchange) throws IOException {
         try {
-            String token = getTokenFromHeader(t);
+            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+            String token = getTokenFromHeader(exchange);
 
+            // Construct verifier, expect our issuer 'cab302-group10' to be present
             Algorithm algorithm = Algorithm.HMAC256("secret");
             JWTVerifier verifier = JWT.require(algorithm)
                     .withIssuer("cab302-group10")
-                    .build(); //Reusable verifier instance
+                    .build();
+
+            /*
+             * Decode JWT token string - this will throw a JWTVerificationException if:
+             * - The token has expired
+             * - The token is invalid
+             * - The token's secret is incorrect
+             *
+             * If an error is not thrown, this JWT token is valid.
+             */
             DecodedJWT jwt = verifier.verify(token);
 
             /**
-             * TODO: check that JWT token has not expired, should also potentially check if provided UserId in token actually exists
+             * TODO: Potentially check if provided UserId in token actually exists, when DB implemented
              */
         } catch (JWTVerificationException exception) {
-            //Invalid signature/claims
+            // Invalid signature/claims
             JsonError jsonError = new JsonError("You are not authenticated");
-            writeResponseBody(t, jsonError, 403);
+            writeResponseBody(exchange, jsonError, 403);
         }
     }
 
     ;
 
     /**
-     * TODO: Might be able to remove this once all methods have been implemented
+     * Responds with status code 501 - Not Implemented. Used as default response for methods
+     * that are not overwritten in inherited classes.
      */
-    protected void respondNotImplemented(HttpExchange t) throws IOException {
-        t.sendResponseHeaders(501, 0);
-        t.getResponseBody().close();
+    private void respondNotImplemented(HttpExchange exchange) throws IOException {
+        exchange.sendResponseHeaders(501, 0);
+        exchange.getResponseBody().close();
     }
 
     /**
@@ -116,24 +129,23 @@ public abstract class RequestHandler implements HttpHandler {
      * @param o Object to convert to JSON
      * @return JSON String representation of the Object
      */
-    protected String objectToJson(Object o) {
+    private String objectToJson(Object o) {
         Gson gson = new Gson();
-        String json = gson.toJson(o);
-        return json;
+        return gson.toJson(o);
     }
 
     /**
      * Converts given Object to a JSON string and writes it to
      * the HttpExchange's response body, returning with a 200 response code.
      *
-     * @param t HttpExchange to write response body to
+     * @param exchange HttpExchange to write response body to
      * @param o Object to return in response body
      * @throws IOException If writing response body fails
      */
-    protected void writeResponseBody(HttpExchange t, Object o) throws IOException {
+    protected void writeResponseBody(HttpExchange exchange, Object o) throws IOException {
         String json = objectToJson(o);
-        t.sendResponseHeaders(200, json.length());
-        OutputStream os = t.getResponseBody();
+        exchange.sendResponseHeaders(200, json.length());
+        OutputStream os = exchange.getResponseBody();
         os.write(json.getBytes(StandardCharsets.UTF_8));
         os.close();
     }
@@ -143,24 +155,32 @@ public abstract class RequestHandler implements HttpHandler {
      * the HttpExchange's response body, returning with a response code defined in
      * function parameters.
      *
-     * @param t HttpExchange to write response body to
+     * @param exchange HttpExchange to write response body to
      * @param o Object to return in response body
      * @param code HTTP Status code to send with the response
      * @throws IOException If writing response body fails
      */
-    protected void writeResponseBody(HttpExchange t, Object o, Integer code) throws IOException {
+    protected void writeResponseBody(HttpExchange exchange, Object o, Integer code) throws IOException {
         String json = objectToJson(o);
-        t.sendResponseHeaders(code, json.length());
-        OutputStream os = t.getResponseBody();
+        exchange.sendResponseHeaders(code, json.length());
+        OutputStream os = exchange.getResponseBody();
         os.write(json.getBytes(StandardCharsets.UTF_8));
         os.close();
     }
 
-    protected abstract void handleGet(HttpExchange t) throws IOException;
+    protected void handleGet(HttpExchange exchange) throws IOException {
+        respondNotImplemented(exchange);
+    };
 
-    protected abstract void handlePost(HttpExchange t) throws IOException;
+    protected void handlePost(HttpExchange exchange) throws IOException {
+        respondNotImplemented(exchange);
+    };
 
-    protected abstract void handlePut(HttpExchange t) throws IOException;
+    protected void handlePut(HttpExchange exchange) throws IOException {
+        respondNotImplemented(exchange);
+    };
 
-    protected abstract void handleDelete(HttpExchange t) throws IOException;
+    protected void handleDelete(HttpExchange exchange) throws IOException {
+        respondNotImplemented(exchange);
+    };
 }

@@ -2,8 +2,15 @@ package handlers.refresh;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
+
 import java.io.IOException;
 
+/**
+ * Route: /refresh/
+ *
+ * Supported Methods:
+ *
+ */
 public class RefreshHandler extends RequestHandler {
 
     public RefreshHandler(boolean requiresAuth) {
@@ -11,22 +18,7 @@ public class RefreshHandler extends RequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange t) throws IOException {
-        writeResponseBody(t, null);
-    }
-
-    @Override
-    protected void handlePost(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handlePut(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handleDelete(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
+    protected void handleGet(HttpExchange exchange) throws IOException {
+        writeResponseBody(exchange, null);
     }
 }

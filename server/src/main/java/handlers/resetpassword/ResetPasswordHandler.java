@@ -2,12 +2,15 @@ package handlers.resetpassword;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
-import models.AccountType;
-import models.User;
 
 import java.io.IOException;
-import java.util.UUID;
 
+/**
+ * Route: /resetpassword/
+ *
+ * Supported Methods:
+ *
+ */
 public class ResetPasswordHandler extends RequestHandler {
 
     public ResetPasswordHandler(boolean requiresAuth) {
@@ -15,22 +18,7 @@ public class ResetPasswordHandler extends RequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange t) throws IOException {
-        writeResponseBody(t, null);
-    }
-
-    @Override
-    protected void handlePost(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handlePut(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handleDelete(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
+    protected void handleGet(HttpExchange exchange) throws IOException {
+        writeResponseBody(exchange, null);
     }
 }

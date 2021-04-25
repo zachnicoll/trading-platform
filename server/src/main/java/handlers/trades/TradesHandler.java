@@ -2,15 +2,19 @@ package handlers.trades;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
-import models.AccountType;
 import models.Trade;
 import models.TradeType;
-import models.User;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.UUID;
 
+/**
+ * Route: /trades/
+ *
+ * Supported Methods:
+ *
+ */
 public class TradesHandler extends RequestHandler {
 
     public TradesHandler(boolean requiresAuth) {
@@ -18,23 +22,8 @@ public class TradesHandler extends RequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange t) throws IOException {
+    protected void handleGet(HttpExchange exchange) throws IOException {
         Trade trade = new Trade(TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
-        writeResponseBody(t, trade);
-    }
-
-    @Override
-    protected void handlePost(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handlePut(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
-    }
-
-    @Override
-    protected void handleDelete(HttpExchange t) throws IOException {
-        respondNotImplemented(t);
+        writeResponseBody(exchange, trade);
     }
 }

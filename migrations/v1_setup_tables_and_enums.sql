@@ -12,34 +12,34 @@ Creates the tables for the trading platform database.
 */
 
 CREATE TABLE "users" (
-  "userID" uuid PRIMARY KEY,
+  "userId" uuid PRIMARY KEY,
   "username" varchar UNIQUE,
   "userType" accountType,
   "password" varchar,
-  "ouID" uuid UNIQUE
+  "organisationalUnitId" uuid UNIQUE
 );
 
 CREATE TABLE "organisationalUnits" (
-  "ouID" uuid PRIMARY KEY,
-  "organisationalUnit" varchar UNIQUE,
-  "credits" float
+  "organisationalUnitId" uuid PRIMARY KEY,
+  "organisationalUnitName" varchar UNIQUE,
+  "creditBalance" float
 );
 
-CREATE TABLE "assets" (
-  "assetID" uuid PRIMARY KEY,
+CREATE TABLE "assetTypes" (
+  "assetTypeId" uuid PRIMARY KEY,
   "assetName" varchar UNIQUE
 );
 
-CREATE TABLE "OUassets" (
-  "ouID" uuid PRIMARY KEY,
-  "assetID" uuid UNIQUE,
+CREATE TABLE "organisationalUnitAssets" (
+  "organisationalUnitId" uuid PRIMARY KEY,
+  "assetTypeId" uuid UNIQUE,
   "quantity" int
 );
 
 CREATE TABLE "trades" (
-  "tradeID" uuid PRIMARY KEY,
-  "assetID" uuid UNIQUE,
-  "ouID" uuid UNIQUE,
+  "tradeId" uuid PRIMARY KEY,
+  "assetId" uuid UNIQUE,
+  "organisationalUnitId" uuid UNIQUE,
   "tradeType" tradeType,
   "quantity" float,
   "price" float,
@@ -47,12 +47,12 @@ CREATE TABLE "trades" (
   "status" statusType
 );
 
-ALTER TABLE "assets" ADD FOREIGN KEY ("assetID") REFERENCES "OUassets" ("assetID");
+ALTER TABLE "assetTypes" ADD FOREIGN KEY ("assetTypeId") REFERENCES "organisationalUnitAssets" ("assetTypeId");
 
-ALTER TABLE "organisationalUnits" ADD FOREIGN KEY ("ouID") REFERENCES "users" ("ouID");
+ALTER TABLE "organisationalUnits" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "users" ("organisationalUnitId");
 
-ALTER TABLE "OUassets" ADD FOREIGN KEY ("ouID") REFERENCES "organisationalUnits" ("ouID");
+ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
 
-ALTER TABLE "assets" ADD FOREIGN KEY ("assetID") REFERENCES "trades" ("assetID");
+ALTER TABLE "assetTypes" ADD FOREIGN KEY ("assetTypeId") REFERENCES "trades" ("assetTypeId");
 
-ALTER TABLE "organisationalUnits" ADD FOREIGN KEY ("ouID") REFERENCES "trades" ("ouID");
+ALTER TABLE "organisationalUnits" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "trades" ("organisationalUnitId");

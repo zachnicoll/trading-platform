@@ -12,7 +12,8 @@ public class AssetType {
      * UUID String identifying the AssetType.
      * Unique.
      */
-    private UUID assetTypeId;
+    private final UUID assetTypeId;
+
 
     /**
      * Name displayed publicly to identify AssetType.

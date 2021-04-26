@@ -12,8 +12,8 @@ public class Asset {
     private final UUID assetTypeId;
     private Integer quantity;
 
-    public Asset (UUID assetType, Integer quantity) {
-        this.assetTypeId = assetType;
+    public Asset (UUID assetTypeId, Integer quantity) {
+        this.assetTypeId = assetTypeId;
         this.quantity = quantity;
     }
 

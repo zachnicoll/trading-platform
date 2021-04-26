@@ -2,8 +2,8 @@ package models;
 
 import exceptions.*;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class for storing and manipulating Organisational Unit information locally and on the server.
@@ -13,7 +13,7 @@ public class OrganisationalUnit {
      * UUID String identifying the OrganisationalUnit.
      * Unique.
      */
-    private String unitId;
+    private final UUID unitId;
 
     /**
      * Name displayed publicly to identify OrganisationUnit.
@@ -39,7 +39,7 @@ public class OrganisationalUnit {
      * @param creditBalance Current balance of the Organisational Unit
      * @param assets List of Assets the Organisational Unit owns
      */
-    public OrganisationalUnit(String unitId, String unitName, Float creditBalance, List<Asset> assets) {
+    public OrganisationalUnit(UUID unitId, String unitName, Float creditBalance, List<Asset> assets) {
         this.unitId = unitId;
         this.unitName = unitName;
         this.creditBalance = creditBalance;
@@ -50,7 +50,7 @@ public class OrganisationalUnit {
      * Get the UnitID of the OU
      * @return the OU's UnitID
      */
-    public String getUnitId()
+    public UUID getUnitId()
     {
         return unitId;
     }
@@ -84,12 +84,12 @@ public class OrganisationalUnit {
 
     /**
      * Determine if this OU already owns an AssetType that matches the given AssetType ID.
-     * @param assetType AssetType to match in the list of Assets
+     * @param assetTypeId AssetType to match in the list of Assets
      * @return The matching Asset if it already exists, null if not
      */
-    public Asset findExistingAsset(AssetType assetType) {
+    public Asset findExistingAsset(UUID assetTypeId) {
         for (Asset asset : assets) {
-            if (asset.getAssetTypeId() == assetType.getAssetTypeId()) {
+            if (asset.getAssetTypeId() == assetTypeId) {
                 return asset;
             }
         }
@@ -115,22 +115,22 @@ public class OrganisationalUnit {
      * only be performed by an Admin. If the AssetType specified is not currently owned
      * by the OU, the AssetType is added to the OU's list of assets.
      * Calls the /org-unit/[orgId]/quantity/ PUT endpoint.
-     * @param assetType AssetType to be updated
+     * @param assetTypeId AssetType to be updated
      * @param newQuantity New quantity of the given asset to be set
      * @throws ApiException
      */
-    public void updateAssetQuantity(AssetType assetType, Integer newQuantity) throws ApiException {
+    public void updateAssetQuantity(UUID assetTypeId, Integer newQuantity) throws ApiException {
         /**
          * Make API request to update this OU's quantity of the given assetType
          */
 
         // Potentially use assets = responseObject.assets to easily update this
 
-        Asset existingAsset = findExistingAsset(assetType);
+        Asset existingAsset = findExistingAsset(assetTypeId);
         if (existingAsset != null) {
             existingAsset.setQuantity(newQuantity);
         } else {
-            assets.add(new Asset(assetType, newQuantity));
+            assets.add(new Asset(assetTypeId, newQuantity));
         }
     }
 
@@ -139,12 +139,12 @@ public class OrganisationalUnit {
      * price of the trade (pricePerAsset * quantity) is deducted from the OU's credit balance,
      * and that quantity of asset is added to OU.
      * @param pricePerAsset Credit price for a single unit of the given AssetType
-     * @param assetType AssetType to be purchased
+     * @param assetTypeId AssetType to be purchased
      * @param quantity Quantity of asset to be purchased
      * @throws ApiException thrown if API request fails
      * @throws InvalidTransactionException thrown if the total price of the purchase exceeds the OU's credit balance
      */
-    public void purchaseAsset(Float pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
+    public void purchaseAsset(Float pricePerAsset, UUID assetTypeId, Integer quantity) throws ApiException, InvalidTransactionException {
         final Float totalPrice = pricePerAsset * quantity;
         if (totalPrice > creditBalance) {
             throw new InvalidTransactionException();
@@ -156,11 +156,11 @@ public class OrganisationalUnit {
          */
 
         creditBalance -= totalPrice;
-        Asset existingAsset = findExistingAsset(assetType);
+        Asset existingAsset = findExistingAsset(assetTypeId);
         if (existingAsset != null) {
             existingAsset.addQuantity(quantity);
         } else {
-            assets.add(new Asset(assetType, quantity));
+            assets.add(new Asset(assetTypeId, quantity));
         }
     }
 
@@ -169,14 +169,14 @@ public class OrganisationalUnit {
      * price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
      * and that quantity of asset is subtracted from the OU.
      * @param pricePerAsset Credit price for a single unit of the given AssetType
-     * @param assetType AssetType to be sold
+     * @param assetTypeId AssetType to be sold
      * @param quantity Quantity of asset to be sold
      * @throws ApiException thrown if API request fails
      * @throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
      */
-    public void sellAsset(Float pricePerAsset, AssetType assetType, Integer quantity) throws ApiException, InvalidTransactionException {
+    public void sellAsset(Float pricePerAsset, UUID assetTypeId, Integer quantity) throws ApiException, InvalidTransactionException {
         final Float totalPrice = pricePerAsset * quantity;
-        Asset existingAsset = findExistingAsset(assetType);
+        Asset existingAsset = findExistingAsset(assetTypeId);
 
         if (existingAsset == null || existingAsset.getQuantity() < quantity) {
             throw new InvalidTransactionException();

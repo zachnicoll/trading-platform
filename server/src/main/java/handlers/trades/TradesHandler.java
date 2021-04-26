@@ -29,7 +29,7 @@ public class TradesHandler extends RequestHandler {
          */
         checkIsAdmin(exchange);
 
-        Trade trade = new Trade(TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
+        Trade trade = new Trade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
         writeResponseBody(exchange, trade);
     }
 }

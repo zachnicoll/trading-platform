@@ -7,6 +7,7 @@ import models.OrganisationalUnit;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Route: /orgunit/
@@ -22,7 +23,7 @@ public class OrgUnitHandler extends RequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException {
         ArrayList<Asset> assets = new ArrayList<>();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit("org-unit-id", "Org Unit Name", 1000.0f, assets);
+        OrganisationalUnit organisationalUnit = new OrganisationalUnit(UUID.randomUUID(), "Org Unit Name", 1000.0f, assets);
         writeResponseBody(exchange, organisationalUnit);
     }
 }

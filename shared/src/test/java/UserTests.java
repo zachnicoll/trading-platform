@@ -72,10 +72,8 @@ public class UserTests {
      * confirmPassword
      */
     @Test
-    public void changePasswordIncorrect() throws AuthenticationException {
-        assertThrows(AuthenticationException.class, () -> {
-           user.changePassword("password1", "password2");
-        });
+    public void changePasswordIncorrect() {
+        assertThrows(AuthenticationException.class, () -> user.changePassword("password1", "password2"));
     }
 
     /* Test 8: Attempt to login with username and password and check if authenticated
@@ -90,11 +88,9 @@ public class UserTests {
     /* Test 9: Login with incorrect credentials
      */
     @Test
-    public void loginIncorrectCredentials() throws AuthenticationException {
+    public void loginIncorrectCredentials() {
         // TODO: Make this fail correctly when API is hooked-up
-        assertThrows(AuthenticationException.class, () -> {
-            User.Login(username, "wrong_password");
-        });
+        assertThrows(AuthenticationException.class, () -> User.Login(username, "wrong_password"));
     }
 
     /* Test 10: Update User information

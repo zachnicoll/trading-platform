@@ -6,6 +6,10 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Wrapper class for JavaFX GUI application. This is contains and displays all
+ * GUI elements & windows.
+ */
 public class GraphicalUserInterface extends Application {
 
     @Override

@@ -21,7 +21,7 @@ public class AssetTypeHandler extends RequestHandler {
 
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException {
-        AssetType assetType = new AssetType(UUID.randomUUID().toString(), "some_asset_name");
+        AssetType assetType = new AssetType(UUID.randomUUID(), "some_asset_name");
         writeResponseBody(exchange, assetType);
     }
 }

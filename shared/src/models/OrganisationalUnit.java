@@ -4,6 +4,7 @@ import exceptions.ApiException;
 import exceptions.InvalidTransactionException;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Class for storing and manipulating Organisational Unit information locally and on the server.
@@ -13,7 +14,7 @@ public class OrganisationalUnit {
      * UUID String identifying the OrganisationalUnit.
      * Unique.
      */
-    private String unitId;
+    private final UUID unitId;
 
     /**
      * Name displayed publicly to identify OrganisationUnit.
@@ -39,7 +40,7 @@ public class OrganisationalUnit {
      * @param creditBalance Current balance of the Organisational Unit
      * @param assets List of Assets the Organisational Unit owns
      */
-    public OrganisationalUnit(String unitId, String unitName, Float creditBalance, List<Asset> assets) {
+    public OrganisationalUnit(UUID unitId, String unitName, Float creditBalance, List<Asset> assets) {
         this.unitId = unitId;
         this.unitName = unitName;
         this.creditBalance = creditBalance;
@@ -47,11 +48,47 @@ public class OrganisationalUnit {
     }
 
     /**
+     * Get the UnitID of the OU
+     * @return the OU's UnitID
+     */
+    public String getUnitId()
+    {
+        return unitId;
+    }
+
+    /**
+     * Get the UnitName of the OU
+     * @return the OU's UnitName
+     */
+    public String getUnitName()
+    {
+        return unitName;
+    }
+
+    /**
+     * Get the CreditBalance of the OU
+     * @return the OU's CreditBalance
+     */
+    public Float getCreditBalance()
+    {
+        return creditBalance;
+    }
+
+    /**
+     * Get the Assets of the OU
+     * @return the OU's Assets
+     */
+    public List<Asset> getAssets()
+    {
+        return assets;
+    }
+
+    /**
      * Determine if this OU already owns an AssetType that matches the given AssetType ID.
      * @param assetType AssetType to match in the list of Assets
      * @return The matching Asset if it already exists, null if not
      */
-    private Asset findExistingAsset(AssetType assetType) {
+    public Asset findExistingAsset(AssetType assetType) {
         for (Asset asset : assets) {
             if (asset.getAssetTypeId() == assetType.getAssetTypeId()) {
                 return asset;
@@ -94,7 +131,7 @@ public class OrganisationalUnit {
         if (existingAsset != null) {
             existingAsset.setQuantity(newQuantity);
         } else {
-            assets.add(new Asset(assetType, newQuantity));
+            assets.add(new Asset(assetType.getAssetTypeId(), newQuantity));
         }
     }
 
@@ -124,7 +161,7 @@ public class OrganisationalUnit {
         if (existingAsset != null) {
             existingAsset.addQuantity(quantity);
         } else {
-            assets.add(new Asset(assetType, quantity));
+            assets.add(new Asset(assetType.getAssetTypeId(), quantity));
         }
     }
 

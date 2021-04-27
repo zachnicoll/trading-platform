@@ -9,11 +9,11 @@ import java.util.UUID;
  * Is the equivalent of the asset-orgunit table in the database.
  */
 public class Asset {
-    private AssetType assetType;
+    private final UUID assetTypeId;
     private Integer quantity;
 
-    public Asset (AssetType assetType, Integer quantity) {
-        this.assetType = assetType;
+    public Asset (UUID assetTypeId, Integer quantity) {
+        this.assetTypeId = assetTypeId;
         this.quantity = quantity;
     }
 
@@ -22,7 +22,7 @@ public class Asset {
      * @return UUID string of associated AssetType
      */
     public UUID getAssetTypeId() {
-        return assetType.getAssetTypeId();
+        return assetTypeId;
     }
 
     /**

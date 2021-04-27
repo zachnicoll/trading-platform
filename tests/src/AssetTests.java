@@ -15,10 +15,8 @@ public class AssetTests {
      */
     final Integer ASSET_QUANTITY = 20;
     Asset asset;
-    Integer quantity = ASSET_QUANTITY;
     UUID assetTypeId = UUID.randomUUID();
     String assetName = "test_asset";
-    AssetType assetType = new AssetType(assetTypeId, assetName);
 
     /* Test 1: Constructing an Asset object
      */
@@ -26,8 +24,8 @@ public class AssetTests {
     @Test
     public void setUpAsset() {
         asset = new Asset(
-                assetType,
-                quantity);
+                assetTypeId,
+                ASSET_QUANTITY);
 
     }
 

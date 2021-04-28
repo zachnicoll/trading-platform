@@ -1,9 +1,11 @@
 package gui;
 
+import com.jfoenix.controls.JFXRippler;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 /**
@@ -16,9 +18,11 @@ public class GraphicalUserInterface extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("../fxml/sample.fxml"));
         primaryStage.setTitle("Login");
-        primaryStage.setScene(new Scene(root, 1280, 720));
+        Scene login = new Scene(root, 1280, 720);
+        primaryStage.setScene(login);
         primaryStage.show();
         primaryStage.setResizable(false);
+
     }
 
 

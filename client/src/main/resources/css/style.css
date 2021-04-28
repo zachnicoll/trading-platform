@@ -1,0 +1,16 @@
+/*
+@font-face {
+    font-family: 'quicksand';
+    src: url('/CSS/quicksand.ttf');
+}
+.button {
+    -fx-font-family: 'quicksand';
+}*/
+
+
+.button {
+    -fx-background-color: #4F5D75;
+}
+.button:hover {
+    -fx-background-color: #475369;
+}

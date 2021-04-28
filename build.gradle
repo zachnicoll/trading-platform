@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+
+}
+
+group 'group10'
+version '0.1'
+
+dependencies {
+
+}

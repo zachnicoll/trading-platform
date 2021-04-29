@@ -16,7 +16,7 @@ public class GraphicalUserInterface extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("../fxml/Login.fxml"));
         primaryStage.setTitle("Login");
         Scene login = new Scene(root, 1280, 720);
         primaryStage.setScene(login);

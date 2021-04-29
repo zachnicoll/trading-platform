@@ -63,38 +63,46 @@ public class LoginController {
     private void submitCredentials(ActionEvent event)  throws IOException {
 
         //TODO implement submit checks
-        int useroradmin =0;
         String loginUsername;
         String loginPassword;
 
         loginUsername = txtUsername.getText();
         loginPassword = txtPassword.getText();
 
+        //login is from a user
+        if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {
 
-        if((loginUsername.equals("user")) && (loginPassword.equals("password")))
+            //Close login stage
+            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+            loginStage.close();
+
+            //Create new User Menu stage
+            System.out.println("submit button pressed");
+            Stage UserMainMenuStage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+            UserMainMenuStage.setTitle("Main Menu");
+            Scene UserMainMenuScene = new Scene(root, 1280, 720);
+            UserMainMenuStage.setScene(UserMainMenuScene);
+            UserMainMenuStage.show();
+            UserMainMenuStage.setResizable(false);
+
+        }
+        //login is from an admin
+        else if((loginUsername.equals("admin")) && (loginPassword.equals("password")))
         {
-            //login is from a user
-            if (useroradmin == 0) {
+            //Close login stage
+            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+            loginStage.close();
 
-                //Close login stage
-                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-                loginStage.close();
-
-                //Create new User Menu stage
-                System.out.println("submit button pressed");
-                Stage UserMainMenuStage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
-                UserMainMenuStage.setTitle("Main Menu");
-                Scene UserMainMenuScene = new Scene(root, 1280, 720);
-                UserMainMenuStage.setScene(UserMainMenuScene);
-                UserMainMenuStage.show();
-                UserMainMenuStage.setResizable(false);
-
-            }
-            //login is from an admin
-            else {
-
-            }
+            //Create new User Menu stage
+            System.out.println("submit button pressed");
+            Stage AdminMainMenuStage = new Stage();
+            Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
+            AdminMainMenuStage.setTitle("Admin Main Menu");
+            Scene AdminMainMenuScene = new Scene(root, 1280, 720);
+            AdminMainMenuStage.setScene(AdminMainMenuScene);
+            AdminMainMenuStage.show();
+            AdminMainMenuStage.setResizable(false);
         }
         else
         {

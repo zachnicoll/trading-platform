@@ -18,22 +18,25 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class UserMainMenuController implements Initializable {
+public class AdminMainMenuController implements Initializable {
 
     @FXML
-    private Label label;
+    private AnchorPane adminMenuAnchorId;
 
     @FXML
-    private AnchorPane UserMainPane;
+    private AnchorPane AdminMainPane;
 
     @FXML
-    private JFXButton btnDashboard;
+    private JFXButton btnOUMgmt;
 
     @FXML
-    private JFXButton btnMarketplace;
+    private JFXButton btnAssetMgmt;
 
     @FXML
-    private JFXButton btnTradeHistory;
+    private JFXButton btnAccountMgmt;
+
+    @FXML
+    private JFXButton btnServerMgmt;
 
     @FXML
     private JFXButton btnProfile;
@@ -41,38 +44,42 @@ public class UserMainMenuController implements Initializable {
     @FXML
     private JFXButton btnLogout;
 
-    @FXML
-    private AnchorPane userMenuAnchorId;
-
-    public void sceneDashboard(ActionEvent event) throws IOException {
+    public void sceneAdminOrganisations(ActionEvent event) throws IOException {
         System.out.println("btn pressed");
         fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserDashboard");
-        UserMainPane.getChildren().setAll(view);
+        Pane view = object.getPage("AdminOUMgmt");
+        AdminMainPane.getChildren().setAll(view);
     }
 
-    public void sceneMarketplace(ActionEvent event) throws IOException {
+    public void sceneAdminAssets(ActionEvent event) throws IOException {
         System.out.println("btn pressed");
         fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserMarketplace");
-        UserMainPane.getChildren().setAll(view);
+        Pane view = object.getPage("AdminAssetMgmt");
+        AdminMainPane.getChildren().setAll(view);
     }
 
-    public void sceneTradeHistory(ActionEvent event) throws IOException {
+    public void sceneAdminAccounts(ActionEvent event) throws IOException {
         System.out.println("btn pressed");
         fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserTradeHistory");
-        UserMainPane.getChildren().setAll(view);
+        Pane view = object.getPage("AdminAccountMgmt");
+        AdminMainPane.getChildren().setAll(view);
     }
 
-    public void sceneProfile(ActionEvent event) throws IOException {
+    public void sceneAdminServerSettings(ActionEvent event) throws IOException {
         System.out.println("btn pressed");
         fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserProfile");
-        UserMainPane.getChildren().setAll(view);
+        Pane view = object.getPage("AdminServerMgmt");
+        AdminMainPane.getChildren().setAll(view);
     }
 
-    public void logout(ActionEvent event) throws IOException {
+    public void sceneAdminProfile(ActionEvent event) throws IOException {
+        System.out.println("btn pressed");
+        fxmlLoader object = new fxmlLoader();
+        Pane view = object.getPage("AdminProfile");
+        AdminMainPane.getChildren().setAll(view);
+    }
+
+    public void logoutAdmin(ActionEvent event) throws IOException {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to logout?", ButtonType.YES, ButtonType.NO);
         alert.showAndWait();
@@ -81,7 +88,7 @@ public class UserMainMenuController implements Initializable {
             //do stuff
 
             //Close menu stage
-            Stage loginStage = (Stage) userMenuAnchorId.getScene().getWindow();
+            Stage loginStage = (Stage) adminMenuAnchorId.getScene().getWindow();
             loginStage.close();
 
             //Create new login stage

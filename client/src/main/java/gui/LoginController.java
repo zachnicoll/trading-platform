@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -62,27 +64,44 @@ public class LoginController {
 
         //TODO implement submit checks
         int useroradmin =0;
+        String loginUsername;
+        String loginPassword;
 
-        if(useroradmin == 0) {
+        loginUsername = txtUsername.getText();
+        loginPassword = txtPassword.getText();
 
-            //Close login stage
-            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-            loginStage.close();
 
-            //Create new User stage
-            System.out.println("submit button pressed");
-            Stage UserMainMenuStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
-            UserMainMenuStage.setTitle("Main Menu");
-            Scene UserMainMenuScene = new Scene(root, 1280, 720);
-            UserMainMenuStage.setScene(UserMainMenuScene);
-            UserMainMenuStage.show();
-            UserMainMenuStage.setResizable(false);
+        if((loginUsername.equals("user")) && (loginPassword.equals("password")))
+        {
+            //login is from a user
+            if (useroradmin == 0) {
 
+                //Close login stage
+                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                loginStage.close();
+
+                //Create new User Menu stage
+                System.out.println("submit button pressed");
+                Stage UserMainMenuStage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+                UserMainMenuStage.setTitle("Main Menu");
+                Scene UserMainMenuScene = new Scene(root, 1280, 720);
+                UserMainMenuStage.setScene(UserMainMenuScene);
+                UserMainMenuStage.show();
+                UserMainMenuStage.setResizable(false);
+
+            }
+            //login is from an admin
+            else {
+
+            }
         }
         else
         {
-
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Username and password combination invalid, please try again.", ButtonType.OK);
+            alert.showAndWait();
+            txtUsername.clear();
+            txtPassword.clear();
         }
     }
 

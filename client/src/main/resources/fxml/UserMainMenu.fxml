@@ -8,12 +8,20 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserMainMenuController">
+<AnchorPane fx:id="userMenuAnchorId" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserMainMenuController">
    <children>
       <BorderPane prefHeight="720.0" prefWidth="1280.0">
          <center>
-            <AnchorPane fx:id="mainPane" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" BorderPane.alignment="CENTER" />
+            <AnchorPane fx:id="mainPane" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" BorderPane.alignment="CENTER">
+               <children>
+                  <Text fill="WHITE" layoutX="126.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to the Trading Platform!" textAlignment="CENTER" wrappingWidth="728.12109375">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Text>
+               </children></AnchorPane>
          </center>
          <left>
             <AnchorPane prefHeight="720.0" prefWidth="300.0" style="-fx-background-color: #4F5D75;" BorderPane.alignment="CENTER">
@@ -59,7 +67,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="btnTradeHistory" alignment="TOP_LEFT" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Trade History" textFill="WHITE">
+                        <JFXButton fx:id="btnTradeHistory" alignment="TOP_LEFT" onAction="#sceneTradeHistory" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Trade History" textFill="WHITE">
                            <font>
                               <Font size="25.0" />
                            </font>
@@ -77,7 +85,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="btnProfile" alignment="TOP_LEFT" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Profile" textFill="WHITE">
+                        <JFXButton fx:id="btnProfile" alignment="TOP_LEFT" onAction="#sceneProfile" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Profile" textFill="WHITE">
                            <font>
                               <Font size="25.0" />
                            </font>
@@ -95,7 +103,7 @@
                               </ImageView>
                            </graphic>
                         </JFXButton>
-                        <JFXButton fx:id="btnLogout" alignment="TOP_LEFT" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Logout" textFill="WHITE">
+                        <JFXButton fx:id="btnLogout" alignment="TOP_LEFT" onAction="#logout" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Logout" textFill="WHITE">
                            <font>
                               <Font size="25.0" />
                            </font>

@@ -1,0 +1,4 @@
+jdbc.url=jdbc:postgresql://localhost:5433/postgres
+jdbc.schema=CAB302-trading-platform
+jdbc.username=postgres
+jdbc.password=root

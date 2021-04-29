@@ -38,7 +38,7 @@ CREATE TABLE "organisationalUnitAssets" (
 
 CREATE TABLE "trades" (
   "tradeId" uuid PRIMARY KEY,
-  "assetId" uuid UNIQUE,
+  "assetTypeId" uuid UNIQUE,
   "organisationalUnitId" uuid UNIQUE,
   "tradeType" tradeType,
   "quantity" float,

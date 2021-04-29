@@ -20,7 +20,7 @@
       <AnchorPane prefHeight="900.0" prefWidth="400.0" BorderPane.alignment="CENTER">
          <children>
             <Rectangle id="1" arcHeight="5.0" arcWidth="5.0" fill="#2d3142" height="720.0" layoutX="-7.0" stroke="#2d3142" strokeType="INSIDE" style="-fx-fill: 2d3142;" width="416.0" />
-            <Text id="test" fill="WHITE" layoutX="101.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" wrappingWidth="200.13671875">
+            <Text id="test" fill="WHITE" layoutX="2.0" layoutY="208.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login" textAlignment="CENTER" wrappingWidth="397.13671875">
                <font>
                   <Font name="Microsoft PhagsPa" size="80.0" />
                </font>
@@ -57,7 +57,7 @@
                   <Font size="24.0" />
                </font>
             </JFXButton>
-            <ImageView fitHeight="38.0" fitWidth="38.0" layoutX="301.0" layoutY="597.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="38.0" fitWidth="38.0" layoutX="302.0" layoutY="594.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/login.png" />
                </image>

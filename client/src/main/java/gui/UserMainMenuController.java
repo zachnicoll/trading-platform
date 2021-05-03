@@ -85,7 +85,6 @@ public class UserMainMenuController implements Initializable {
             loginStage.close();
 
             //Create new login stage
-            System.out.println("logout button pressed");
             Stage LoginStage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("../fxml/Login.fxml"));
             LoginStage.setTitle("Login");

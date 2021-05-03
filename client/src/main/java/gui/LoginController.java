@@ -77,7 +77,6 @@ public class LoginController {
             loginStage.close();
 
             //Create new User Menu stage
-            System.out.println("submit button pressed");
             Stage UserMainMenuStage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
             UserMainMenuStage.setTitle("Main Menu");
@@ -95,7 +94,6 @@ public class LoginController {
             loginStage.close();
 
             //Create new User Menu stage
-            System.out.println("submit button pressed");
             Stage AdminMainMenuStage = new Stage();
             Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
             AdminMainMenuStage.setTitle("Admin Main Menu");

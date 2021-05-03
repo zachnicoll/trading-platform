@@ -1,33 +1,39 @@
-package src.main.java.database.datasources;
+package database.datasources;
+
+import models.User;
 
 import java.util.List;
 
-public class UserDataSource implements TradingPlatformDataSource {
+public class UserDataSource implements TradingPlatformDataSource<User> {
 
 
     @Override
-    public Object getById(String id) {
+    public User getById(String id) {
         return null;
     }
 
     @Override
-    public List<Object> getAll() {
+    public List<User> getAll() {
         return null;
     }
 
     @Override
-    public boolean createNew(Object newObject) {
+    public boolean createNew(User newObject) {
         return false;
     }
 
     @Override
-    public boolean updateByAttribute(String id, String attribute, Object value) {
+    public boolean updateByAttribute(String id, String attribute, User value) {
         return false;
     }
-
 
     @Override
     public boolean checkExistById(String id) {
         return false;
+    }
+
+    @Override
+    public void deleteById(String id) {
+
     }
 }

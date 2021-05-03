@@ -1,33 +1,39 @@
-package src.main.java.database.datasources;
+package database.datasources;
+
+import models.Trade;
 
 import java.util.List;
 
-public class TradeDataSource implements TradingPlatformDataSource {
+public class TradeDataSource implements TradingPlatformDataSource<Trade> {
 
 
     @Override
-    public Object getById(String id) {
+    public Trade getById(String id) {
         return null;
     }
 
     @Override
-    public List<Object> getAll() {
+    public List<Trade> getAll() {
         return null;
     }
 
     @Override
-    public boolean createNew(Object newObject) {
+    public boolean createNew(Trade newObject) {
         return false;
     }
 
     @Override
-    public boolean updateByAttribute(String id, String attribute, Object value) {
+    public boolean updateByAttribute(String id, String attribute, Trade value) {
         return false;
     }
-
 
     @Override
     public boolean checkExistById(String id) {
         return false;
+    }
+
+    @Override
+    public void deleteById(String id) {
+
     }
 }

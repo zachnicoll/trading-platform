@@ -1,34 +1,40 @@
-package src.main.java.database.datasources;
+package database.datasources;
+
+import models.OrganisationalUnit;
 
 import java.util.List;
 
 
-public class OrganisationalUnitDataSource implements TradingPlatformDataSource {
+public class OrganisationalUnitDataSource implements TradingPlatformDataSource<OrganisationalUnit> {
+
 
     @Override
-    public Object getById(String id) {
+    public OrganisationalUnit getById(String id) {
         return null;
     }
 
     @Override
-    public List<Object> getAll() {
+    public List<OrganisationalUnit> getAll() {
         return null;
     }
 
     @Override
-    public boolean createNew(Object newObject) {
+    public boolean createNew(OrganisationalUnit newObject) {
         return false;
     }
 
     @Override
-    public boolean updateByAttribute(String id, String attribute, Object value) {
+    public boolean updateByAttribute(String id, String attribute, OrganisationalUnit value) {
         return false;
     }
-
 
     @Override
-    public boolean checkExistById(String organisationalUnitId) {
+    public boolean checkExistById(String id) {
         return false;
     }
 
+    @Override
+    public void deleteById(String id) {
+
+    }
 }

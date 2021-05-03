@@ -13,7 +13,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -44,38 +43,31 @@ public class AdminMainMenuController implements Initializable {
     @FXML
     private JFXButton btnLogout;
 
+    private FxmlLoader pageLoader = new FxmlLoader();
+
     public void sceneAdminOrganisations(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("AdminOUMgmt");
+        Pane view = pageLoader.getPage("AdminOUMgmt");
         AdminMainPane.getChildren().setAll(view);
     }
 
+
     public void sceneAdminAssets(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("AdminAssetMgmt");
+        Pane view = pageLoader.getPage("AdminAssetMgmt");
         AdminMainPane.getChildren().setAll(view);
     }
 
     public void sceneAdminAccounts(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("AdminAccountMgmt");
+        Pane view = pageLoader.getPage("AdminAccountMgmt");
         AdminMainPane.getChildren().setAll(view);
     }
 
     public void sceneAdminServerSettings(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("AdminServerMgmt");
+        Pane view = pageLoader.getPage("AdminServerMgmt");
         AdminMainPane.getChildren().setAll(view);
     }
 
     public void sceneAdminProfile(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("AdminProfile");
+        Pane view = pageLoader.getPage("AdminProfile");
         AdminMainPane.getChildren().setAll(view);
     }
 
@@ -91,15 +83,9 @@ public class AdminMainMenuController implements Initializable {
             Stage loginStage = (Stage) adminMenuAnchorId.getScene().getWindow();
             loginStage.close();
 
-            //Create new login stage
-            System.out.println("logout button pressed");
-            Stage LoginStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/Login.fxml"));
-            LoginStage.setTitle("Login");
-            Scene UserMainMenuScene = new Scene(root, 1280, 720);
-            LoginStage.setScene(UserMainMenuScene);
-            LoginStage.show();
-            LoginStage.setResizable(false);
+            LoginController.showLogin();
+
+
         }
     }
 

@@ -60,6 +60,17 @@ public class LoginController {
     }
 
     @FXML
+    public static void showLogin() throws IOException {
+        Stage LoginStage = new Stage();
+        Parent root = FXMLLoader.load(LoginController.class.getResource("../fxml/Login.fxml"));
+        LoginStage.setTitle("Login");
+        Scene UserMainMenuScene = new Scene(root, 1280, 720);
+        LoginStage.setScene(UserMainMenuScene);
+        LoginStage.show();
+        LoginStage.setResizable(false);
+    }
+
+    @FXML
     private void submitCredentials(ActionEvent event)  throws IOException {
 
         //TODO implement submit checks

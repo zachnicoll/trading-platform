@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
-public class fxmlLoader {
+public class FxmlLoader {
 
     private Pane view;
 

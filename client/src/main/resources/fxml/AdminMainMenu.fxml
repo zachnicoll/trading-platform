@@ -42,7 +42,7 @@
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../Desktop/mOU.png" />
+                                    <Image url="@../images/mOU.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -63,7 +63,7 @@
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../Desktop/mAsset.png" />
+                                    <Image url="@../images/mAsset.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -81,7 +81,7 @@
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../Desktop/mAccount.png" />
+                                    <Image url="@../images/mAccount.png" />
                                  </image>
                               </ImageView>
                            </graphic>
@@ -99,7 +99,7 @@
                            <graphic>
                               <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../../../../../../Desktop/mServer.png" />
+                                    <Image url="@../images/mServer.png" />
                                  </image>
                               </ImageView>
                            </graphic>

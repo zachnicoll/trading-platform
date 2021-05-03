@@ -12,7 +12,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
@@ -44,31 +43,25 @@ public class UserMainMenuController implements Initializable {
     @FXML
     private AnchorPane userMenuAnchorId;
 
+    private FxmlLoader pageLoader = new FxmlLoader();
+
     public void sceneDashboard(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserDashboard");
+        Pane view = pageLoader.getPage("UserDashboard");
         UserMainPane.getChildren().setAll(view);
     }
 
     public void sceneMarketplace(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserMarketplace");
+        Pane view = pageLoader.getPage("UserMarketplace");
         UserMainPane.getChildren().setAll(view);
     }
 
     public void sceneTradeHistory(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserTradeHistory");
+        Pane view = pageLoader.getPage("UserTradeHistory");
         UserMainPane.getChildren().setAll(view);
     }
 
     public void sceneProfile(ActionEvent event) throws IOException {
-        System.out.println("btn pressed");
-        fxmlLoader object = new fxmlLoader();
-        Pane view = object.getPage("UserProfile");
+        Pane view = pageLoader.getPage("UserProfile");
         UserMainPane.getChildren().setAll(view);
     }
 
@@ -84,14 +77,7 @@ public class UserMainMenuController implements Initializable {
             Stage loginStage = (Stage) userMenuAnchorId.getScene().getWindow();
             loginStage.close();
 
-            //Create new login stage
-            Stage LoginStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/Login.fxml"));
-            LoginStage.setTitle("Login");
-            Scene UserMainMenuScene = new Scene(root, 1280, 720);
-            LoginStage.setScene(UserMainMenuScene);
-            LoginStage.show();
-            LoginStage.setResizable(false);
+            LoginController.showLogin();
         }
     }
 

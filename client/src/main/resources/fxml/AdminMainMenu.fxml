@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="adminMenuAnchorId" prefHeight="720.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminMainMenuController">
+   <children>
+      <BorderPane prefHeight="720.0" prefWidth="1280.0">
+         <center>
+            <AnchorPane fx:id="AdminMainPane" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" BorderPane.alignment="CENTER">
+               <children>
+                  <Text fill="WHITE" layoutX="126.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to the Admin Control Panel!" textAlignment="CENTER" wrappingWidth="728.12109375">
+                     <font>
+                        <Font size="72.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+         </center>
+         <left>
+            <AnchorPane prefHeight="720.0" prefWidth="300.0" style="-fx-background-color: #4F5D75;" BorderPane.alignment="CENTER">
+               <children>
+                  <VBox layoutY="120.0" prefHeight="600.0" prefWidth="300.0" style="-fx-background-color: #4F5D75;">
+                     <children>
+                        <JFXButton fx:id="btnOUMgmt" alignment="TOP_LEFT" onAction="#sceneAdminOrganisations" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Organisations" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/mOU.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="btnAssetMgmt" alignment="TOP_LEFT" onAction="#sceneAdminAssets" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Assets" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets />
+                           </VBox.margin>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/mAsset.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="btnAccountMgmt" alignment="TOP_LEFT" onAction="#sceneAdminAccounts" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Accounts" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/mAccount.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="btnServerMgmt" alignment="TOP_LEFT" onAction="#sceneAdminServerSettings" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Server Settings" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/mServer.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="btnAdminProfile" alignment="TOP_LEFT" onAction="#sceneAdminProfile" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Profile" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/profile.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                        <JFXButton fx:id="btnAdminLogout" alignment="TOP_LEFT" onAction="#logoutAdmin" prefHeight="100.0" prefWidth="300.0" ripplerFill="#2d3142" stylesheets="@../css/MainMenu.css" text=" Logout" textFill="WHITE">
+                           <font>
+                              <Font size="25.0" />
+                           </font>
+                           <opaqueInsets>
+                              <Insets />
+                           </opaqueInsets>
+                           <padding>
+                              <Insets left="25.0" top="25.0" />
+                           </padding>
+                           <graphic>
+                              <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../images/logout.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </JFXButton>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+         </left>
+      </BorderPane>
+   </children>
+</AnchorPane>

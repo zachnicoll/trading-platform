@@ -3,6 +3,7 @@ package handlers.trades;
 import com.sun.net.httpserver.HttpExchange;
 import handlers.RequestHandler;
 import models.Trade;
+import models.TradeStatus;
 import models.TradeType;
 
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class TradesHandler extends RequestHandler {
          */
         checkIsAdmin(exchange);
 
-        Trade trade = new Trade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
+        Trade trade = new Trade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date(), TradeStatus.UNRESOLVED);
         writeResponseBody(exchange, trade);
     }
 }

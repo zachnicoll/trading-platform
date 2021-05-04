@@ -1,0 +1,4 @@
+jdbc.url=jdbc:postgresql://localhost:5432
+jdbc.username=zach
+jdbc.password=password
+jdbc.schema=cab302

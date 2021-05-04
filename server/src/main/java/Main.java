@@ -15,6 +15,6 @@ public class Main {
         // Start Trade Resolver Task
         Timer time = new Timer();
         TradeResolver tradeResolver = new TradeResolver();
-        time.schedule(tradeResolver, 1000, tradeResolvePeriod);
+        time.schedule(tradeResolver, 0, tradeResolvePeriod);
     }
 }

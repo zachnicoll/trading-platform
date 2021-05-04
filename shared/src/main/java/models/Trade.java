@@ -44,6 +44,11 @@ public class Trade {
     private Date date;
 
     /**
+     * Whether the Trade is RESOLVED or UNRESOLVED
+     */
+    private TradeStatus status;
+
+    /**
      * Construct a new User with given information, most likely provided by the API.
      * @param tradeId Unique UUID identifier for each trade
      * @param tradeType whether the trade is a BUY or SELL order
@@ -53,7 +58,7 @@ public class Trade {
      * @param pricePerAsset price for a single asset of type AssetType
      * @param date date that the trade order was opened
      */
-    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date date) {
+    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date date, TradeStatus status) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
         this.organisationalUnitId = organisationalUnitId;
@@ -61,6 +66,7 @@ public class Trade {
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
         this.date = date;
+        this.status = status;
     }
 
 

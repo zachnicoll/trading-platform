@@ -38,7 +38,8 @@ public class TradeTests {
                 assetTypeId,
                 quantity,
                 pricePerAsset,
-                date
+                date,
+                TradeStatus.UNRESOLVED
         );
     }
 

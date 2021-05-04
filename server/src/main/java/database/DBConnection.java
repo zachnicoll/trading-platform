@@ -1,13 +1,10 @@
 package database;
 
-import javax.sql.ConnectionPoolDataSource;
-import javax.sql.DataSource;
-import javax.sql.PooledConnection;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.ConnectionBuilder;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -25,12 +22,10 @@ public class DBConnection {
      * Constructor intializes the connection.
      */
     private DBConnection() {
-
-
         Properties props = new Properties();
         FileInputStream in = null;
         try {
-            in = new FileInputStream("./db.props");
+            in = new FileInputStream("server/src/main/resources/db.props");
             props.load(in);
             in.close();
             // specify the data source, username and password

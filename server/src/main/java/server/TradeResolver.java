@@ -1,5 +1,11 @@
 package server;
 
+import database.datasources.TradeDataSource;
+import models.Trade;
+
+import java.sql.Array;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.TimerTask;
 
@@ -8,6 +14,21 @@ public class TradeResolver extends TimerTask {
         /*
          *  Fetch all trades from DB that are unresolved
          */
+        TradeDataSource tradeDataSource = new TradeDataSource();
+        ArrayList<Trade> unresolvedTrades = null;
+
+        try {
+            unresolvedTrades = tradeDataSource.getAllUnresolved();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+        }
+
+        if (unresolvedTrades != null) {
+            for (Trade trade:
+                 unresolvedTrades) {
+                System.out.println(trade.getTradeId());
+            }
+        }
 
         /*
          *  Sort trades by DateTime, earliest first

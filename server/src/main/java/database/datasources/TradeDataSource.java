@@ -1,14 +1,29 @@
 package database.datasources;
 
+import database.DBConnection;
 import models.Trade;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TradeDataSource implements TradingPlatformDataSource<Trade> {
 
-
     @Override
     public Trade getById(String id) {
+        return null;
+    }
+
+    public List<Trade> getAllUnresolved() throws SQLException {
+        Connection dbConnection = DBConnection.getInstance();
+        PreparedStatement getAllUnresolved = dbConnection.prepareStatement("SELECT * FROM trades t WHERE t.status = 'UNRESOLVED'");
+        ResultSet results = getAllUnresolved.executeQuery();
+        System.out.println(results);
+        dbConnection.close();
+
         return null;
     }
 

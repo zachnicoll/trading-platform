@@ -1,4 +1,4 @@
-package src.main.java.database;
+package database;
 
 import javax.sql.ConnectionPoolDataSource;
 import javax.sql.DataSource;

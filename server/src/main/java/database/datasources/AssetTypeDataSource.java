@@ -5,6 +5,7 @@ import models.AssetType;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class AssetTypeDataSource extends AbstractDataSource<AssetType> {
 
@@ -21,19 +22,19 @@ public class AssetTypeDataSource extends AbstractDataSource<AssetType> {
         return null;
     }
 
-    public boolean createNew(AssetType newObject) {
+    public void createNew(AssetType newObject) {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, AssetType value) throws SQLException {
+
+    }
+
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, AssetType value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
+    public void deleteById(UUID id) throws SQLException {
 
     }
 }

@@ -5,6 +5,7 @@ import models.OrganisationalUnit;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class OrganisationalUnitDataSource extends AbstractDataSource<OrganisationalUnit> {
 
@@ -21,19 +22,19 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
         return null;
     }
 
-    public boolean createNew(OrganisationalUnit newObject) {
+    public void createNew(OrganisationalUnit newObject) {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, OrganisationalUnit value) throws SQLException {
+
+    }
+
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, OrganisationalUnit value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
+    public void deleteById(UUID id) throws SQLException {
 
     }
 }

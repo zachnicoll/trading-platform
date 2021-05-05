@@ -1,9 +1,12 @@
 package database.datasources;
 
+import database.DBConnection;
+
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -29,7 +32,7 @@ public abstract class AbstractDataSource<T> {
      * @param id - UUID generated object unique identifier
      * @return specific object based on implementation and datasource - User or Trade etc.
      */
-    public abstract T getById(String id);
+    public abstract T getById(String id) throws SQLException;
 
     /** Returns a list of all instances of an object type located in the database. 
      * 
@@ -41,9 +44,8 @@ public abstract class AbstractDataSource<T> {
     /** Creates a new object type in the database, eg. new User; new AssetType; etc.
      * 
      * @param newObject - new object to be created. eg. User or OrganisationalUnit etc.
-     * @return boolean indicating if the creation into the database was a success.
      */
-     public abstract boolean createNew(T newObject);
+     public abstract void createNew(T newObject) throws SQLException;
 
 
     /** Updates object attributes in the database one at a time by id -
@@ -54,7 +56,7 @@ public abstract class AbstractDataSource<T> {
      * @param value - value of the attribute that is being updated
      * @return boolean indicating whether the update into the database was a success.
      */
-     public abstract boolean updateByAttribute(String id, String attribute, T value);
+     public abstract void updateByAttribute(UUID id, String attribute, T value) throws SQLException;
 
 
     /** Checks to see if an object by their id exists within the database.
@@ -62,12 +64,12 @@ public abstract class AbstractDataSource<T> {
      * @param id - id of the object
      * @return boolean indicating whether the object exists.
      */
-     public abstract boolean checkExistById(String id);
+     public abstract boolean checkExistById(UUID id) throws SQLException;
 
     /** Deletes instance in the database based on id
      *
      * @param id - id of the object
      */
-    public abstract void deleteById(String id);
+    public abstract void deleteById(UUID id) throws SQLException;
 
 }

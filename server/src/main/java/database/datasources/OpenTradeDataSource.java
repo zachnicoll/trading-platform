@@ -4,6 +4,7 @@ import database.DBConnection;
 import models.OpenTrade;
 import models.TradeType;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
+
+    protected Connection dbConnection = DBConnection.getInstance();
 
     protected OpenTrade resultSetToObject(ResultSet results) throws SQLException {
         return new OpenTrade(
@@ -30,7 +33,6 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
     }
 
     public ArrayList<OpenTrade> getAll() throws SQLException {
-        Connection dbConnection = DBConnection.getInstance();
         PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
                 "SELECT * FROM \"openTrades\" ORDER BY \"dateOpened\" ASC;"
         );
@@ -45,19 +47,39 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
         return allOpenTrades;
     }
 
-    public boolean createNew(OpenTrade newObject) {
+    public void createNew(OpenTrade newObject) throws SQLException {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, OpenTrade value) throws SQLException, InvalidParameterException {
+        Object attrValue;
+
+        switch (attribute) {
+            case "quantity":
+                attrValue = value.getQuantity();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateStatement = dbConnection.prepareStatement(
+                "UPDATE \"openTrades\" SET \"" + attribute + "\" = ? WHERE \"tradeId\"::text = ?;"
+        );
+        updateStatement.setObject(1, attrValue);
+        updateStatement.setString(2, id.toString());
+
+        updateStatement.execute();
+    }
+
+    public boolean checkExistById(UUID id) {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, OpenTrade value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
-
+    public void deleteById(UUID id) throws SQLException {
+        PreparedStatement deleteStatement = dbConnection.prepareStatement(
+                "DELETE FROM \"openTrades\" WHERE \"tradeId\"::text = ?;"
+        );
+        deleteStatement.setString(1, id.toString());
+        deleteStatement.execute();
     }
 }

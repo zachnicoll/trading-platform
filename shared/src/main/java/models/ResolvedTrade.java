@@ -1,6 +1,7 @@
 package models;
 
-import java.util.Date;
+import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 public class ResolvedTrade {
@@ -10,9 +11,9 @@ public class ResolvedTrade {
     private final UUID sellOrgUnitId;
     private final Integer quantity;
     private final Float price;
-    private final Date dateResolved;
+    private final Timestamp dateResolved;
 
-    public ResolvedTrade (UUID buyTradeId, UUID buyOrgUnitId, UUID sellTradeId, UUID sellOrgUnitId, Integer quantity, Float price, Date dateResolved){
+    public ResolvedTrade (UUID buyTradeId, UUID buyOrgUnitId, UUID sellTradeId, UUID sellOrgUnitId, Integer quantity, Float price, Timestamp dateResolved){
         this.buyTradeId = buyTradeId;
         this.buyOrgUnitId = buyOrgUnitId;
         this.sellTradeId = sellTradeId;
@@ -42,7 +43,7 @@ public class ResolvedTrade {
         return price;
     }
 
-    public Date getDateResolved() {
+    public Timestamp getDateResolved() {
         return dateResolved;
     }
 

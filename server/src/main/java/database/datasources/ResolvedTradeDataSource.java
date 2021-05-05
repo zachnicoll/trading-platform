@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
+    private Connection dbConnection = DBConnection.getInstance();
 
     protected ResolvedTrade resultSetToObject(ResultSet results) throws SQLException {
         return new ResolvedTrade(
@@ -20,7 +21,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 UUID.fromString(results.getString("sellOrgUnitId")),
                 results.getInt("quantity"),
                 results.getFloat("price"),
-                results.getDate("dateResolved")
+                results.getTimestamp("dateResolved")
         );
     }
 
@@ -29,7 +30,6 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
     }
 
     public ArrayList<ResolvedTrade> getAll() throws SQLException {
-        Connection dbConnection = DBConnection.getInstance();
         PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
                 "SELECT * FROM \"resolvedTrades\" ORDER BY \"dateOpened\" ASC;"
         );
@@ -44,19 +44,30 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         return allResolvedTrades;
     }
 
-    public boolean createNew(ResolvedTrade newObject) {
+    public void createNew(ResolvedTrade newObject) throws SQLException {
+        PreparedStatement createResolvedTrade = dbConnection.prepareStatement(
+                "INSERT INTO \"resolvedTrades\" VALUES (uuid(?), uuid(?), uuid(?), uuid(?), ?, ?, ?);"
+        );
+        createResolvedTrade.setString(1, newObject.getBuyTradeId().toString());
+        createResolvedTrade.setString(2, newObject.getBuyOrgUnitId().toString());
+        createResolvedTrade.setString(3, newObject.getSellTradeId().toString());
+        createResolvedTrade.setString(4, newObject.getSellOrgUnitId().toString());
+        createResolvedTrade.setInt(5, newObject.getQuantity());
+        createResolvedTrade.setFloat(6, newObject.getPrice());
+        createResolvedTrade.setTimestamp(7, newObject.getDateResolved());
+
+        createResolvedTrade.execute();
+    }
+
+    public void updateByAttribute(UUID id, String attribute, ResolvedTrade value) {
+
+    }
+
+    public boolean checkExistById(UUID id) {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, ResolvedTrade value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
+    public void deleteById(UUID id) {
 
     }
 }

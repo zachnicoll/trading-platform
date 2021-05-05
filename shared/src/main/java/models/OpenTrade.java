@@ -130,6 +130,15 @@ public class OpenTrade {
     }
 
     /**
+     * Set an OpenTrades quantity. This should be used as a result of two OpenTrades being resolved, with one of
+     * the OpenTrades not being completely fulfilled.
+     * @param quantity
+     */
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
+    /**
      * Comparator for sorting Trades by date, earliest first.
      */
     public static Comparator<OpenTrade> tradeDateComparator = (t1, t2) -> {

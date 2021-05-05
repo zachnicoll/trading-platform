@@ -5,6 +5,7 @@ import models.User;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class UserDataSource extends AbstractDataSource<User> {
 
@@ -21,19 +22,19 @@ public class UserDataSource extends AbstractDataSource<User> {
         return null;
     }
 
-    public boolean createNew(User newObject) {
+    public void createNew(User newObject) {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
+
+    }
+
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, User value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
+    public void deleteById(UUID id) throws SQLException {
 
     }
 }

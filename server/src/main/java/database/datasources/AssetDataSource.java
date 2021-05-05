@@ -1,13 +1,10 @@
 package database.datasources;
 
 import models.Asset;
-import models.OpenTrade;
-import models.TradeType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class AssetDataSource extends AbstractDataSource<Asset> {
@@ -25,21 +22,19 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
         return null;
     }
 
-    public boolean createNew(Asset newObject) {
+    public void createNew(Asset newObject) {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, Asset value) throws SQLException {
+
+    }
+
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
     }
 
-    public boolean updateByAttribute(String id, String attribute, Asset value) {
-        return false;
-    }
-
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    public void deleteById(String id) {
+    public void deleteById(UUID id) throws SQLException {
 
     }
-
-
 }

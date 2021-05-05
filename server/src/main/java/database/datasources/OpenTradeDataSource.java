@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class TradeDataSource extends AbstractDataSource<OpenTrade> {
+public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
 
     protected OpenTrade resultSetToObject(ResultSet results) throws SQLException {
         return new OpenTrade(
@@ -36,13 +36,13 @@ public class TradeDataSource extends AbstractDataSource<OpenTrade> {
         );
         ResultSet results = getAllUnresolved.executeQuery();
 
-        ArrayList<OpenTrade> unresolvedTrades = new ArrayList<>();
+        ArrayList<OpenTrade> allOpenTrades = new ArrayList<>();
         while (results.next()) {
             OpenTrade trade = resultSetToObject(results);
-            unresolvedTrades.add(trade);
+            allOpenTrades.add(trade);
         }
 
-        return unresolvedTrades;
+        return allOpenTrades;
     }
 
     public boolean createNew(OpenTrade newObject) {

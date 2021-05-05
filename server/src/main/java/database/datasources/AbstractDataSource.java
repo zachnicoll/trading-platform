@@ -1,5 +1,8 @@
 package database.datasources;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -10,7 +13,15 @@ import java.util.List;
  * This interface should act as a base template for the shared functionality of each datasource.
  * Each datasource should extend on this interface and implement datasource specific methods.
  */
-interface TradingPlatformDataSource<T> {
+public abstract class AbstractDataSource<T> {
+
+    /**
+     * Convert a ResultSet object to an Object of type T.
+     * @param results The ResultSet to extract information from
+     * @return Constructed object of type T
+     * @throws SQLException If ResultSet extraction methods fail
+     */
+    protected abstract T resultSetToObject(ResultSet results) throws SQLException;
 
     /** Finds instance of object in database by id
      * and returns a java object representation. 
@@ -18,14 +29,13 @@ interface TradingPlatformDataSource<T> {
      * @param id - UUID generated object unique identifier
      * @return specific object based on implementation and datasource - User or Trade etc.
      */
-     T getById(String id);
-
+    public abstract T getById(String id);
 
     /** Returns a list of all instances of an object type located in the database. 
      * 
      * @return list of objects specific to the datasource, and implementation - Assets or Users etc.
      */
-     List<T> getAll();
+     public abstract ArrayList<T> getAll() throws SQLException;
 
 
     /** Creates a new object type in the database, eg. new User; new AssetType; etc.
@@ -33,7 +43,7 @@ interface TradingPlatformDataSource<T> {
      * @param newObject - new object to be created. eg. User or OrganisationalUnit etc.
      * @return boolean indicating if the creation into the database was a success.
      */
-     boolean createNew(T newObject);
+     public abstract boolean createNew(T newObject);
 
 
     /** Updates object attributes in the database one at a time by id -
@@ -44,7 +54,7 @@ interface TradingPlatformDataSource<T> {
      * @param value - value of the attribute that is being updated
      * @return boolean indicating whether the update into the database was a success.
      */
-     boolean updateByAttribute(String id, String attribute, T value);
+     public abstract boolean updateByAttribute(String id, String attribute, T value);
 
 
     /** Checks to see if an object by their id exists within the database.
@@ -52,12 +62,12 @@ interface TradingPlatformDataSource<T> {
      * @param id - id of the object
      * @return boolean indicating whether the object exists.
      */
-     boolean checkExistById(String id);
+     public abstract boolean checkExistById(String id);
 
     /** Deletes instance in the database based on id
      *
      * @param id - id of the object
      */
-    void deleteById(String id);
+    public abstract void deleteById(String id);
 
 }

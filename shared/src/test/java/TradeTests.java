@@ -18,7 +18,7 @@ public class TradeTests {
 
     UUID assetTypeId;
 
-    Trade trade;
+    OpenTrade trade;
     UUID tradeId = UUID.randomUUID();
     UUID organisationalUnitId = UUID.randomUUID();
     TradeType tradeType = TradeType.BUY;
@@ -31,15 +31,14 @@ public class TradeTests {
     @BeforeEach
     @Test
     public void setUpTrade() {
-        trade = new Trade(
+        trade = new OpenTrade(
                 tradeId,
                 tradeType,
                 organisationalUnitId,
                 assetTypeId,
                 quantity,
                 pricePerAsset,
-                date,
-                TradeStatus.UNRESOLVED
+                date
         );
     }
 

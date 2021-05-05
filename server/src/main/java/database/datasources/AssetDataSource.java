@@ -1,37 +1,42 @@
 package database.datasources;
 
 import models.Asset;
+import models.OpenTrade;
+import models.TradeType;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-public class AssetDataSource implements TradingPlatformDataSource<Asset> {
+public class AssetDataSource extends AbstractDataSource<Asset> {
 
-    @Override
+    protected Asset resultSetToObject(ResultSet results) throws SQLException {
+        return null;
+        // return new Asset();
+    }
+
     public Asset getById(String id) {
         return null;
     }
 
-    @Override
-    public List<Asset> getAll() {
+    public ArrayList<Asset> getAll() {
         return null;
     }
 
-    @Override
     public boolean createNew(Asset newObject) {
         return false;
     }
 
-    @Override
     public boolean updateByAttribute(String id, String attribute, Asset value) {
         return false;
     }
 
-    @Override
     public boolean checkExistById(String id) {
         return false;
     }
 
-    @Override
     public void deleteById(String id) {
 
     }

@@ -1,12 +1,13 @@
 package models;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.UUID;
 
 /**
  * Class for storing and retrieving a Trade's information.
  */
-public class Trade {
+public class OpenTrade {
 
     /**
      * Unique UUID identifier for each trade
@@ -41,12 +42,7 @@ public class Trade {
     /**
      * Date that the trade order was opened
      */
-    private Date date;
-
-    /**
-     * Whether the Trade is RESOLVED or UNRESOLVED
-     */
-    private TradeStatus status;
+    private Date dateOpened;
 
     /**
      * Construct a new User with given information, most likely provided by the API.
@@ -56,17 +52,16 @@ public class Trade {
      * @param assetTypeId the AssetType that is being bought/sold
      * @param quantity quantity of AssetType to buy or sell
      * @param pricePerAsset price for a single asset of type AssetType
-     * @param date date that the trade order was opened
+     * @param dateOpened date that the trade order was opened
      */
-    public Trade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date date, TradeStatus status) {
+    public OpenTrade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date dateOpened) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
         this.organisationalUnitId = organisationalUnitId;
         this.assetTypeId = assetTypeId;
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
-        this.date = date;
-        this.status = status;
+        this.dateOpened = dateOpened;
     }
 
 
@@ -107,7 +102,7 @@ public class Trade {
      * @return the Trade's creation date
      */
     public Date getDate() {
-        return date;
+        return dateOpened;
     }
 
     /**
@@ -132,5 +127,26 @@ public class Trade {
      */
     public UUID getOrganisationalUnit() {
         return organisationalUnitId;
+    }
+
+    /**
+     * Comparator for sorting Trades by date, earliest first.
+     */
+    public static Comparator<OpenTrade> tradeDateComparator = (t1, t2) -> {
+        Date date1 = t1.getDate();
+        Date date2 = t2.getDate();
+
+        return date1.compareTo(date2);
+    };
+
+    @Override
+    public String toString() {
+        return "TradeID: " + tradeId + "\n" +
+                "TradeType: " + tradeType + "\n" +
+                "OrgUnitId: " + organisationalUnitId + "\n" +
+                "AssetTypeId: " + assetTypeId + "\n" +
+                "Quantity: " + quantity + "\n" +
+                "PricePerAsset: " + pricePerAsset + "\n" +
+                "DateOpened: " + dateOpened + "\n";
     }
 }

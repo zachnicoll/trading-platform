@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.util.Timer;
 
 public class Main {
-    private static final Integer tradeResolvePeriod = 1000 * 10;
+    private static final Integer tradeResolvePeriod = 1000 * 5;
 
     public static void main(String[] args) throws IOException {
         // Start RestApi Server

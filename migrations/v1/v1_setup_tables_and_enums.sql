@@ -1,51 +1,58 @@
-/*
-Creates enumerated types for accounts, trades, and trade status.
-*/
+CREATE TYPE "accountType" AS ENUM (
+  'USER',
+  'ADMIN'
+);
 
-CREATE TYPE accountType AS ENUM ('USER', 'ADMIN');
-CREATE TYPE tradeType AS ENUM('BUY', 'SELL');
-CREATE TYPE statusType AS ENUM('RESOLVED','UNRESOLVED');
+CREATE TYPE "tradeType" AS ENUM (
+  'BUY',
+  'SELL'
+);
 
-
-/*
-Creates the tables for the trading platform database.
-*/
-
-CREATE table if not exists "users" (
+CREATE TABLE "users" (
   "userId" uuid PRIMARY KEY,
   "username" varchar UNIQUE,
-  "userType" accountType,
+  "userType" "accountType",
   "password" varchar,
   "organisationalUnitId" uuid
 );
 
-CREATE table if not exists "organisationalUnits" (
+CREATE TABLE "organisationalUnits" (
   "organisationalUnitId" uuid PRIMARY KEY,
   "organisationalUnitName" varchar UNIQUE,
   "creditBalance" float
 );
 
-CREATE table if not exists "assetTypes" (
+CREATE TABLE "assetTypes" (
   "assetTypeId" uuid PRIMARY KEY,
   "assetName" varchar UNIQUE
 );
 
-CREATE table if not exists "organisationalUnitAssets" (
+CREATE TABLE "organisationalUnitAssets" (
   "organisationalUnitId" uuid,
   "assetTypeId" uuid,
   "quantity" int,
-  PRIMARY KEY("organisationalUnitId", "assetTypeId")
+  PRIMARY KEY ("organisationalUnitId", "assetTypeId")
 );
 
-CREATE table if not exists "trades" (
+CREATE TABLE "openTrades" (
   "tradeId" uuid PRIMARY KEY,
   "assetTypeId" uuid,
   "organisationalUnitId" uuid,
-  "tradeType" tradeType,
-  "quantity" float,
+  "tradeType" "tradeType",
+  "quantity" int,
   "price" float,
-  "date" timestamp,
-  "status" statusType
+  "dateOpened" timestamp
+);
+
+CREATE TABLE "resolvedTrades" (
+  "buyTradeId" uuid,
+  "buyOrgUnitId" uuid,
+  "sellTradeId" uuid,
+  "sellOrgUnitId" uuid,
+  "quantity" int,
+  "price" float,
+  "dateResolved" timestamp,
+  PRIMARY KEY ("buyTradeId", "sellTradeId")
 );
 
 ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
@@ -54,6 +61,10 @@ ALTER TABLE "users" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organis
 
 ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
 
-ALTER TABLE "trades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
+ALTER TABLE "openTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
 
-ALTER TABLE "trades" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "openTrades" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("buyOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("sellOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");

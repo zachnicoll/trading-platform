@@ -4,12 +4,12 @@ DROP table if exists public."organisationalUnitAssets" CASCADE;
 
 DROP table if exists public."organisationalUnits" CASCADE;
 
-DROP table if exists public.trades CASCADE;
+DROP table if exists public."openTrades" CASCADE;
+
+DROP table if exists public."resolvedTrades" CASCADE;
 
 DROP table if exists public.users CASCADE;
 
-DROP type if exists accounttype;
+DROP type if exists "accountType";
 
-DROP type if exists statustype;
-
-DROP type if exists tradetype;
+DROP type if exists "tradeType";

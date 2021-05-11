@@ -1,8 +1,5 @@
 package database.datasources;
 
-import database.DBConnection;
-
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -32,7 +29,7 @@ public abstract class AbstractDataSource<T> {
      * @param id - UUID generated object unique identifier
      * @return specific object based on implementation and datasource - User or Trade etc.
      */
-    public abstract T getById(String id) throws SQLException;
+    public abstract T getById(UUID id) throws SQLException;
 
     /** Returns a list of all instances of an object type located in the database. 
      * 

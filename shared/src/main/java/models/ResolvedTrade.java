@@ -62,6 +62,20 @@ public class ResolvedTrade {
     }
 
     /**
+     * Retrieve UUID of BUY OpenTrade in the pair of trades that created this resolution
+     */
+    public UUID getBuyTradeId() {
+        return buyTradeId;
+    }
+
+    /**
+     * Retrieve UUID of the SELL OpenTrade in the pair of trades that created this resolution
+     */
+    public UUID getSellTradeId() {
+        return sellTradeId;
+    }
+
+    /**
      * Retrieve UUID of OrganisationalUnit that placed the BUY OpenTrade
      */
     public UUID getBuyOrgUnitId() {

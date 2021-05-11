@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
 
-    protected Connection dbConnection = DBConnection.getInstance();
+    private final Connection dbConnection = DBConnection.getInstance();
 
     protected OpenTrade resultSetToObject(ResultSet results) throws SQLException {
         return new OpenTrade(
@@ -28,7 +28,7 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
         );
     }
 
-    public OpenTrade getById(String id) {
+    public OpenTrade getById(UUID id) {
         return null;
     }
 

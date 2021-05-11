@@ -14,7 +14,7 @@ public class AssetTypeDataSource extends AbstractDataSource<AssetType> {
         return null;
     }
 
-    public AssetType getById(String id) {
+    public AssetType getById(UUID id) {
         return null;
     }
 

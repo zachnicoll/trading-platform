@@ -14,7 +14,7 @@ public class UserDataSource extends AbstractDataSource<User> {
         return null;
     }
 
-    public User getById(String id) {
+    public User getById(UUID id) {
         return null;
     }
 

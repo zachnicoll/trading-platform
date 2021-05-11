@@ -26,7 +26,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         );
     }
 
-    public ResolvedTrade getById(String id) {
+    public ResolvedTrade getById(UUID id) {
         return null;
     }
 

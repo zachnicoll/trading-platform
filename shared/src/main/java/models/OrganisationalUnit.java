@@ -89,7 +89,7 @@ public class OrganisationalUnit {
      */
     public Asset findExistingAsset(UUID assetTypeId) {
         for (Asset asset : assets) {
-            if (asset.getAssetTypeId() == assetTypeId) {
+            if (asset.getAssetTypeId().equals(assetTypeId)) {
                 return asset;
             }
         }

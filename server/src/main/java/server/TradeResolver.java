@@ -1,10 +1,11 @@
 package server;
 
+import database.datasources.AssetDataSource;
 import database.datasources.OpenTradeDataSource;
+import database.datasources.OrganisationalUnitDataSource;
 import database.datasources.ResolvedTradeDataSource;
-import models.OpenTrade;
-import models.ResolvedTrade;
-import models.TradeType;
+import exceptions.ApiException;
+import models.*;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
@@ -37,21 +38,66 @@ public class TradeResolver extends TimerTask {
         }
     }
 
+    /**
+     * Update both of the OrganisationalUnits that associated with resolving a trade.
+     * E.g. the OrgUnit that placed the BUY OpenTrade, and the OrgUnit that placed the
+     * SELL OpenTrade. Both OrgUnits' credit balances and quantities of the given AssetType
+     * are updated.
+     *
+     * @param assetTypeId      UUID of AssetType associated with trades
+     * @param buyTrade         OpenTrade object for the BUY trade
+     * @param sellTrade        OpenTrade object for the SELL trade
+     * @param resolvedQuantity Quantity of AssetType that was exchanged
+     */
+    private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity) throws ApiException, SQLException {
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+        AssetDataSource assetDataSource = new AssetDataSource();
+
+        Float totalPrice = resolvedQuantity * sellTrade.getPricePerAsset();
+
+        // Update creditBalance of the OrgUnit that place the BUY order
+        OrganisationalUnit buyOrgUnit = organisationalUnitDataSource.getById(buyTrade.getOrganisationalUnit());
+        buyOrgUnit.updateCreditBalance(buyOrgUnit.getCreditBalance() - totalPrice);
+
+        // Update creditBalance of the OrgUnit that place the SELL order
+        OrganisationalUnit sellOrgUnit = organisationalUnitDataSource.getById(sellTrade.getOrganisationalUnit());
+        sellOrgUnit.updateCreditBalance(sellOrgUnit.getCreditBalance() + totalPrice);
+
+        // Persist updates to DB
+        organisationalUnitDataSource.updateByAttribute(buyOrgUnit.getUnitId(), "creditBalance", buyOrgUnit);
+        organisationalUnitDataSource.updateByAttribute(sellOrgUnit.getUnitId(), "creditBalance", sellOrgUnit);
+
+        // Get the Asset from each OrgUnit with assetTypeId so we can update quantities
+        Asset buyOrgUnitAsset = buyOrgUnit.findExistingAsset(assetTypeId);
+        Asset sellOrgUnitAsset = sellOrgUnit.findExistingAsset(assetTypeId);
+
+        // The BUYing OrgUnit may not own any of this AssetType yet, so create a new Asset if not
+        if (buyOrgUnitAsset != null) {
+            // Update if already owns AssetType
+            int buyOrgUnitAssetQuantity = buyOrgUnitAsset.getQuantity() + resolvedQuantity;
+            assetDataSource.updateAssetQuantity(buyOrgUnit.getUnitId(), assetTypeId, buyOrgUnitAssetQuantity);
+        } else {
+            // Create new if does not own AssetType
+            Asset asset = new Asset(assetTypeId, resolvedQuantity);
+            assetDataSource.createNew(asset, buyOrgUnit.getUnitId());
+        }
+
+        // The SELLing OrgUnit should always have some of the AssetType already
+        int sellOrgUnitAssetQuantity = sellOrgUnitAsset.getQuantity() - resolvedQuantity;
+        assetDataSource.updateAssetQuantity(sellOrgUnit.getUnitId(), assetTypeId, sellOrgUnitAssetQuantity);
+    }
+
     public void run() {
         /*
          *  Fetch all trades from DB that are unresolved
          */
         OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
         ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
+
         ArrayList<OpenTrade> openTrades;
 
         try {
             openTrades = openTradeDataSource.getAll();
-
-            // Only proceed if there are trades to resolve
-            if (openTrades.size() < 2) {
-                return;
-            }
 
             System.out.println("RESOLVING TRADES...");
 
@@ -69,20 +115,22 @@ public class TradeResolver extends TimerTask {
                 }
             }
 
+            // Only proceed if there are trades to resolve
+            if (buyTradesMap.size() == 0 || sellTradesMap.size() == 0) {
+                return;
+            }
+
+            // For each AssetType...
             for (UUID assetTypeId : buyTradesMap.keySet()) {
                 // Make sure that the lists at each key are sorted by date
                 buyTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
                 sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
                 ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 
+                // For each BUY trade...
                 for (OpenTrade buyTrade : buyTradesMap.get(assetTypeId)) {
 
-                    /*
-                     * TODO: Debug this and make sure that BUY/SELL trades are being deleted from the hashmap
-                     *  so that they do trade twice. Also check that if they stay in the hashmap, their values
-                     *  are being updated.
-                     */
-
+                    // For each SELL trade of same AssetType...
                     for (OpenTrade sellTrade : sellTradesOfSameAssetType) {
                         /*
                             Find sell trade that satisfies:
@@ -146,16 +194,18 @@ public class TradeResolver extends TimerTask {
                             resolvedTradeDataSource.createNew(resolvedTrade);
 
                             /*
-                             * TODO: Add/Subtract quantity of AssetType and Add/Subtract balance for both
-                             *  Org Units associated with the resolved transaction.
+                             * Update the credit balance and quantities of AssetType for each
+                             * OrgUnit associated with this trade.
                              */
+                            updateOrgUnits(assetTypeId, buyTrade, sellTrade, resolvedQuantity);
 
+                            // Exit for-loop of SELL trades as a resolving SELL trade has been found
                             break;
                         }
                     }
                 }
             }
-        } catch (SQLException throwable) {
+        } catch (SQLException | ApiException throwable) {
             throwable.printStackTrace();
         }
         System.out.println("RESOLVING TRADES COMPLETE!");

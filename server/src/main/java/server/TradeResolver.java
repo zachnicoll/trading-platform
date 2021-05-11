@@ -22,7 +22,8 @@ public class TradeResolver extends TimerTask {
      * is a helper method for inserting a new entry in the HashMap if the AssetType UUID does
      * not yet exist in the map, OR, adding the new OpenTrade to an existing array in the
      * AssetType has been inserted previously.
-     * @param tradeMap HashMap to insert OpenTrade into
+     *
+     * @param tradeMap    HashMap to insert OpenTrade into
      * @param insertTrade OpenTrade to insert into HashMap
      * @param assetTypeId AssetType UUID that the OpenTrade is concerned with
      */
@@ -84,7 +85,11 @@ public class TradeResolver extends TimerTask {
                             trade) and the other will be updated to reflect the new quantity.
                          */
 
-                        if (buyTrade.getPricePerAsset() >= sellTrade.getPricePerAsset()) {
+                        if (
+                                buyTrade.getPricePerAsset() >= sellTrade.getPricePerAsset() &&
+                                        // Cannot trade within an Organisational Unit
+                                        buyTrade.getOrganisationalUnit() != sellTrade.getOrganisationalUnit()
+                        ) {
                             // Conditions have been satisfied for BUY trade, resolve it
                             Integer resolvedQuantity;
 

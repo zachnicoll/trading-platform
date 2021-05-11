@@ -38,6 +38,43 @@ public class TradeResolver extends TimerTask {
         }
     }
 
+    private OrganisationalUnit updateCreditBalance(OpenTrade trade, Float totalPrice) throws ApiException, SQLException {
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
+        // Get OrgUnit from the DB given the trade's OrgUnit ID
+        OrganisationalUnit orgUnit = organisationalUnitDataSource.getById(trade.getOrganisationalUnit());
+
+        Float newBalance = trade.getTradeType() == TradeType.BUY ?
+                // If trade is a BUY trade, the OrgUnit will spend/lose credits
+                orgUnit.getCreditBalance() - totalPrice :
+                // If trade is a SELL trade, the OrgUnit will receive/gain credits
+                orgUnit.getCreditBalance() + totalPrice;
+        orgUnit.updateCreditBalance(newBalance);
+
+        // Persist credit balance update to DB
+        organisationalUnitDataSource.updateByAttribute(orgUnit.getUnitId(), "creditBalance", orgUnit);
+
+        // Return OrgUnit so we don't have to fetch it from the DB again
+        return orgUnit;
+    }
+
+    private Integer updateTradeQuantity(OpenTrade smallerQuantityTrade, OpenTrade largerQuantityTrade) throws SQLException {
+        OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
+
+        // Trade with smaller quantity will always be the resolved quantity
+        int resolvedQuantity = smallerQuantityTrade.getQuantity();
+
+        // Delete the smaller quantity trade as its quantity will be reduced to 0
+        openTradeDataSource.deleteById(smallerQuantityTrade.getTradeId());
+
+        // Set the larger quantity trade's new quantity to the difference in trade quantities
+        largerQuantityTrade.setQuantity(largerQuantityTrade.getQuantity() - smallerQuantityTrade.getQuantity());
+        openTradeDataSource.updateByAttribute(largerQuantityTrade.getTradeId(), "quantity", largerQuantityTrade);
+
+        // Return resolved quantity for convenience
+        return resolvedQuantity;
+    }
+
     /**
      * Update both of the OrganisationalUnits that associated with resolving a trade.
      * E.g. the OrgUnit that placed the BUY OpenTrade, and the OrgUnit that placed the
@@ -50,22 +87,16 @@ public class TradeResolver extends TimerTask {
      * @param resolvedQuantity Quantity of AssetType that was exchanged
      */
     private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity) throws ApiException, SQLException {
-        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
         AssetDataSource assetDataSource = new AssetDataSource();
 
         Float totalPrice = resolvedQuantity * sellTrade.getPricePerAsset();
 
-        // Update creditBalance of the OrgUnit that place the BUY order
-        OrganisationalUnit buyOrgUnit = organisationalUnitDataSource.getById(buyTrade.getOrganisationalUnit());
-        buyOrgUnit.updateCreditBalance(buyOrgUnit.getCreditBalance() - totalPrice);
+        // Update creditBalance of the OrgUnit that placed the BUY order
+        OrganisationalUnit buyOrgUnit = updateCreditBalance(buyTrade, totalPrice);
 
-        // Update creditBalance of the OrgUnit that place the SELL order
-        OrganisationalUnit sellOrgUnit = organisationalUnitDataSource.getById(sellTrade.getOrganisationalUnit());
-        sellOrgUnit.updateCreditBalance(sellOrgUnit.getCreditBalance() + totalPrice);
-
-        // Persist updates to DB
-        organisationalUnitDataSource.updateByAttribute(buyOrgUnit.getUnitId(), "creditBalance", buyOrgUnit);
-        organisationalUnitDataSource.updateByAttribute(sellOrgUnit.getUnitId(), "creditBalance", sellOrgUnit);
+        // Update creditBalance of the OrgUnit that placed the SELL order
+        OrganisationalUnit sellOrgUnit = updateCreditBalance(sellTrade, totalPrice);
 
         // Get the Asset from each OrgUnit with assetTypeId so we can update quantities
         Asset buyOrgUnitAsset = buyOrgUnit.findExistingAsset(assetTypeId);
@@ -153,29 +184,15 @@ public class TradeResolver extends TimerTask {
                             Integer resolvedQuantity;
 
                             if (buyTrade.getQuantity() > sellTrade.getQuantity()) {
-                                resolvedQuantity = sellTrade.getQuantity();
-
-                                // Buying more than is available, SELL OpenTrade gets deleted
-                                openTradeDataSource.deleteById(sellTrade.getTradeId());
-
-                                // Update BUY OpenTrade's quantity
-                                buyTrade.setQuantity(buyTrade.getQuantity() - sellTrade.getQuantity());
-                                openTradeDataSource.updateByAttribute(buyTrade.getTradeId(), "quantity", buyTrade);
-
+                                // Buying more than is available, SELL trade gets consumed entirely and deleted
+                                resolvedQuantity = updateTradeQuantity(sellTrade, buyTrade);
                             } else if (buyTrade.getQuantity() < sellTrade.getQuantity()) {
-                                resolvedQuantity = buyTrade.getQuantity();
-
-                                // Buying less than is available, BUY OpenTrade gets deleted
-                                openTradeDataSource.deleteById(buyTrade.getTradeId());
-
-                                // Update SELL OpenTrade's quantity
-                                sellTrade.setQuantity(sellTrade.getQuantity() - buyTrade.getQuantity());
-                                openTradeDataSource.updateByAttribute(sellTrade.getTradeId(), "quantity", sellTrade);
-
+                                // Buying less than is available, BUY trade gets consumed entirely and deleted
+                                resolvedQuantity = updateTradeQuantity(buyTrade, sellTrade);
                             } else {
+                                // Quantities are equal, both OpenTrades get deleted
                                 resolvedQuantity = sellTrade.getQuantity();
 
-                                // Quantities are equal, both OpenTrades get deleted
                                 openTradeDataSource.deleteById(buyTrade.getTradeId());
                                 openTradeDataSource.deleteById(sellTrade.getTradeId());
                             }

@@ -145,6 +145,11 @@ public class TradeResolver extends TimerTask {
                             );
                             resolvedTradeDataSource.createNew(resolvedTrade);
 
+                            /*
+                             * TODO: Add/Subtract quantity of AssetType and Add/Subtract balance for both
+                             *  Org Units associated with the resolved transaction.
+                             */
+
                             break;
                         }
                     }

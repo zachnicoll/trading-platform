@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Class for storing and retrieving a Trade's information.
+ * Class for storing and retrieving trade information from the openTrades table.
  */
 public class OpenTrade {
 
@@ -28,7 +28,7 @@ public class OpenTrade {
     /**
      * The AssetType that is being bought/sold
      */
-    private UUID assetTypeId;
+    private final UUID assetTypeId;
 
     /**
      * Quantity of AssetType to buy or sell
@@ -38,15 +38,15 @@ public class OpenTrade {
     /**
      * Price for a single asset of type AssetType
      */
-    private Float pricePerAsset;
+    private final Float pricePerAsset;
 
     /**
      * Date that the trade order was opened
      */
-    private Timestamp dateOpened;
+    private final Timestamp dateOpened;
 
     /**
-     * Construct a new User with given information, most likely provided by the API.
+     * Construct a new OpenTrade with given information, most likely provided by the API.
      * @param tradeId Unique UUID identifier for each trade
      * @param tradeType whether the trade is a BUY or SELL order
      * @param organisationalUnitId the OrganisationalUnit that placed the Trade order

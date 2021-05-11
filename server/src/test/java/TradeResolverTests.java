@@ -80,7 +80,7 @@ public class TradeResolverTests {
      * Test 1: Resolving a BUY and SELL trade with matching quantities and prices
      */
     @Test
-    public void resolveMatchingTrades() throws SQLException {
+    public void resolveMatchingTrades() throws SQLException, NotImplementedException {
         Integer quantity = 10;
         Float pricePerAsset = 20.0f;
 
@@ -116,7 +116,7 @@ public class TradeResolverTests {
             Check values in DB here
          */
 
-
+        throw new NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**

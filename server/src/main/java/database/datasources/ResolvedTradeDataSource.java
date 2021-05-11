@@ -16,9 +16,10 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
     protected ResolvedTrade resultSetToObject(ResultSet results) throws SQLException {
         return new ResolvedTrade(
                 UUID.fromString(results.getString("buyTradeId")),
-                UUID.fromString(results.getString("buyOrgUnitId")),
                 UUID.fromString(results.getString("sellTradeId")),
+                UUID.fromString(results.getString("buyOrgUnitId")),
                 UUID.fromString(results.getString("sellOrgUnitId")),
+                UUID.fromString(results.getString("assetTypeId")),
                 results.getInt("quantity"),
                 results.getFloat("price"),
                 results.getTimestamp("dateResolved")

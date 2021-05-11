@@ -48,6 +48,7 @@ public class TradeResolver extends TimerTask {
         try {
             openTrades = openTradeDataSource.getAll();
 
+            // Only proceed if there are trades to resolve
             if (openTrades.size() < 2) {
                 return;
             }

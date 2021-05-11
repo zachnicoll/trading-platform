@@ -47,15 +47,16 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
 
     public void createNew(ResolvedTrade newObject) throws SQLException {
         PreparedStatement createResolvedTrade = dbConnection.prepareStatement(
-                "INSERT INTO \"resolvedTrades\" VALUES (uuid(?), uuid(?), uuid(?), uuid(?), ?, ?, ?);"
+                "INSERT INTO \"resolvedTrades\" VALUES (uuid(?), uuid(?), uuid(?), uuid(?), uuid(?), ?, ?, ?);"
         );
         createResolvedTrade.setString(1, newObject.getBuyTradeId().toString());
-        createResolvedTrade.setString(2, newObject.getBuyOrgUnitId().toString());
-        createResolvedTrade.setString(3, newObject.getSellTradeId().toString());
+        createResolvedTrade.setString(2, newObject.getSellTradeId().toString());
+        createResolvedTrade.setString(3, newObject.getBuyOrgUnitId().toString());
         createResolvedTrade.setString(4, newObject.getSellOrgUnitId().toString());
-        createResolvedTrade.setInt(5, newObject.getQuantity());
-        createResolvedTrade.setFloat(6, newObject.getPrice());
-        createResolvedTrade.setTimestamp(7, newObject.getDateResolved());
+        createResolvedTrade.setString(5, newObject.getAssetTypeId().toString());
+        createResolvedTrade.setInt(6, newObject.getQuantity());
+        createResolvedTrade.setFloat(7, newObject.getPrice());
+        createResolvedTrade.setTimestamp(8, newObject.getDateResolved());
 
         createResolvedTrade.execute();
     }

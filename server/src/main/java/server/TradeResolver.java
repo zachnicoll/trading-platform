@@ -38,8 +38,6 @@ public class TradeResolver extends TimerTask {
     }
 
     public void run() {
-        System.out.println("RESOLVING TRADES...");
-
         /*
          *  Fetch all trades from DB that are unresolved
          */
@@ -49,6 +47,12 @@ public class TradeResolver extends TimerTask {
 
         try {
             openTrades = openTradeDataSource.getAll();
+
+            if (openTrades.size() < 2) {
+                return;
+            }
+
+            System.out.println("RESOLVING TRADES...");
 
             HashMap<UUID, ArrayList<OpenTrade>> buyTradesMap = new HashMap<>();
             HashMap<UUID, ArrayList<OpenTrade>> sellTradesMap = new HashMap<>();
@@ -68,6 +72,7 @@ public class TradeResolver extends TimerTask {
                 // Make sure that the lists at each key are sorted by date
                 buyTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
                 sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
+                ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 
                 for (OpenTrade buyTrade : buyTradesMap.get(assetTypeId)) {
 
@@ -76,8 +81,6 @@ public class TradeResolver extends TimerTask {
                      *  so that they do trade twice. Also check that if they stay in the hashmap, their values
                      *  are being updated.
                      */
-
-                    ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 
                     for (OpenTrade sellTrade : sellTradesOfSameAssetType) {
                         /*

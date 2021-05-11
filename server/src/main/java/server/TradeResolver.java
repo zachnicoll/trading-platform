@@ -70,6 +70,13 @@ public class TradeResolver extends TimerTask {
                 sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
 
                 for (OpenTrade buyTrade : buyTradesMap.get(assetTypeId)) {
+
+                    /*
+                     * TODO: Debug this and make sure that BUY/SELL trades are being deleted from the hashmap
+                     *  so that they do trade twice. Also check that if they stay in the hashmap, their values
+                     *  are being updated.
+                     */
+
                     ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 
                     for (OpenTrade sellTrade : sellTradesOfSameAssetType) {

@@ -6,7 +6,6 @@ import models.OpenTrade;
 import models.ResolvedTrade;
 import models.TradeType;
 
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -18,6 +17,15 @@ import java.util.UUID;
 
 public class TradeResolver extends TimerTask {
 
+    /**
+     * Trades are stored temporarily in HashMap, mapping UUIDs to ArrayLists. This
+     * is a helper method for inserting a new entry in the HashMap if the AssetType UUID does
+     * not yet exist in the map, OR, adding the new OpenTrade to an existing array in the
+     * AssetType has been inserted previously.
+     * @param tradeMap HashMap to insert OpenTrade into
+     * @param insertTrade OpenTrade to insert into HashMap
+     * @param assetTypeId AssetType UUID that the OpenTrade is concerned with
+     */
     private void insertTradeInMap(HashMap<UUID, ArrayList<OpenTrade>> tradeMap, OpenTrade insertTrade, UUID assetTypeId) {
         if (tradeMap.get(assetTypeId) == null) {
             ArrayList<OpenTrade> newEntry = new ArrayList<>();
@@ -78,10 +86,6 @@ public class TradeResolver extends TimerTask {
 
                         if (buyTrade.getPricePerAsset() >= sellTrade.getPricePerAsset()) {
                             // Conditions have been satisfied for BUY trade, resolve it
-                            System.out.println("Found SELL trade that satisfies BUY trade!\n");
-                            System.out.printf("BUY trade: %s%n", buyTrade);
-                            System.out.printf("SELL trade: %s%n", sellTrade);
-
                             Integer resolvedQuantity;
 
                             if (buyTrade.getQuantity() > sellTrade.getQuantity()) {

@@ -1,5 +1,6 @@
 package models;
 
+import java.sql.Timestamp;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class OpenTrade {
     /**
      * Date that the trade order was opened
      */
-    private Date dateOpened;
+    private Timestamp dateOpened;
 
     /**
      * Construct a new User with given information, most likely provided by the API.
@@ -54,7 +55,7 @@ public class OpenTrade {
      * @param pricePerAsset price for a single asset of type AssetType
      * @param dateOpened date that the trade order was opened
      */
-    public OpenTrade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Date dateOpened) {
+    public OpenTrade (UUID tradeId, TradeType tradeType, UUID organisationalUnitId, UUID assetTypeId, Integer quantity, Float pricePerAsset, Timestamp dateOpened) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
         this.organisationalUnitId = organisationalUnitId;
@@ -101,7 +102,7 @@ public class OpenTrade {
      * Get the Date this Trade was opened
      * @return the Trade's creation date
      */
-    public Date getDate() {
+    public Timestamp getDate() {
         return dateOpened;
     }
 

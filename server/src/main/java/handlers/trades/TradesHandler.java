@@ -6,6 +6,8 @@ import models.OpenTrade;
 import models.TradeType;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,7 +31,7 @@ public class TradesHandler extends RequestHandler {
          */
         checkIsAdmin(exchange);
 
-        OpenTrade trade = new OpenTrade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, new Date());
+        OpenTrade trade = new OpenTrade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, Timestamp.from(Instant.now()));
         writeResponseBody(exchange, trade);
     }
 }

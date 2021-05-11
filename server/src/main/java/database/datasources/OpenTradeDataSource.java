@@ -24,7 +24,7 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
                 UUID.fromString(results.getString("assetTypeId")),
                 results.getInt("quantity"),
                 results.getFloat("price"),
-                results.getDate("dateOpened")
+                results.getTimestamp("dateOpened")
         );
     }
 
@@ -48,7 +48,19 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
     }
 
     public void createNew(OpenTrade newObject) throws SQLException {
+        PreparedStatement createNew = dbConnection.prepareStatement(
+                "INSERT INTO \"openTrades\" VALUES (uuid(?),uuid(?),uuid(?),uuid(?),?,?,?);"
+        );
 
+        createNew.setString(1, newObject.getTradeId().toString());
+        createNew.setString(2, newObject.getAssetType().toString());
+        createNew.setString(3, newObject.getOrganisationalUnit().toString());
+        createNew.setString(4, newObject.getTradeType().toString());
+        createNew.setInt(5, newObject.getQuantity());
+        createNew.setFloat(6, newObject.getPricePerAsset());
+        createNew.setTimestamp(7, newObject.getDate());
+
+        createNew.execute();
     }
 
     public void updateByAttribute(UUID id, String attribute, OpenTrade value) throws SQLException, InvalidParameterException {

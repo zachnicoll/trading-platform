@@ -1,6 +1,5 @@
 package database;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -9,8 +8,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
 
-
-//EXAMPLE CODE FROM PRAC - WILL BE REPLACED WITH OWN CODE WHEN FIGURED OUT CONNECTION POOLING
 public class DBConnection {
 
     /**
@@ -19,15 +16,16 @@ public class DBConnection {
     private static Connection instance = null;
 
     /**
-     * Constructor intializes the connection.
+     * Constructor initializes the connection.
      */
     private DBConnection() {
         Properties props = new Properties();
-        FileInputStream in = null;
+        FileInputStream in;
         try {
-            in = new FileInputStream("server/src/main/resources/db.props");
+            in = new FileInputStream(getClass().getResource("../db.props").getPath());
             props.load(in);
             in.close();
+
             // specify the data source, username and password
             String url = props.getProperty("jdbc.url");
             String username = props.getProperty("jdbc.username");
@@ -37,10 +35,8 @@ public class DBConnection {
             // get a connection
             instance = DriverManager.getConnection(url + "/" + schema, username,
                     password);
-        } catch (SQLException sqle) {
+        } catch (SQLException | FileNotFoundException sqle) {
             System.err.println(sqle);
-        } catch (FileNotFoundException fnfe) {
-            System.err.println(fnfe);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

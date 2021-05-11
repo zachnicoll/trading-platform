@@ -20,13 +20,10 @@ import java.util.UUID;
 
 public class TradeResolverTests {
 
-    private TradeResolver tradeResolver;
-
     private final OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
     private final ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
     private final OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
     private final AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
-
     private final UUID orgUnit1Id = UUID.fromString("f1252904-35da-4cbd-b0ec-d7b83c49df40");
     private final OrganisationalUnit orgUnit1 = new OrganisationalUnit(
             orgUnit1Id,
@@ -34,7 +31,23 @@ public class TradeResolverTests {
             1000.0f,
             new ArrayList<>()
     );
-
+    private final UUID assetType1Id = UUID.fromString("9ac0121a-1d34-4356-9a11-deac37a2e1e5");
+    private final AssetType assetType1 = new AssetType(
+            assetType1Id,
+            "Asset Type 1"
+    );
+    private final UUID assetType2Id = UUID.fromString("8e179d66-e9d7-40a4-8a65-6b188dfeb393");
+    private final AssetType assetType2 = new AssetType(
+            assetType2Id,
+            "Asset Type 2"
+    );
+    private final UUID buyTrade1Id = UUID.fromString("1124c784-7e4a-45fe-9745-11e3834388bc");
+    private final UUID buyTrade2Id = UUID.fromString("0ac83fb5-a51c-43b7-800c-26d2741ec4d5");
+    private final UUID buyTrade3Id = UUID.fromString("69e40edc-8051-4abd-8aa0-236f35c1e1d5");
+    private final UUID sellTrade1Id = UUID.fromString("83a00a4e-ade1-423f-90f2-8917b0a95eb7");
+    private final UUID sellTrade2Id = UUID.fromString("a2566024-5a38-4a49-be22-8a379a9e3842");
+    private final UUID sellTrade3Id = UUID.fromString("bca901ea-47b0-4570-af89-3933e4cf286b");
+    private TradeResolver tradeResolver;
     private UUID orgUnit2Id = UUID.fromString("2607dddd-a3d9-43d5-a58c-dd400739bf21");
     private final OrganisationalUnit orgUnit2 = new OrganisationalUnit(
             orgUnit2Id,
@@ -42,26 +55,6 @@ public class TradeResolverTests {
             1000.0f,
             new ArrayList<>()
     );
-
-    private final UUID assetType1Id = UUID.fromString("9ac0121a-1d34-4356-9a11-deac37a2e1e5");
-    private final AssetType assetType1 = new AssetType(
-            assetType1Id,
-            "Asset Type 1"
-    );
-
-    private final UUID assetType2Id = UUID.fromString("8e179d66-e9d7-40a4-8a65-6b188dfeb393");
-    private final AssetType assetType2 = new AssetType(
-            assetType2Id,
-            "Asset Type 2"
-    );
-
-    private final UUID buyTrade1Id = UUID.fromString("1124c784-7e4a-45fe-9745-11e3834388bc");
-    private final UUID buyTrade2Id = UUID.fromString("0ac83fb5-a51c-43b7-800c-26d2741ec4d5");
-    private final UUID buyTrade3Id = UUID.fromString("69e40edc-8051-4abd-8aa0-236f35c1e1d5");
-
-    private final UUID sellTrade1Id = UUID.fromString("83a00a4e-ade1-423f-90f2-8917b0a95eb7");
-    private final UUID sellTrade2Id = UUID.fromString("a2566024-5a38-4a49-be22-8a379a9e3842");
-    private final UUID sellTrade3Id = UUID.fromString("bca901ea-47b0-4570-af89-3933e4cf286b");
 
     /**
      * Test 0: Setup TradeResolver and create data needed for tests
@@ -106,10 +99,10 @@ public class TradeResolverTests {
                 pricePerAsset,
                 Timestamp.from(Instant.now())
         );
-                
-        openTradeDataSource.createNew(buyOpenTrade);
-        openTradeDataSource.createNew(sellOpenTrade);
-        
+
+        //        openTradeDataSource.createNew(buyOpenTrade);
+        //        openTradeDataSource.createNew(sellOpenTrade);
+
         tradeResolver.run();
         
         /*

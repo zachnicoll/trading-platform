@@ -119,9 +119,10 @@ public class TradeResolver extends TimerTask {
                             // Create a ResolvedTrade to signify resolution
                             ResolvedTrade resolvedTrade = new ResolvedTrade(
                                     buyTrade.getTradeId(),
-                                    buyTrade.getOrganisationalUnit(),
                                     sellTrade.getTradeId(),
+                                    buyTrade.getOrganisationalUnit(),
                                     sellTrade.getOrganisationalUnit(),
+                                    assetTypeId,
                                     resolvedQuantity,
                                     sellTrade.getPricePerAsset(),
                                     Timestamp.from(Instant.now())

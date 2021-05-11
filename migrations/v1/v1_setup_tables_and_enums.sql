@@ -46,9 +46,10 @@ CREATE TABLE "openTrades" (
 
 CREATE TABLE "resolvedTrades" (
   "buyTradeId" uuid,
-  "buyOrgUnitId" uuid,
   "sellTradeId" uuid,
+  "buyOrgUnitId" uuid,
   "sellOrgUnitId" uuid,
+  "assetTypeId" uuid,
   "quantity" int,
   "price" float,
   "dateResolved" timestamp,
@@ -68,3 +69,5 @@ ALTER TABLE "openTrades" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "or
 ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("buyOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
 
 ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("sellOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");

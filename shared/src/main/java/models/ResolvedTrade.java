@@ -12,12 +12,14 @@ public class ResolvedTrade {
     private final Integer quantity;
     private final Float price;
     private final Timestamp dateResolved;
+    private final UUID assetTypeId;
 
-    public ResolvedTrade (UUID buyTradeId, UUID buyOrgUnitId, UUID sellTradeId, UUID sellOrgUnitId, Integer quantity, Float price, Timestamp dateResolved){
+    public ResolvedTrade (UUID buyTradeId, UUID sellTradeId, UUID buyOrgUnitId, UUID sellOrgUnitId, UUID assetTypeId, Integer quantity, Float price, Timestamp dateResolved){
         this.buyTradeId = buyTradeId;
         this.buyOrgUnitId = buyOrgUnitId;
         this.sellTradeId = sellTradeId;
         this.sellOrgUnitId = sellOrgUnitId;
+        this.assetTypeId = assetTypeId;
         this.quantity = quantity;
         this.price = price;
         this.dateResolved = dateResolved;
@@ -49,5 +51,9 @@ public class ResolvedTrade {
 
     public Integer getQuantity() {
         return quantity;
+    }
+
+    public UUID getAssetTypeId() {
+        return assetTypeId;
     }
 }

@@ -20,7 +20,7 @@ public class TradeResolver extends TimerTask {
     /**
      * Trades are stored temporarily in HashMap, mapping UUIDs to ArrayLists. This
      * is a helper method for inserting a new entry in the HashMap if the AssetType UUID does
-     * not yet exist in the map, OR, adding the new OpenTrade to an existing array in the
+     * not yet exist in the map, OR, adding the new OpenTrade to an existing array if the
      * AssetType has been inserted previously.
      *
      * @param tradeMap    HashMap to insert OpenTrade into

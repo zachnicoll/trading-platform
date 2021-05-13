@@ -35,8 +35,16 @@
    <bottom>
       <AnchorPane prefHeight="150.0" prefWidth="980.0" BorderPane.alignment="CENTER">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="100.0" layoutX="145.0" layoutY="25.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
-            <TextField fx:id="txtUsername" layoutX="168.0" layoutY="48.0" prefHeight="54.0" prefWidth="295.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="90.0" layoutX="145.0" layoutY="30.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
+            <TextField fx:id="txtOUAdd" layoutX="163.0" layoutY="48.0" prefHeight="54.0" prefWidth="400.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </TextField>
+            <TextField fx:id="txtOUAddMoney" layoutX="572.0" layoutY="48.0" prefHeight="54.0" prefWidth="187.0" promptText="Money" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="18.0" />
                </font>

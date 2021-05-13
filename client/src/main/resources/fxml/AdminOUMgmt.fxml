@@ -1,19 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeTableColumn?>
+<?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminOUMgmtController">
+   <center>
+      <TreeTableView prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+         <columns>
+            <TreeTableColumn prefWidth="75.0" text="Column X" />
+            <TreeTableColumn prefWidth="150.0" text="Column X" />
+            <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
+            <TreeTableColumn prefWidth="149.0" text="Column X" />
+         </columns>
+      </TreeTableView>
+   </center>
+   <left>
+      <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER">
+         <children>
+            <JFXButton layoutX="47.0" layoutY="58.0" prefHeight="27.0" prefWidth="63.0" />
+         </children>
+      </AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <AnchorPane prefHeight="150.0" prefWidth="980.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="100.0" layoutX="145.0" layoutY="25.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
+            <TextField fx:id="txtUsername" layoutX="168.0" layoutY="48.0" prefHeight="54.0" prefWidth="295.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </TextField>
+         </children>
+      </AnchorPane>
+   </bottom>
    <top>
-      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Organisation Management" BorderPane.alignment="CENTER_LEFT">
-         <font>
-            <Font size="64.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets left="25.0" top="10.0" />
-         </BorderPane.margin>
-      </Text>
+      <AnchorPane prefHeight="150.0" prefWidth="980.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" layoutX="14.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Organisation Management">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
    </top>
 </BorderPane>

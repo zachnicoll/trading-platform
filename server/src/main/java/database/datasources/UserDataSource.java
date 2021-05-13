@@ -2,38 +2,39 @@ package database.datasources;
 
 import models.User;
 
-import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.UUID;
 
-public class UserDataSource implements TradingPlatformDataSource<User> {
+public class UserDataSource extends AbstractDataSource<User> {
 
-
-    @Override
-    public User getById(String id) {
+    protected User resultSetToObject(ResultSet results) throws SQLException {
+        //return new User();
         return null;
     }
 
-    @Override
-    public List<User> getAll() {
+    public User getById(UUID id) {
         return null;
     }
 
-    @Override
-    public boolean createNew(User newObject) {
+    public ArrayList<User> getAll() {
+        return null;
+    }
+
+    public void createNew(User newObject) {
+
+    }
+
+    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
+
+    }
+
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
     }
 
-    @Override
-    public boolean updateByAttribute(String id, String attribute, User value) {
-        return false;
-    }
-
-    @Override
-    public boolean checkExistById(String id) {
-        return false;
-    }
-
-    @Override
-    public void deleteById(String id) {
+    public void deleteById(UUID id) throws SQLException {
 
     }
 }

@@ -1,5 +1,4 @@
 import models.Asset;
-import models.AssetType;
 import org.junit.jupiter.api.*;
 
 import java.util.UUID;

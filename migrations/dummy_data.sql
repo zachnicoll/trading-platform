@@ -61,7 +61,7 @@ BEGIN
 		100
 	);
 
-	insert into "trades" values (
+	insert into "openTrades" values (
 		TRADE1_ID,
 		ASSETTYPE_ID,
 		OU1_ID,
@@ -69,10 +69,9 @@ BEGIN
 		50,
 		1.25,
 		CURRENT_TIMESTAMP,
-		'UNRESOLVED'
 	);
 
-	insert into "trades" values (
+	insert into "openTrades" values (
 		TRADE2_ID,
 		ASSETTYPE_ID,
 		OU2_ID,
@@ -80,6 +79,5 @@ BEGIN
 		80,
 		1.1,
 		CURRENT_TIMESTAMP,
-		'UNRESOLVED'
 	);
 END $$;

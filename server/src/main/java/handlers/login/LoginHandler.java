@@ -5,7 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.sun.net.httpserver.HttpExchange;
 import errors.JsonError;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.AuthenticationToken;
 
@@ -20,7 +20,7 @@ import java.util.UUID;
  * Supported Methods:
  * [POST] Returns a JWT authentication token if provided credentials are correct
  */
-public class LoginHandler extends RequestHandler {
+public class LoginHandler extends AbstractRequestHandler {
 
     public LoginHandler(boolean requiresAuth) {
         super(requiresAuth);

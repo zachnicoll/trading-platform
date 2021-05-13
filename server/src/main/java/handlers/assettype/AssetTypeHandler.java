@@ -1,7 +1,7 @@
 package handlers.assettype;
 
 import com.sun.net.httpserver.HttpExchange;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 import models.AssetType;
 
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.util.UUID;
  * Supported Methods:
  *
  */
-public class AssetTypeHandler extends RequestHandler {
+public class AssetTypeHandler extends AbstractRequestHandler {
 
     public AssetTypeHandler(boolean requiresAuth) {
         super(requiresAuth);

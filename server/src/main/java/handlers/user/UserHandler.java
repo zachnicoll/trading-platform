@@ -1,7 +1,7 @@
 package handlers.user;
 
 import com.sun.net.httpserver.HttpExchange;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.User;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
  * Supported Methods:
  *
  */
-public class UserHandler extends RequestHandler {
+public class UserHandler extends AbstractRequestHandler {
 
     public UserHandler(boolean requiresAuth) {
         super(requiresAuth);

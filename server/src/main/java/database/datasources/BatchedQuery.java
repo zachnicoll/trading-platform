@@ -20,7 +20,7 @@ public class BatchedQuery {
 
     public void executeBatch() throws SQLException {
         batchedStatement.executeBatch();
-        batchedStatement.clearBatch();
+        clearBatch();
     }
 
     public void clearBatch() throws SQLException {

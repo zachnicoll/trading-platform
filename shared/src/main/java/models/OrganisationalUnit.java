@@ -100,13 +100,11 @@ public class OrganisationalUnit {
      * Update the Organisational Unit's current balance. Operation can only be
      * performed by an Admin. Calls the /org-unit/[ord-id]/balance PUT endpoint.
      * @param newBalance New credit balance to set
-     * @throws ApiException if the API request fails while updating
      */
-    public void updateCreditBalance(Float newBalance) throws ApiException {
-        /**
-         * Update OU credit balance on API, throw APIException if fails
-         */
-
+    public void updateCreditBalance(Float newBalance) throws InvalidTransactionException {
+        if (newBalance < 0) {
+            throw new InvalidTransactionException();
+        }
         creditBalance = newBalance;
     }
 

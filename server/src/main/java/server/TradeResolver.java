@@ -1,7 +1,7 @@
 package server;
 
 import database.datasources.*;
-import exceptions.ApiException;
+import exceptions.InvalidTransactionException;
 import models.*;
 
 import java.sql.SQLException;
@@ -35,7 +35,7 @@ public class TradeResolver extends TimerTask {
         }
     }
 
-    private OrganisationalUnit updateCreditBalance(OpenTrade trade, Float totalPrice, BatchedQuery batchedQuery) throws ApiException, SQLException {
+    private OrganisationalUnit updateCreditBalance(OpenTrade trade, Float totalPrice, BatchedQuery batchedQuery) throws InvalidTransactionException, SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         // Get OrgUnit from the DB given the trade's OrgUnit ID
@@ -89,7 +89,7 @@ public class TradeResolver extends TimerTask {
      * @param sellTrade        OpenTrade object for the SELL trade
      * @param resolvedQuantity Quantity of AssetType that was exchanged
      */
-    private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity, BatchedQuery batchedQuery) throws ApiException, SQLException {
+    private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity, BatchedQuery batchedQuery) throws SQLException, InvalidTransactionException {
 
         AssetDataSource assetDataSource = new AssetDataSource();
 
@@ -122,6 +122,11 @@ public class TradeResolver extends TimerTask {
 
         // The SELLing OrgUnit should always have some of the AssetType already
         int sellOrgUnitAssetQuantity = sellOrgUnitAsset.getQuantity() - resolvedQuantity;
+
+        if (sellOrgUnitAssetQuantity < 0) {
+            throw new InvalidTransactionException();
+        }
+
         batchedQuery.addToBatch(
                 assetDataSource.getUpdateAssetQuantityQuery(sellOrgUnit.getUnitId(), assetTypeId, sellOrgUnitAssetQuantity)
         );
@@ -135,44 +140,49 @@ public class TradeResolver extends TimerTask {
         ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
 
         ArrayList<OpenTrade> openTrades;
+        BatchedQuery batchedQuery;
 
         try {
-            BatchedQuery batchedQuery = new BatchedQuery();
+            batchedQuery = new BatchedQuery();
             openTrades = openTradeDataSource.getAll();
+        } catch (SQLException throwable) {
+            throwable.printStackTrace();
+            return;
+        }
 
-            System.out.println("RESOLVING TRADES...");
+        System.out.println("RESOLVING TRADES...");
 
-            HashMap<UUID, ArrayList<OpenTrade>> buyTradesMap = new HashMap<>();
-            HashMap<UUID, ArrayList<OpenTrade>> sellTradesMap = new HashMap<>();
+        HashMap<UUID, ArrayList<OpenTrade>> buyTradesMap = new HashMap<>();
+        HashMap<UUID, ArrayList<OpenTrade>> sellTradesMap = new HashMap<>();
 
-            // Separate unresolved trades into separate hashmaps, stored at the UUID of the AssetType.
-            for (OpenTrade trade : openTrades) {
-                UUID assetTypeId = trade.getAssetType();
+        // Separate unresolved trades into separate hashmaps, stored at the UUID of the AssetType.
+        for (OpenTrade trade : openTrades) {
+            UUID assetTypeId = trade.getAssetType();
 
-                if (trade.getTradeType() == TradeType.BUY) {
-                    insertTradeInMap(buyTradesMap, trade, assetTypeId);
-                } else {
-                    insertTradeInMap(sellTradesMap, trade, assetTypeId);
-                }
+            if (trade.getTradeType() == TradeType.BUY) {
+                insertTradeInMap(buyTradesMap, trade, assetTypeId);
+            } else {
+                insertTradeInMap(sellTradesMap, trade, assetTypeId);
             }
+        }
 
-            // Only proceed if there are trades to resolve
-            if (buyTradesMap.size() == 0 || sellTradesMap.size() == 0) {
-                return;
-            }
+        // Only proceed if there are trades to resolve
+        if (buyTradesMap.size() == 0 || sellTradesMap.size() == 0) {
+            return;
+        }
 
-            // For each AssetType...
-            for (UUID assetTypeId : buyTradesMap.keySet()) {
-                // Make sure that the lists at each key are sorted by date
-                buyTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
-                sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
-                ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
+        // For each AssetType...
+        for (UUID assetTypeId : buyTradesMap.keySet()) {
+            // Make sure that the lists at each key are sorted by date
+            buyTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
+            sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
+            ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 
-                // For each BUY trade...
-                for (OpenTrade buyTrade : buyTradesMap.get(assetTypeId)) {
+            // For each BUY trade...
+            for (OpenTrade buyTrade : buyTradesMap.get(assetTypeId)) {
 
-                    // For each SELL trade of same AssetType...
-                    for (OpenTrade sellTrade : sellTradesOfSameAssetType) {
+                // For each SELL trade of same AssetType...
+                for (OpenTrade sellTrade : sellTradesOfSameAssetType) {
                         /*
                             Find sell trade that satisfies:
                             -> BUY unit price >= SELL unit price
@@ -184,14 +194,16 @@ public class TradeResolver extends TimerTask {
                             will be deleted. Otherwise, only one of the OpenTrades will be deleted (the fully satisfied
                             trade) and the other will be updated to reflect the new quantity.
                          */
-
-                        if (
-                                buyTrade.getPricePerAsset() >= sellTrade.getPricePerAsset() &&
-                                        // Cannot trade within an Organisational Unit
-                                        buyTrade.getOrganisationalUnit() != sellTrade.getOrganisationalUnit()
-                        ) {
-                            // Conditions have been satisfied for BUY trade, resolve it
-                            Integer resolvedQuantity;
+                    if (
+                            buyTrade.getPricePerAsset() >= sellTrade.getPricePerAsset() &&
+                                    // Cannot trade within an Organisational Unit
+                                    buyTrade.getOrganisationalUnit() != sellTrade.getOrganisationalUnit()
+                    ) {
+                        // Conditions have been satisfied for BUY trade, resolve it
+                        Integer resolvedQuantity;
+                        try {
+                            // Make sure we have a fresh query batch
+                            batchedQuery.clearBatch();
 
                             if (buyTrade.getQuantity() > sellTrade.getQuantity()) {
                                 // Buying more than is available, SELL trade gets consumed entirely and deleted
@@ -236,12 +248,12 @@ public class TradeResolver extends TimerTask {
 
                             // Exit for-loop of SELL trades as a resolving SELL trade has been found
                             break;
+                        } catch (SQLException | InvalidTransactionException throwable) {
+                            throwable.printStackTrace();
                         }
                     }
                 }
             }
-        } catch (SQLException | ApiException throwable) {
-            throwable.printStackTrace();
         }
         System.out.println("RESOLVING TRADES COMPLETE!");
     }

@@ -13,12 +13,12 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminOUMgmtController">
    <center>
-      <TreeTableView prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+      <TreeTableView fx:id="tblOU" prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
          <columns>
-            <TreeTableColumn prefWidth="75.0" text="Column X" />
-            <TreeTableColumn prefWidth="150.0" text="Column X" />
-            <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
-            <TreeTableColumn prefWidth="149.0" text="Column X" />
+            <TreeTableColumn fx:id="tblcolOUName" prefWidth="390.0" text="Name" />
+            <TreeTableColumn fx:id="tblcolOUBalance" minWidth="3.0" prefWidth="100.0" text="Balance" />
+            <TreeTableColumn fx:id="tblcolOUEdit" minWidth="0.0" prefWidth="100.0" text="Edit" />
+            <TreeTableColumn fx:id="tblcolOUDelete" prefWidth="100.0" text="Delete" />
          </columns>
       </TreeTableView>
    </center>

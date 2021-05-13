@@ -1,9 +1,23 @@
 package gui;
 
 import com.jfoenix.controls.JFXButton;
-import javafx.event.ActionEvent;
-import javafx.scene.control.TextField;
+import com.sun.glass.ui.CommonDialogs;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+import javafx.event.ActionEvent;
+import java.io.File;
+import java.io.IOException;
 
 import java.awt.*;
 
@@ -17,6 +31,21 @@ public class AdminOUMgmtController {
 
     @FXML
     private JFXButton btnAddOU;
+
+    @FXML
+    private TreeTableView<?> tblOU;
+
+    @FXML
+    private TreeTableColumn<?, ?> tblcolOUName;
+
+    @FXML
+    private TreeTableColumn<?, ?> tblcolOUBalance;
+
+    @FXML
+    private TreeTableColumn<?, ?> tblcolOUEdit;
+
+    @FXML
+    private TreeTableColumn<?, ?> tblcolOUDelete;
 
     @FXML
     void addOU(ActionEvent event) {

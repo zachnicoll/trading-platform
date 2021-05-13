@@ -73,4 +73,25 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
     public void deleteById(UUID id) throws SQLException {
 
     }
+
+    public String getUpdateByAttributeQuery(UUID id, String attribute, OrganisationalUnit value) throws SQLException, InvalidParameterException {
+        Object attrValue;
+
+        switch (attribute) {
+            case "creditBalance":
+                attrValue = value.getCreditBalance();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateStatement = dbConnection.prepareStatement(
+                "UPDATE \"organisationalUnits\" SET \"" + attribute + "\" = ? WHERE \"organisationalUnitId\"::text = ?;"
+        );
+        updateStatement.setObject(1, attrValue);
+        updateStatement.setString(2, id.toString());
+
+        return updateStatement.toString();
+    }
+
 }

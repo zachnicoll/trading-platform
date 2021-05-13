@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
-    private Connection dbConnection = DBConnection.getInstance();
+    private final Connection dbConnection = DBConnection.getInstance();
 
     protected ResolvedTrade resultSetToObject(ResultSet results) throws SQLException {
         return new ResolvedTrade(
@@ -72,4 +72,21 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
     public void deleteById(UUID id) {
 
     }
+
+    public String getCreateNewQuery(ResolvedTrade newObject) throws SQLException {
+        PreparedStatement createResolvedTrade = dbConnection.prepareStatement(
+                "INSERT INTO \"resolvedTrades\" VALUES (uuid(?), uuid(?), uuid(?), uuid(?), uuid(?), ?, ?, ?);"
+        );
+        createResolvedTrade.setString(1, newObject.getBuyTradeId().toString());
+        createResolvedTrade.setString(2, newObject.getSellTradeId().toString());
+        createResolvedTrade.setString(3, newObject.getBuyOrgUnitId().toString());
+        createResolvedTrade.setString(4, newObject.getSellOrgUnitId().toString());
+        createResolvedTrade.setString(5, newObject.getAssetTypeId().toString());
+        createResolvedTrade.setInt(6, newObject.getQuantity());
+        createResolvedTrade.setFloat(7, newObject.getPrice());
+        createResolvedTrade.setTimestamp(8, newObject.getDateResolved());
+
+        return createResolvedTrade.toString();
+    }
+
 }

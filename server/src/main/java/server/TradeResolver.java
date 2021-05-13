@@ -1,9 +1,6 @@
 package server;
 
-import database.datasources.AssetDataSource;
-import database.datasources.OpenTradeDataSource;
-import database.datasources.OrganisationalUnitDataSource;
-import database.datasources.ResolvedTradeDataSource;
+import database.datasources.*;
 import exceptions.ApiException;
 import models.*;
 
@@ -38,7 +35,7 @@ public class TradeResolver extends TimerTask {
         }
     }
 
-    private OrganisationalUnit updateCreditBalance(OpenTrade trade, Float totalPrice) throws ApiException, SQLException {
+    private OrganisationalUnit updateCreditBalance(OpenTrade trade, Float totalPrice, BatchedQuery batchedQuery) throws ApiException, SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         // Get OrgUnit from the DB given the trade's OrgUnit ID
@@ -52,24 +49,30 @@ public class TradeResolver extends TimerTask {
         orgUnit.updateCreditBalance(newBalance);
 
         // Persist credit balance update to DB
-        organisationalUnitDataSource.updateByAttribute(orgUnit.getUnitId(), "creditBalance", orgUnit);
+        batchedQuery.addToBatch(
+                organisationalUnitDataSource.getUpdateByAttributeQuery(orgUnit.getUnitId(), "creditBalance", orgUnit)
+        );
 
         // Return OrgUnit so we don't have to fetch it from the DB again
         return orgUnit;
     }
 
-    private Integer updateTradeQuantity(OpenTrade smallerQuantityTrade, OpenTrade largerQuantityTrade) throws SQLException {
+    private Integer updateTradeQuantity(OpenTrade smallerQuantityTrade, OpenTrade largerQuantityTrade, BatchedQuery batchedQuery) throws SQLException {
         OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
 
         // Trade with smaller quantity will always be the resolved quantity
         int resolvedQuantity = smallerQuantityTrade.getQuantity();
 
         // Delete the smaller quantity trade as its quantity will be reduced to 0
-        openTradeDataSource.deleteById(smallerQuantityTrade.getTradeId());
+        batchedQuery.addToBatch(
+                openTradeDataSource.getDeleteByIdQuery(smallerQuantityTrade.getTradeId())
+        );
 
         // Set the larger quantity trade's new quantity to the difference in trade quantities
         largerQuantityTrade.setQuantity(largerQuantityTrade.getQuantity() - smallerQuantityTrade.getQuantity());
-        openTradeDataSource.updateByAttribute(largerQuantityTrade.getTradeId(), "quantity", largerQuantityTrade);
+        batchedQuery.addToBatch(
+                openTradeDataSource.getUpdateByAttributeQuery(largerQuantityTrade.getTradeId(), "quantity", largerQuantityTrade)
+        );
 
         // Return resolved quantity for convenience
         return resolvedQuantity;
@@ -86,17 +89,17 @@ public class TradeResolver extends TimerTask {
      * @param sellTrade        OpenTrade object for the SELL trade
      * @param resolvedQuantity Quantity of AssetType that was exchanged
      */
-    private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity) throws ApiException, SQLException {
+    private void updateOrgUnits(UUID assetTypeId, OpenTrade buyTrade, OpenTrade sellTrade, Integer resolvedQuantity, BatchedQuery batchedQuery) throws ApiException, SQLException {
 
         AssetDataSource assetDataSource = new AssetDataSource();
 
         Float totalPrice = resolvedQuantity * sellTrade.getPricePerAsset();
 
         // Update creditBalance of the OrgUnit that placed the BUY order
-        OrganisationalUnit buyOrgUnit = updateCreditBalance(buyTrade, totalPrice);
+        OrganisationalUnit buyOrgUnit = updateCreditBalance(buyTrade, totalPrice, batchedQuery);
 
         // Update creditBalance of the OrgUnit that placed the SELL order
-        OrganisationalUnit sellOrgUnit = updateCreditBalance(sellTrade, totalPrice);
+        OrganisationalUnit sellOrgUnit = updateCreditBalance(sellTrade, totalPrice, batchedQuery);
 
         // Get the Asset from each OrgUnit with assetTypeId so we can update quantities
         Asset buyOrgUnitAsset = buyOrgUnit.findExistingAsset(assetTypeId);
@@ -106,16 +109,22 @@ public class TradeResolver extends TimerTask {
         if (buyOrgUnitAsset != null) {
             // Update if already owns AssetType
             int buyOrgUnitAssetQuantity = buyOrgUnitAsset.getQuantity() + resolvedQuantity;
-            assetDataSource.updateAssetQuantity(buyOrgUnit.getUnitId(), assetTypeId, buyOrgUnitAssetQuantity);
+            batchedQuery.addToBatch(
+                    assetDataSource.getUpdateAssetQuantityQuery(buyOrgUnit.getUnitId(), assetTypeId, buyOrgUnitAssetQuantity)
+            );
         } else {
             // Create new if does not own AssetType
             Asset asset = new Asset(assetTypeId, resolvedQuantity);
-            assetDataSource.createNew(asset, buyOrgUnit.getUnitId());
+            batchedQuery.addToBatch(
+                    assetDataSource.getCreateNewQuery(asset, buyOrgUnit.getUnitId())
+            );
         }
 
         // The SELLing OrgUnit should always have some of the AssetType already
         int sellOrgUnitAssetQuantity = sellOrgUnitAsset.getQuantity() - resolvedQuantity;
-        assetDataSource.updateAssetQuantity(sellOrgUnit.getUnitId(), assetTypeId, sellOrgUnitAssetQuantity);
+        batchedQuery.addToBatch(
+                assetDataSource.getUpdateAssetQuantityQuery(sellOrgUnit.getUnitId(), assetTypeId, sellOrgUnitAssetQuantity)
+        );
     }
 
     public void run() {
@@ -128,6 +137,7 @@ public class TradeResolver extends TimerTask {
         ArrayList<OpenTrade> openTrades;
 
         try {
+            BatchedQuery batchedQuery = new BatchedQuery();
             openTrades = openTradeDataSource.getAll();
 
             System.out.println("RESOLVING TRADES...");
@@ -185,16 +195,20 @@ public class TradeResolver extends TimerTask {
 
                             if (buyTrade.getQuantity() > sellTrade.getQuantity()) {
                                 // Buying more than is available, SELL trade gets consumed entirely and deleted
-                                resolvedQuantity = updateTradeQuantity(sellTrade, buyTrade);
+                                resolvedQuantity = updateTradeQuantity(sellTrade, buyTrade, batchedQuery);
                             } else if (buyTrade.getQuantity() < sellTrade.getQuantity()) {
                                 // Buying less than is available, BUY trade gets consumed entirely and deleted
-                                resolvedQuantity = updateTradeQuantity(buyTrade, sellTrade);
+                                resolvedQuantity = updateTradeQuantity(buyTrade, sellTrade, batchedQuery);
                             } else {
                                 // Quantities are equal, both OpenTrades get deleted
                                 resolvedQuantity = sellTrade.getQuantity();
 
-                                openTradeDataSource.deleteById(buyTrade.getTradeId());
-                                openTradeDataSource.deleteById(sellTrade.getTradeId());
+                                batchedQuery.addToBatch(
+                                        openTradeDataSource.getDeleteByIdQuery(buyTrade.getTradeId())
+                                );
+                                batchedQuery.addToBatch(
+                                        openTradeDataSource.getDeleteByIdQuery(sellTrade.getTradeId())
+                                );
                             }
 
                             // Create a ResolvedTrade to signify resolution
@@ -208,13 +222,17 @@ public class TradeResolver extends TimerTask {
                                     sellTrade.getPricePerAsset(),
                                     Timestamp.from(Instant.now())
                             );
-                            resolvedTradeDataSource.createNew(resolvedTrade);
+                            batchedQuery.addToBatch(
+                                    resolvedTradeDataSource.getCreateNewQuery(resolvedTrade)
+                            );
 
                             /*
                              * Update the credit balance and quantities of AssetType for each
                              * OrgUnit associated with this trade.
                              */
-                            updateOrgUnits(assetTypeId, buyTrade, sellTrade, resolvedQuantity);
+                            updateOrgUnits(assetTypeId, buyTrade, sellTrade, resolvedQuantity, batchedQuery);
+
+                            batchedQuery.executeBatch();
 
                             // Exit for-loop of SELL trades as a resolving SELL trade has been found
                             break;

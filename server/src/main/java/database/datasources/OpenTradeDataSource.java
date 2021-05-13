@@ -5,10 +5,7 @@ import models.OpenTrade;
 import models.TradeType;
 
 import java.security.InvalidParameterException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -93,5 +90,33 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
         );
         deleteStatement.setString(1, id.toString());
         deleteStatement.execute();
+    }
+
+    public String getDeleteByIdQuery(UUID id) throws SQLException{
+        PreparedStatement deleteStatement = dbConnection.prepareStatement(
+                "DELETE FROM \"openTrades\" WHERE \"tradeId\"::text = ?;"
+        );
+        deleteStatement.setString(1, id.toString());
+        return deleteStatement.toString();
+    }
+
+    public String getUpdateByAttributeQuery(UUID id, String attribute, OpenTrade value) throws SQLException, InvalidParameterException {
+        Object attrValue;
+
+        switch (attribute) {
+            case "quantity":
+                attrValue = value.getQuantity();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateStatement = dbConnection.prepareStatement(
+                "UPDATE \"openTrades\" SET \"" + attribute + "\" = ? WHERE \"tradeId\"::text = ?;"
+        );
+        updateStatement.setObject(1, attrValue);
+        updateStatement.setString(2, id.toString());
+
+        return updateStatement.toString();
     }
 }

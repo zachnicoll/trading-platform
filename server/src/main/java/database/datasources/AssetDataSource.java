@@ -86,4 +86,30 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     public void deleteById(UUID id) throws SQLException {
 
     }
+
+    public String getUpdateAssetQuantityQuery(UUID organisationalUnitId, UUID assetTypeId, Integer quantity) throws SQLException {
+        PreparedStatement updateStatement = dbConnection.prepareStatement(
+                "UPDATE \"organisationalUnitAssets\" SET quantity = ? WHERE" +
+                        "\"organisationalUnitId\"::text = ? AND" +
+                        "\"assetTypeId\"::text = ?;"
+        );
+        updateStatement.setInt(1, quantity);
+        updateStatement.setString(2, organisationalUnitId.toString());
+        updateStatement.setString(3, assetTypeId.toString());
+
+        return updateStatement.toString();
+    }
+
+    public String getCreateNewQuery(Asset newObject, UUID organisationalUnitId) throws SQLException {
+        PreparedStatement createStatement = dbConnection.prepareStatement(
+                "INSERT INTO \"organisationUnitAssets\" VALUES (uuid(?), uuid(?), ?);"
+        );
+
+        createStatement.setString(1, organisationalUnitId.toString());
+        createStatement.setString(2, newObject.getAssetTypeId().toString());
+        createStatement.setInt(3, newObject.getQuantity());
+
+        return createStatement.toString();
+    }
+
 }

@@ -42,8 +42,16 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
         return null;
     }
 
-    public void createNew(OrganisationalUnit newObject) {
+    public void createNew(OrganisationalUnit newObject) throws SQLException {
+        PreparedStatement createNew = dbConnection.prepareStatement(
+                "INSERT INTO \"organisationalUnits\" VALUES (uuid(?),?,?);"
+        );
 
+        createNew.setString(1, newObject.getUnitId().toString());
+        createNew.setString(2, newObject.getUnitName());
+        createNew.setFloat(3, newObject.getCreditBalance());
+
+        createNew.execute();
     }
 
     public void updateByAttribute(UUID id, String attribute, OrganisationalUnit value) throws SQLException, InvalidParameterException {

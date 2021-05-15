@@ -10,6 +10,7 @@ import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.AuthenticationToken;
+import models.Credentials;
 import models.User;
 
 import javax.naming.AuthenticationException;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
 
 /**
  * Route: /login/
@@ -53,7 +53,7 @@ public class LoginHandler extends AbstractRequestHandler {
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException {
         try {
-            UsernamePassword providedCredentials = (UsernamePassword) readRequestBody(exchange, UsernamePassword.class);
+            Credentials providedCredentials = (Credentials) readRequestBody(exchange, Credentials.class);
 
             // Check that username and password was actually supplied in the request
             if (providedCredentials == null) {
@@ -62,7 +62,7 @@ public class LoginHandler extends AbstractRequestHandler {
 
             // Get the existing credentials that match the User with corresponding username
             UserDataSource userDataSource = new UserDataSource();
-            UsernamePassword existingCredentials = userDataSource.getExistingCredentials(providedCredentials.username);
+            Credentials existingCredentials = userDataSource.getExistingCredentials(providedCredentials.username);
 
             // Compare passwords
             BCrypt.Result result = BCrypt.verifyer().verify(providedCredentials.password.toCharArray(), existingCredentials.password);

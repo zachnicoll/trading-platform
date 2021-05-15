@@ -6,6 +6,7 @@ import database.datasources.UserDataSource;
 import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.User;
+import models.partial.PartialUser;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,7 +31,7 @@ public class UserHandler extends AbstractRequestHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
-        CreateUser partialUser = (CreateUser) readRequestBody(exchange, CreateUser.class);
+        PartialUser partialUser = (PartialUser) readRequestBody(exchange, PartialUser.class);
         User fullUser = new User(
                 UUID.randomUUID(),
                 partialUser.username,

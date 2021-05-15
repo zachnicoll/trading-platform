@@ -1,8 +1,8 @@
 import com.google.gson.Gson;
 import database.datasources.AssetTypeDataSource;
 import database.datasources.OrganisationalUnitDataSource;
-import handlers.login.UsernamePassword;
-import handlers.trades.NewOpenTrade;
+import models.Credentials;
+import models.partial.PartialOpenTrade;
 import models.AssetType;
 import models.AuthenticationToken;
 import models.OrganisationalUnit;
@@ -42,7 +42,7 @@ public class TradesHandlerTests {
     @BeforeEach
     @Test
     public void setupHttpClient() throws IOException, InterruptedException {
-        UsernamePassword credentials = new UsernamePassword("newUser", "password");
+        Credentials credentials = new Credentials("newUser", "password");
         String credentialsJson = gson.toJson(credentials);
 
         HttpRequest loginRequest = HttpRequest.newBuilder()
@@ -62,6 +62,9 @@ public class TradesHandlerTests {
                 .header("Authorization", "Bearer " + authenticationToken.toString());
     }
 
+    /**
+     * Test 1 - Create a BUY Trade without error
+     */
     @Test
     public void createTrade() throws IOException, InterruptedException, SQLException {
         UUID orgUnitId = UUID.randomUUID();
@@ -85,7 +88,7 @@ public class TradesHandlerTests {
         AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
         assetTypeDataSource.createNew(assetType);
 
-        NewOpenTrade partialTrade = new NewOpenTrade(
+        PartialOpenTrade partialTrade = new PartialOpenTrade(
                 TradeType.BUY,
                 orgUnitId,
                 assetTypeId,
@@ -100,26 +103,50 @@ public class TradesHandlerTests {
         assertEquals(response.statusCode(), 200);
     }
 
+    /**
+     * Test 2 - Create a BUY Trade with < 0 quantity of the AssetType
+     */
+    @Test
     public void createTradeInvalidQuantity() {
 
     }
 
-    public void createTradeInvalidUserId() {
-
-    }
-
-    public void createTradeInvalidOrgUnit() {
-
-    }
-
+    /**
+     * Test 2 - Create a BUY Trade with PricePerAsset < 0
+     */
+    @Test
     public void createTradeInvalidPrice() {
 
     }
 
+    /**
+     * Test 3 - UserId is not present in the JWT token
+     */
+    @Test
+    public void createTradeInvalidUserId() {
+
+    }
+
+    /**
+     * Test 4 - User does not belong to the OrgUnit they are creating the Trade for
+     */
+    @Test
+    public void createTradeInvalidOrgUnit() {
+
+    }
+
+    /**
+     * Test 5 - OrgUnit does not have enough CreditBalance to place BUY order
+     */
+    @Test
     public void createTradeInvalidOrgUnitBalance() {
 
     }
 
+    /**
+     * Test 6 - OrgUnit does not have enough quantity of AssetType to place SELL order
+     */
+    @Test
     public void createTradeInvalidOrgUnitQuantity() {
 
     }

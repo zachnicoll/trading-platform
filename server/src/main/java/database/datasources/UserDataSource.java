@@ -1,7 +1,7 @@
 package database.datasources;
 
 import database.DBConnection;
-import handlers.login.UsernamePassword;
+import models.Credentials;
 import models.AccountType;
 import models.User;
 
@@ -57,7 +57,7 @@ public class UserDataSource extends AbstractDataSource<User> {
         return resultSetToObject(results);
     }
 
-    public UsernamePassword getExistingCredentials(String username) throws SQLException {
+    public Credentials getExistingCredentials(String username) throws SQLException {
         PreparedStatement getById = dbConnection.prepareStatement(
                 "SELECT * FROM \"users\" WHERE \"username\" = ?;"
         );
@@ -70,7 +70,7 @@ public class UserDataSource extends AbstractDataSource<User> {
             throw new SQLException("User does not exist");
         }
 
-        return new UsernamePassword(
+        return new Credentials(
                 results.getString("username"),
                 results.getString("password")
         );

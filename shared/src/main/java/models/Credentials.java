@@ -1,10 +1,10 @@
-package handlers.login;
+package models;
 
-public class UsernamePassword {
+public class Credentials {
     public final String username;
     public final String password;
 
-    public UsernamePassword(String username, String password){
+    public Credentials(String username, String password){
         this.username = username;
         this.password = password;
     }

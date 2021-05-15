@@ -1,4 +1,4 @@
-package handlers.resetpassword;
+package models;
 
 public class NewPassword {
     public final String password;

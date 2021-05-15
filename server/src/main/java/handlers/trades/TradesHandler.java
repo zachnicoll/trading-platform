@@ -8,6 +8,7 @@ import database.datasources.UserDataSource;
 import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.*;
+import models.partial.PartialOpenTrade;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -42,7 +43,7 @@ public class TradesHandler extends AbstractRequestHandler {
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
         // Make new OpenTrade object from json in request body
-        NewOpenTrade partialTrade = (NewOpenTrade) readRequestBody(exchange, NewOpenTrade.class);
+        PartialOpenTrade partialTrade = (PartialOpenTrade) readRequestBody(exchange, PartialOpenTrade.class);
         OpenTrade fullTrade = new OpenTrade(
                 UUID.randomUUID(),
                 partialTrade.tradeType,

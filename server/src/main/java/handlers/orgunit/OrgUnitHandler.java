@@ -38,7 +38,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
 
         // Make new OrganisationalUnit object from json in request body
-        DBOrganisationalUnit newOrganisationalUnit = (DBOrganisationalUnit) readRequestBody(exchange, OrganisationalUnit.class);
+        OrganisationalUnit newOrganisationalUnit = (OrganisationalUnit) readRequestBody(exchange, OrganisationalUnit.class);
 
         // Create new OrganisationalUnit in DB
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();

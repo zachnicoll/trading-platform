@@ -47,6 +47,18 @@ public class OrganisationalUnit {
     }
 
     /**
+     * Partially constructs an organisational unit for storing in the database.
+     * @param unitName
+     * @param creditBalance
+     */
+    public OrganisationalUnit(String unitName, Float creditBalance) {
+        this.unitName = unitName;
+        this.creditBalance = creditBalance;
+        this.assets = null;
+        this.unitId = UUID.randomUUID();
+    }
+
+    /**
      * Get the UnitID of the OU
      * @return the OU's UnitID
      */

@@ -17,8 +17,9 @@ import java.util.UUID;
 
 /**
  * Route: /trades/
- * <p>
+ *
  * Supported Methods:
+ * [POST] Create a new OpenTrade
  */
 public class TradesHandler extends AbstractRequestHandler {
 

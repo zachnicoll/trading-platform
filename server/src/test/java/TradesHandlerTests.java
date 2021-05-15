@@ -1,18 +1,13 @@
 import com.google.gson.Gson;
-import database.datasources.AssetTypeDataSource;
-import database.datasources.OrganisationalUnitDataSource;
-import models.Credentials;
+import data.TradeHandlerDataGenerator;
+import jdk.jshell.spi.ExecutionControl;
+import models.*;
 import models.partial.PartialOpenTrade;
-import models.AssetType;
-import models.AuthenticationToken;
-import models.OrganisationalUnit;
-import models.TradeType;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import server.RestApi;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.net.URI;
@@ -21,16 +16,15 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.UUID;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TradesHandlerTests {
 
-    private final String requestURL = "http://localhost:8000/trades/";
-    private final String requestLoginURL = "http://localhost:8000/login/";
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
+    TradeHandlerDataGenerator tradeHandlerDataGenerator;
 
     @BeforeAll
     @Test
@@ -41,25 +35,15 @@ public class TradesHandlerTests {
 
     @BeforeEach
     @Test
-    public void setupHttpClient() throws IOException, InterruptedException {
-        Credentials credentials = new Credentials("newUser", "password");
-        String credentialsJson = gson.toJson(credentials);
+    public void setupHttpClient() throws IOException, InterruptedException, SQLException {
+        tradeHandlerDataGenerator = new TradeHandlerDataGenerator();
 
-        HttpRequest loginRequest = HttpRequest.newBuilder()
-                .uri(URI.create(requestLoginURL))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(credentialsJson))
-                .build();
-
-        HttpResponse<String> response = client.send(loginRequest, HttpResponse.BodyHandlers.ofString());
-        AuthenticationToken authenticationToken = gson.fromJson(response.body(), AuthenticationToken.class);
-
+        String requestURL = "http://localhost:8000/trades/";
         httpBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(requestURL))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + authenticationToken.toString());
+                .header("Authorization", "Bearer " + tradeHandlerDataGenerator.authenticationToken.toString());
     }
 
     /**
@@ -67,87 +51,79 @@ public class TradesHandlerTests {
      */
     @Test
     public void createTrade() throws IOException, InterruptedException, SQLException {
-        UUID orgUnitId = UUID.randomUUID();
-        UUID assetTypeId = UUID.randomUUID();
-
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit(
-                orgUnitId,
-                "Test Unit " + orgUnitId,
-                1000.0f,
-                new ArrayList<>()
-        );
-
-        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
-        organisationalUnitDataSource.createNew(organisationalUnit);
-
-        AssetType assetType = new AssetType(
-                assetTypeId,
-                "Test AssetType " + assetTypeId
-        );
-
-        AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
-        assetTypeDataSource.createNew(assetType);
-
         PartialOpenTrade partialTrade = new PartialOpenTrade(
                 TradeType.BUY,
-                orgUnitId,
-                assetTypeId,
+                tradeHandlerDataGenerator.orgUnit1Id,
+                tradeHandlerDataGenerator.assetType1Id,
                 10,
                 1.0f
         );
 
         HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(partialTrade))).build();
-
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        // Test that request was successful
         assertEquals(response.statusCode(), 200);
+
+        // Test that returned trade information is correct/reflects what was sent in request
+        OpenTrade responseTrade = gson.fromJson(response.body(), OpenTrade.class);
+        assertEquals(responseTrade.getAssetType(), partialTrade.assetTypeId);
+        assertEquals(responseTrade.getOrganisationalUnit(), partialTrade.organisationalUnitId);
+        assertEquals(responseTrade.getQuantity(), partialTrade.quantity);
+        assertEquals(responseTrade.getPricePerAsset(), partialTrade.pricePerAsset);
     }
 
     /**
      * Test 2 - Create a BUY Trade with < 0 quantity of the AssetType
      */
     @Test
-    public void createTradeInvalidQuantity() {
-
+    public void createTradeInvalidQuantity() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**
      * Test 2 - Create a BUY Trade with PricePerAsset < 0
      */
     @Test
-    public void createTradeInvalidPrice() {
-
+    public void createTradeInvalidPrice() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**
      * Test 3 - UserId is not present in the JWT token
      */
     @Test
-    public void createTradeInvalidUserId() {
-
+    public void createTradeInvalidUserId() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**
      * Test 4 - User does not belong to the OrgUnit they are creating the Trade for
      */
     @Test
-    public void createTradeInvalidOrgUnit() {
-
+    public void createTradeInvalidOrgUnit() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**
      * Test 5 - OrgUnit does not have enough CreditBalance to place BUY order
      */
     @Test
-    public void createTradeInvalidOrgUnitBalance() {
-
+    public void createTradeInvalidOrgUnitBalance() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
     }
 
     /**
      * Test 6 - OrgUnit does not have enough quantity of AssetType to place SELL order
      */
     @Test
-    public void createTradeInvalidOrgUnitQuantity() {
+    public void createTradeInvalidOrgUnitQuantity() throws ExecutionControl.NotImplementedException {
+        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
+    }
 
+    @AfterEach
+    @Test
+    public void destroyTestData() throws SQLException {
+        tradeHandlerDataGenerator.destroyTestData();
     }
 }

@@ -25,4 +25,9 @@ public class UserHandler extends AbstractRequestHandler {
         User user = new User(UUID.randomUUID(), "user_123", AccountType.USER, UUID.randomUUID());
         writeResponseBody(exchange, user);
     }
+
+    @Override
+    protected void handlePost(HttpExchange exchange) throws IOException {
+
+    }
 }

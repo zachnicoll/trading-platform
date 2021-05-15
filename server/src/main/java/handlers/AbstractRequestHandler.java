@@ -182,7 +182,12 @@ public abstract class AbstractRequestHandler implements HttpHandler {
         }
     }
 
-    protected String getUserId(HttpExchange exchange) throws IOException {
+    /**
+     * Extract the UserId from the JWt token provided in the header of the request
+     * @param exchange HttpExchange to extract the UserId from
+     * @return UserId as a String, or null if extraction fails
+     */
+    protected String getUserId(HttpExchange exchange) {
         try {
             // Extract token string from header - Authorization: "Bearer eyJ0eX..."
             String token = getTokenFromHeader(exchange);
@@ -217,7 +222,14 @@ public abstract class AbstractRequestHandler implements HttpHandler {
         return gson.toJson(o);
     }
 
-    protected Object readRequestBody(HttpExchange exchange, Type T) throws IOException {
+    /**
+     * Converts the body of the request from a JSON string to an object of type T.
+     * The object is not cast to T, however, so this will need to be done manually.
+     * @param exchange HttpExchange to read request body from
+     * @param T Type to convert the JSON object to
+     * @return Object of type T, although not explicitly casted
+     */
+    protected Object readRequestBody(HttpExchange exchange, Type T) {
         InputStream bodyStream = exchange.getRequestBody();
         String json = new BufferedReader(
                 new InputStreamReader(bodyStream, StandardCharsets.UTF_8)).lines()

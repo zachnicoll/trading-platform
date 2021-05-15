@@ -33,7 +33,10 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
         getById.setString(1, id.toString());
 
         ResultSet results = getById.executeQuery();
-        results.next();
+
+        if (!results.next()) {
+            throw new SQLException("OrganisationalUnit does not exist");
+        }
 
         return resultSetToObject(results);
     }

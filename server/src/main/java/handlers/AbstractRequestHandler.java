@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -178,6 +179,21 @@ public abstract class AbstractRequestHandler implements HttpHandler {
             // User is not ADMIN AccountType
             JsonError jsonError = new JsonError("You are not authenticated");
             writeResponseBody(exchange, jsonError, 403);
+        }
+    }
+
+    protected String getUserId(HttpExchange exchange) throws IOException {
+        try {
+            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+            String token = getTokenFromHeader(exchange);
+
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaims().get("sub").asString();
+        } catch (JWTVerificationException exception) {
+            return null;
         }
     }
 

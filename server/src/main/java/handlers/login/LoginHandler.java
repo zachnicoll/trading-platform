@@ -64,11 +64,8 @@ public class LoginHandler extends AbstractRequestHandler {
             UserDataSource userDataSource = new UserDataSource();
             UsernamePassword existingCredentials = userDataSource.getExistingCredentials(providedCredentials.username);
 
-            // Hash the provided password - this hash should match existing password
-            String hashedPassword = BCrypt.withDefaults().hashToString(12, providedCredentials.password.toCharArray());
-
-            // Compare hashes
-            BCrypt.Result result = BCrypt.verifyer().verify(existingCredentials.password.toCharArray(), hashedPassword);
+            // Compare passwords
+            BCrypt.Result result = BCrypt.verifyer().verify(providedCredentials.password.toCharArray(), existingCredentials.password);
 
             // Reject if passwords did not match
             if (!result.verified) {

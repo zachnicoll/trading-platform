@@ -83,7 +83,7 @@ public class TradesHandler extends AbstractRequestHandler {
         UserDataSource userDataSource = new UserDataSource();
         User user = userDataSource.getById(UUID.fromString(userId));
 
-        if (user.getOrganisationalUnitId() != newTrade.getOrganisationalUnit()) {
+        if (!user.getOrganisationalUnitId().equals(newTrade.getOrganisationalUnit())) {
             writeResponseBody(exchange, new JsonError("You must belong to the Organisational Unit you are placing the Trade for"), 400);
             return;
         }

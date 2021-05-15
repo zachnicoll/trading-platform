@@ -1,18 +1,20 @@
 package handlers.user;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;
+import database.datasources.UserDataSource;
 import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.User;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.UUID;
 
 /**
  * Route: /user/
- *
+ * <p>
  * Supported Methods:
- *
  */
 public class UserHandler extends AbstractRequestHandler {
 
@@ -27,7 +29,21 @@ public class UserHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handlePost(HttpExchange exchange) throws IOException {
+    protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
+        CreateUser partialUser = (CreateUser) readRequestBody(exchange, CreateUser.class);
+        User fullUser = new User(
+                UUID.randomUUID(),
+                partialUser.username,
+                partialUser.accountType,
+                partialUser.organisationalUnitId
+        );
 
+        String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
+
+        UserDataSource userDataSource = new UserDataSource();
+
+        userDataSource.createNew(fullUser, hashedPassword);
+
+        writeResponseBody(exchange, fullUser);
     }
 }

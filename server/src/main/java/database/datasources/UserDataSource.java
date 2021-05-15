@@ -81,7 +81,20 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void createNew(User newObject) {
+    }
 
+    public void createNew(User newObject, String password) throws SQLException {
+        PreparedStatement createNew = dbConnection.prepareStatement(
+                "INSERT INTO \"users\" VALUES (uuid(?), ?, \"accountType\"(?), ?, uuid(?));"
+        );
+
+        createNew.setString(1, newObject.getUserId().toString());
+        createNew.setString(2, newObject.getUsername());
+        createNew.setString(3, newObject.getAccountType().toString());
+        createNew.setString(4, password);
+        createNew.setString(5, newObject.getOrganisationalUnitId().toString());
+
+        createNew.execute();
     }
 
     public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {

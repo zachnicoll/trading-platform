@@ -18,7 +18,7 @@ import java.util.UUID;
  * Class for generating fake data for TradeHandlerTests. Contains publicly
  * accessible fields that can be referenced in Tests (like IDs) to make valid API calls.
  */
-public class TradeHandlerDataGenerator extends AbstractDataGenerator {
+public class TradesHandlerDataGenerator extends AbstractDataGenerator {
 
     /*
      * Publicly accessible fields to reference in tests
@@ -27,7 +27,7 @@ public class TradeHandlerDataGenerator extends AbstractDataGenerator {
     public final UUID assetType1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
 
-    public TradeHandlerDataGenerator() throws IOException, InterruptedException, SQLException {
+    public TradesHandlerDataGenerator() throws IOException, InterruptedException, SQLException {
         // Create data in DB
         generateData();
 

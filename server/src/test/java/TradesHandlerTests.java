@@ -1,5 +1,5 @@
 import com.google.gson.Gson;
-import data.TradeHandlerDataGenerator;
+import data.TradesHandlerDataGenerator;
 import jdk.jshell.spi.ExecutionControl;
 import models.*;
 import models.partial.PartialOpenTrade;
@@ -24,7 +24,7 @@ public class TradesHandlerTests {
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
-    TradeHandlerDataGenerator tradeHandlerDataGenerator;
+    TradesHandlerDataGenerator tradesHandlerDataGenerator;
 
     @BeforeAll
     @Test
@@ -36,14 +36,14 @@ public class TradesHandlerTests {
     @BeforeEach
     @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
-        tradeHandlerDataGenerator = new TradeHandlerDataGenerator();
+        tradesHandlerDataGenerator = new TradesHandlerDataGenerator();
 
         String requestURL = "http://localhost:8000/trades/";
         httpBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(requestURL))
                 .timeout(Duration.ofSeconds(10))
                 .header("Content-Type", "application/json")
-                .header("Authorization", "Bearer " + tradeHandlerDataGenerator.authenticationToken.toString());
+                .header("Authorization", "Bearer " + tradesHandlerDataGenerator.authenticationToken.toString());
     }
 
     /**
@@ -53,8 +53,8 @@ public class TradesHandlerTests {
     public void createTrade() throws IOException, InterruptedException, SQLException {
         PartialOpenTrade partialTrade = new PartialOpenTrade(
                 TradeType.BUY,
-                tradeHandlerDataGenerator.orgUnit1Id,
-                tradeHandlerDataGenerator.assetType1Id,
+                tradesHandlerDataGenerator.orgUnit1Id,
+                tradesHandlerDataGenerator.assetType1Id,
                 10,
                 1.0f
         );
@@ -124,6 +124,6 @@ public class TradesHandlerTests {
     @AfterEach
     @Test
     public void destroyTestData() throws SQLException {
-        tradeHandlerDataGenerator.destroyTestData();
+        tradesHandlerDataGenerator.destroyTestData();
     }
 }

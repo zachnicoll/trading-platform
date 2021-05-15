@@ -41,8 +41,15 @@ public class AssetTypeDataSource extends AbstractDataSource<AssetType> {
         return null;
     }
 
-    public void createNew(AssetType newObject) {
+    public void createNew(AssetType newObject) throws SQLException {
+        PreparedStatement createNew = dbConnection.prepareStatement(
+                "INSERT INTO \"assetTypes\" VALUES (uuid(?), ?);"
+        );
 
+        createNew.setString(1, newObject.getAssetTypeId().toString());
+        createNew.setString(2, newObject.getAssetName());
+
+        createNew.execute();
     }
 
     public void updateByAttribute(UUID id, String attribute, AssetType value) throws SQLException {

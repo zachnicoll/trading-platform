@@ -1,19 +1,16 @@
 package data;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import com.google.gson.Gson;
 import database.datasources.AssetTypeDataSource;
 import database.datasources.OrganisationalUnitDataSource;
 import database.datasources.UserDataSource;
-import models.*;
+import models.AccountType;
+import models.AssetType;
+import models.OrganisationalUnit;
+import models.User;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.sql.SQLException;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -21,7 +18,7 @@ import java.util.UUID;
  * Class for generating fake data for TradeHandlerTests. Contains publicly
  * accessible fields that can be referenced in Tests (like IDs) to make valid API calls.
  */
-public class TradeHandlerDataGenerator implements DataGenerator {
+public class TradeHandlerAbstractDataGenerator extends AbstractDataGenerator {
 
     /*
      * Publicly accessible fields to reference in tests
@@ -29,7 +26,20 @@ public class TradeHandlerDataGenerator implements DataGenerator {
     public final UUID orgUnit1Id = UUID.randomUUID();
     public final UUID assetType1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
-    public AuthenticationToken authenticationToken;
+
+    public TradeHandlerAbstractDataGenerator() throws IOException, InterruptedException, SQLException {
+        // Create data in DB
+        generateData();
+
+        // Get and set auth token that can be used externally
+        login("Test User " + user1Id);
+    }
+
+    protected void generateData() throws SQLException {
+        createTestOrgUnits();
+        createTestAssetTypes();
+        createTestUser();
+    }
 
     private void createTestOrgUnits() throws SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
@@ -60,37 +70,6 @@ public class TradeHandlerDataGenerator implements DataGenerator {
                 orgUnit1Id
         );
         userDataSource.createNew(user, BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
-    }
-
-    public TradeHandlerDataGenerator() throws IOException, InterruptedException, SQLException {
-        /*
-         * Create data in DB
-         */
-        createTestOrgUnits();
-        createTestAssetTypes();
-        createTestUser();
-
-        /*
-         * Login as new User and retrieve an auth token to be used in subsequent test API calls
-         */
-        Credentials credentials = new Credentials("Test User " + user1Id, "password");
-        Gson gson = new Gson();
-        String credentialsJson = gson.toJson(credentials);
-
-        String requestLoginURL = "http://localhost:8000/login/";
-        HttpRequest loginRequest = HttpRequest.newBuilder()
-                .uri(URI.create(requestLoginURL))
-                .timeout(Duration.ofSeconds(10))
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(credentialsJson))
-                .build();
-
-        HttpClient client = HttpClient.newHttpClient();
-
-        // Login
-        HttpResponse<String> response = client.send(loginRequest, HttpResponse.BodyHandlers.ofString());
-
-        authenticationToken = gson.fromJson(response.body(), AuthenticationToken.class);
     }
 
     public void destroyTestData() throws SQLException {

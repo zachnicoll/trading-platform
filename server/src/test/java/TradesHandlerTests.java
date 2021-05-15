@@ -1,5 +1,5 @@
 import com.google.gson.Gson;
-import data.TradeHandlerDataGenerator;
+import data.TradeHandlerAbstractDataGenerator;
 import jdk.jshell.spi.ExecutionControl;
 import models.*;
 import models.partial.PartialOpenTrade;
@@ -24,7 +24,7 @@ public class TradesHandlerTests {
     private final HttpClient client = HttpClient.newHttpClient();
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
-    TradeHandlerDataGenerator tradeHandlerDataGenerator;
+    TradeHandlerAbstractDataGenerator tradeHandlerDataGenerator;
 
     @BeforeAll
     @Test
@@ -36,7 +36,7 @@ public class TradesHandlerTests {
     @BeforeEach
     @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
-        tradeHandlerDataGenerator = new TradeHandlerDataGenerator();
+        tradeHandlerDataGenerator = new TradeHandlerAbstractDataGenerator();
 
         String requestURL = "http://localhost:8000/trades/";
         httpBuilder = HttpRequest.newBuilder()

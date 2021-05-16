@@ -66,6 +66,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
+        //TODO: DELETE ONCE FIXED
         return false;
     }
     public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {
@@ -78,8 +79,18 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         return createQueryTrade.executeQuery().next();
     }
 
-    public void deleteById(UUID id) {
+    public void deleteById(UUID Id) throws SQLException {
+        //TODO: DELETE ONCE FIXED
+    }
 
+    public void deleteById(UUID buyId, UUID sellId) throws SQLException {
+        PreparedStatement createDeleteTrade = dbConnection.prepareStatement(
+                "DELETE FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        createDeleteTrade.setString(1, buyId.toString());
+        createDeleteTrade.setString(2, sellId.toString());
+
+        createDeleteTrade.execute();
     }
 
     public String getCreateNewQuery(ResolvedTrade newObject) throws SQLException {

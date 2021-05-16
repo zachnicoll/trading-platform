@@ -65,8 +65,17 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
 
     }
 
-    public boolean checkExistById(UUID id) {
+    public boolean checkExistById(UUID id) throws SQLException {
         return false;
+    }
+    public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {
+        PreparedStatement createQueryTrade = dbConnection.prepareStatement(
+                "SELECT * FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        createQueryTrade.setString(1, buyId.toString());
+        createQueryTrade.setString(2, sellId.toString());
+
+        return createQueryTrade.executeQuery().next();
     }
 
     public void deleteById(UUID id) {

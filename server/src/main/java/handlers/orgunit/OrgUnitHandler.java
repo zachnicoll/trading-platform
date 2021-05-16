@@ -1,7 +1,7 @@
 package handlers.orgunit;
 
 import com.sun.net.httpserver.HttpExchange;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 import models.Asset;
 import models.OrganisationalUnit;
 
@@ -15,7 +15,7 @@ import java.util.UUID;
  * Supported Methods:
  *
  */
-public class OrgUnitHandler extends RequestHandler {
+public class OrgUnitHandler extends AbstractRequestHandler {
     public OrgUnitHandler(boolean requiresAuth) {
         super(requiresAuth);
     }

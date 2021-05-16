@@ -46,7 +46,7 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
 
     public void createNew(OpenTrade newObject) throws SQLException {
         PreparedStatement createNew = dbConnection.prepareStatement(
-                "INSERT INTO \"openTrades\" VALUES (uuid(?),uuid(?),uuid(?),uuid(?),?,?,?);"
+                "INSERT INTO \"openTrades\" VALUES (uuid(?),uuid(?),uuid(?),?::\"tradeType\",?,?,?);"
         );
 
         createNew.setString(1, newObject.getTradeId().toString());

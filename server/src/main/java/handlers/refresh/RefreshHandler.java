@@ -1,7 +1,7 @@
 package handlers.refresh;
 
 import com.sun.net.httpserver.HttpExchange;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
  * Supported Methods:
  *
  */
-public class RefreshHandler extends RequestHandler {
+public class RefreshHandler extends AbstractRequestHandler {
 
     public RefreshHandler(boolean requiresAuth) {
         super(requiresAuth);

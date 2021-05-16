@@ -6,17 +6,23 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import errors.JsonError;
 import models.AccountType;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class for handling requests to particular routes, e.g. /user/.
@@ -26,11 +32,11 @@ import java.util.regex.Pattern;
  * Also contains methods for converting an Object to a JSON string and returning the string in the
  * response's body.
  */
-public abstract class RequestHandler implements HttpHandler {
+public abstract class AbstractRequestHandler implements HttpHandler {
     private final Pattern authorizationHeaderRegex = Pattern.compile("Bearer .+");
     protected boolean requiresAuth;
 
-    public RequestHandler(boolean requiresAuth) {
+    public AbstractRequestHandler(boolean requiresAuth) {
         this.requiresAuth = requiresAuth;
     }
 
@@ -45,7 +51,7 @@ public abstract class RequestHandler implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         try {
             /*
-             * If this RequestHandler requires authentication (JWT token in request header),
+             * If this AbstractRequestHandler requires authentication (JWT token in request header),
              * check if the token is valid before continuing. If the token is invalid, the request will
              * be resolved with a 403 - Not Authorised response code.
              */
@@ -177,6 +183,26 @@ public abstract class RequestHandler implements HttpHandler {
     }
 
     /**
+     * Extract the UserId from the JWt token provided in the header of the request
+     * @param exchange HttpExchange to extract the UserId from
+     * @return UserId as a String, or null if extraction fails
+     */
+    protected String getUserId(HttpExchange exchange) {
+        try {
+            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+            String token = getTokenFromHeader(exchange);
+
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaims().get("sub").asString();
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
+    }
+
+    /**
      * Responds with status code 501 - Not Implemented. Used as default response for methods
      * that are not overwritten in inherited classes.
      */
@@ -194,6 +220,23 @@ public abstract class RequestHandler implements HttpHandler {
     private String objectToJson(Object o) {
         Gson gson = new Gson();
         return gson.toJson(o);
+    }
+
+    /**
+     * Converts the body of the request from a JSON string to an object of type T.
+     * The object is not cast to T, however, so this will need to be done manually.
+     * @param exchange HttpExchange to read request body from
+     * @param T Type to convert the JSON object to
+     * @return Object of type T, although not explicitly casted
+     */
+    protected Object readRequestBody(HttpExchange exchange, Type T) {
+        InputStream bodyStream = exchange.getRequestBody();
+        String json = new BufferedReader(
+                new InputStreamReader(bodyStream, StandardCharsets.UTF_8)).lines()
+                .collect(Collectors.joining("\n"));
+        GsonBuilder gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss");
+        Gson gson = gsonBuilder.create();
+        return gson.fromJson(json, T);
     }
 
     /**
@@ -240,7 +283,7 @@ public abstract class RequestHandler implements HttpHandler {
     /**
      * Handles POST method of route. Return 501 - Not Implemented by default.
      */
-    protected void handlePost(HttpExchange exchange) throws IOException {
+    protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
         respondNotImplemented(exchange);
     }
 

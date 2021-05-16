@@ -1,7 +1,7 @@
 package handlers.resetpassword;
 
 import com.sun.net.httpserver.HttpExchange;
-import handlers.RequestHandler;
+import handlers.AbstractRequestHandler;
 
 import java.io.IOException;
 
@@ -11,14 +11,14 @@ import java.io.IOException;
  * Supported Methods:
  *
  */
-public class ResetPasswordHandler extends RequestHandler {
+public class ResetPasswordHandler extends AbstractRequestHandler {
 
     public ResetPasswordHandler(boolean requiresAuth) {
         super(requiresAuth);
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        writeResponseBody(exchange, null);
+    protected void handlePost(HttpExchange exchange) throws IOException {
+
     }
 }

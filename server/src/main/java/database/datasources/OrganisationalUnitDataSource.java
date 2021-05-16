@@ -40,10 +40,10 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
     }
 
     public ArrayList<OrganisationalUnit> getAll() throws SQLException {
-        PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
+        PreparedStatement getAllOrgUnits = dbConnection.prepareStatement(
                 "SELECT * FROM \"organisationalUnits\" ORDER BY \"organisationalUnitName\" ASC;"
         );
-        ResultSet results = getAllUnresolved.executeQuery();
+        ResultSet results = getAllOrgUnits.executeQuery();
 
         ArrayList<OrganisationalUnit> allOrganisationalUnits = new ArrayList<>();
         while (results.next()) {
@@ -86,14 +86,14 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
-        PreparedStatement createNew = dbConnection.prepareStatement(
+        PreparedStatement checkIfExist = dbConnection.prepareStatement(
                 "SELECT EXISTS(SELECT 1 FROM \"organisationalUnits\" WHERE \"organisationalUnitId\"::text = ?);"
         );
 
-        createNew.setString(1, id.toString());
+        checkIfExist.setString(1, id.toString());
 
         //checks if query returns a result set with at least one element, indicating a row exists with the given id
-        return createNew.executeQuery().next();
+        return checkIfExist.executeQuery().next();
     }
 
     public void deleteById(UUID id) throws SQLException {

@@ -32,8 +32,8 @@
    <bottom>
       <AnchorPane prefHeight="165.0" prefWidth="980.0" BorderPane.alignment="CENTER">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="115.0" layoutX="145.0" layoutY="21.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
-            <TextField fx:id="txtAssMAssetName" layoutX="177.0" layoutY="70.0" prefHeight="45.0" prefWidth="275.0" promptText="Asset Name" style="-fx-background-color: c4c4c4;">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="115.0" layoutX="145.0" layoutY="25.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
+            <TextField fx:id="txtAssMAssetName" layoutX="177.0" layoutY="74.0" prefHeight="45.0" prefWidth="275.0" promptText="Asset Name" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="16.0" />
                </font>
@@ -41,8 +41,8 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <JFXButton fx:id="btnAssMNewAsset" layoutX="758.0" layoutY="65.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/AssM.css" text="" />
-            <JFXComboBox fx:id="comboAssMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="70.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+            <JFXButton fx:id="btnAssMNewAsset" layoutX="758.0" layoutY="69.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/AssM.css" text="" />
+            <JFXComboBox fx:id="comboAssMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="74.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -50,7 +50,7 @@
                   <Insets left="15.0" />
                </padding>
             </JFXComboBox>
-            <Text fill="WHITE" layoutX="177.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Asset">
+            <Text fill="WHITE" layoutX="177.0" layoutY="59.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Asset">
                <font>
                   <Font size="24.0" />
                </font>

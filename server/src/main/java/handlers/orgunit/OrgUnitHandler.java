@@ -36,7 +36,8 @@ public class OrgUnitHandler extends AbstractRequestHandler {
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
 
-
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
 
         // Make new OrganisationalUnit object from json in request body
         OrganisationalUnit newOrganisationalUnit = (OrganisationalUnit) readRequestBody(exchange, OrganisationalUnit.class);

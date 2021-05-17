@@ -1,6 +1,7 @@
 package database.datasources;
 
 import database.DBConnection;
+import models.Asset;
 import models.ResolvedTrade;
 
 import java.sql.Connection;
@@ -25,9 +26,29 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 results.getTimestamp("dateResolved")
         );
     }
-
-    public ResolvedTrade getById(UUID id) {
+    public ResolvedTrade getById(UUID buyId)
+    {
+        //TODO: DELETE ONCE FIXED
         return null;
+    }
+
+
+    public ResolvedTrade getById(UUID buyId, UUID sellId) throws SQLException {
+
+        PreparedStatement getById = dbConnection.prepareStatement(
+                "SELECT * FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        getById.setString(1, buyId.toString());
+        getById.setString(2, sellId.toString());
+
+        ResultSet results = getById.executeQuery();
+
+        if (!results.next()) {
+            throw new SQLException("ResolvedTrade does not exist");
+        }
+
+        return resultSetToObject(results);
+
     }
 
     public ArrayList<ResolvedTrade> getAll() throws SQLException {
@@ -61,7 +82,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         createResolvedTrade.execute();
     }
 
-    public void updateByAttribute(UUID id, String attribute, ResolvedTrade value) {
+    public void updateByAttribute(UUID buyId, String attribute, ResolvedTrade value) {
 
     }
 

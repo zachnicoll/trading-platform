@@ -3,6 +3,7 @@ package database.datasources;
 import database.DBConnection;
 import models.Credentials;
 import models.AccountType;
+import models.ResolvedTrade;
 import models.User;
 
 import java.sql.Connection;
@@ -76,11 +77,33 @@ public class UserDataSource extends AbstractDataSource<User> {
         );
     }
 
-    public ArrayList<User> getAll() {
-        return null;
+    public ArrayList<User> getAll() throws SQLException {
+
+        PreparedStatement getAllUsers = dbConnection.prepareStatement(
+                "SELECT * FROM \"users\" ORDER BY \"userType\", \"username\" ASC;"
+        );
+        ResultSet results = getAllUsers.executeQuery();
+
+        ArrayList<User> allUsers = new ArrayList<>();
+        while (results.next()) {
+            User aUser = resultSetToObject(results);
+            allUsers.add(aUser);
+        }
+
+        return allUsers;
     }
 
-    public void createNew(User newObject) {
+    public void createNew(User newObject) throws SQLException {
+        PreparedStatement createUser = dbConnection.prepareStatement(
+                "INSERT INTO \"users\" VALUES (uuid(?), ?, ?, ?, uuid(?));"
+        );
+        createUser.setString(1, newObject.getUserId().toString());
+        createUser.setString(2, newObject.getUsername().toString());
+        createUser.setString(3, newObject.getAccountType().toString());
+        createUser.setString(4, newObject.getAccountType().toString()); //TODO ASK ZACH HOW TO PUT PASSWORD IN - TEMP VAR FOR NOW
+        createUser.setString(5, newObject.getOrganisationalUnitId().toString());
+
+        createUser.execute();
     }
 
     public void createNew(User newObject, String password) throws SQLException {

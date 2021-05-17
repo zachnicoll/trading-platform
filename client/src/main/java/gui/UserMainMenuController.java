@@ -65,6 +65,16 @@ public class UserMainMenuController implements Initializable {
         UserMainPane.getChildren().setAll(view);
     }
 
+    public void sceneMarketplaceBuy(ActionEvent event) throws IOException {
+        Pane view = pageLoader.getPage("MarketplaceBuy");
+        UserMainPane.getChildren().setAll(view);
+    }
+
+    public void sceneMarketplaceSell(ActionEvent event) throws IOException {
+        Pane view = pageLoader.getPage("MarketplaceSell");
+        UserMainPane.getChildren().setAll(view);
+    }
+
     public void logout(ActionEvent event) throws IOException {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to logout?", ButtonType.YES, ButtonType.NO);

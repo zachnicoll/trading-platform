@@ -7,9 +7,14 @@ package models;
  * }
  */
 public class AuthenticationToken {
-    private String authenticationToken;
+    private final String authenticationToken;
 
     public AuthenticationToken(String authenticationToken) {
         this.authenticationToken = authenticationToken;
+    }
+
+    @Override
+    public String toString() {
+        return authenticationToken;
     }
 }

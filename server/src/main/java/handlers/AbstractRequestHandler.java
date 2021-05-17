@@ -19,6 +19,7 @@ import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -182,6 +183,26 @@ public abstract class AbstractRequestHandler implements HttpHandler {
     }
 
     /**
+     * Extract the UserId from the JWt token provided in the header of the request
+     * @param exchange HttpExchange to extract the UserId from
+     * @return UserId as a String, or null if extraction fails
+     */
+    protected String getUserId(HttpExchange exchange) {
+        try {
+            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+            String token = getTokenFromHeader(exchange);
+
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build();
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaims().get("sub").asString();
+        } catch (JWTVerificationException exception) {
+            return null;
+        }
+    }
+
+    /**
      * Responds with status code 501 - Not Implemented. Used as default response for methods
      * that are not overwritten in inherited classes.
      */
@@ -201,7 +222,14 @@ public abstract class AbstractRequestHandler implements HttpHandler {
         return gson.toJson(o);
     }
 
-    protected Object readRequestBody(HttpExchange exchange, Type T) throws IOException {
+    /**
+     * Converts the body of the request from a JSON string to an object of type T.
+     * The object is not cast to T, however, so this will need to be done manually.
+     * @param exchange HttpExchange to read request body from
+     * @param T Type to convert the JSON object to
+     * @return Object of type T, although not explicitly casted
+     */
+    protected Object readRequestBody(HttpExchange exchange, Type T) {
         InputStream bodyStream = exchange.getRequestBody();
         String json = new BufferedReader(
                 new InputStreamReader(bodyStream, StandardCharsets.UTF_8)).lines()

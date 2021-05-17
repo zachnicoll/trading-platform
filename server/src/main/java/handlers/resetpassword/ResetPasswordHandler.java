@@ -18,7 +18,7 @@ public class ResetPasswordHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        writeResponseBody(exchange, null);
+    protected void handlePost(HttpExchange exchange) throws IOException {
+
     }
 }

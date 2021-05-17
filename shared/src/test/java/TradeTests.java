@@ -1,10 +1,10 @@
-import models.*;
+import models.OpenTrade;
+import models.TradeType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,7 +24,7 @@ public class TradeTests {
     TradeType tradeType = TradeType.BUY;
     Integer quantity = 10;
     Float pricePerAsset = 10f;
-    Date date = new Date();
+    Timestamp date = Timestamp.from(Instant.now());
 
     /* Test 1: Constructing BUY and SELL Trade objects
      */

@@ -102,7 +102,12 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
-        return false;
+        PreparedStatement createQueryUser = dbConnection.prepareStatement(
+                "SELECT * FROM \"users\" WHERE \"userId\" = uuid(?);"
+        );
+        createQueryUser.setString(1, id.toString());
+
+        return createQueryUser.executeQuery().next();
     }
 
     public void deleteById(UUID id) throws SQLException {

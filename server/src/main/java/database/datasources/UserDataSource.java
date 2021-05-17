@@ -121,7 +121,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
-
+        //TODO CONFIRM WHAT THIS IS MEANT TO DO
     }
 
     public boolean checkExistById(UUID id) throws SQLException {

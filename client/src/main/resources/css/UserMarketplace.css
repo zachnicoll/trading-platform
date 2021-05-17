@@ -11,3 +11,10 @@
 #btnMPSellAsset:hover {
     -fx-background-color: #D15353;
 }
+
+#btnMPBuyConfirmOrder {
+    -fx-background-color: #ef8354;
+}
+#btnMPBuyConfirmOrder:hover {
+    -fx-background-color: #D7754B;
+}

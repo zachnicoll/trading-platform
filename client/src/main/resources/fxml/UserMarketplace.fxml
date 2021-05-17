@@ -6,6 +6,7 @@
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
@@ -36,9 +37,19 @@
    <center>
       <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
          <children>
-            <AnchorPane prefHeight="100.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
+            <AnchorPane fx:id="anchorboxMP" prefHeight="250.0" prefWidth="690.0" style="-fx-background-color: #4f5d75; -fx-border-width: 5;">
                <children>
-                  <JFXComboBox fx:id="comboboxSelectAsset" focusColor="#4d4d4d" layoutX="39.0" layoutY="22.0" prefHeight="45.0" prefWidth="350.0" promptText="Select Asset" style="-fx-background-color: #ef8354;">
+                  <JFXButton fx:id="btnMPBuyAsset" layoutX="44.0" layoutY="22.0" onAction="#buySelected" prefHeight="45.0" prefWidth="85.0" ripplerFill="#418750" stylesheets="@../css/UserMarketplace.css" text="BUY">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXButton fx:id="btnMPSellAsset" layoutX="166.0" layoutY="22.0" onAction="#sellSelected" prefHeight="45.0" prefWidth="85.0" ripplerFill="#8b3737" stylesheets="@../css/UserMarketplace.css" text="SELL">
+                     <font>
+                        <Font name="System Bold" size="14.0" />
+                     </font>
+                  </JFXButton>
+                  <JFXComboBox fx:id="comboboxSelectAsset" focusColor="#4d4d4d" layoutX="299.0" layoutY="22.0" prefHeight="45.0" prefWidth="350.0" promptText="Select Asset" style="-fx-background-color: #ef8354;">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -46,20 +57,36 @@
                         <Insets left="15.0" />
                      </padding>
                   </JFXComboBox>
-                  <JFXButton fx:id="btnMPBuyAsset" layoutX="437.0" layoutY="22.0" onAction="#sceneMarketplaceBuy" prefHeight="45.0" prefWidth="85.0" ripplerFill="#418750" stylesheets="@../css/UserMarketpalce.css" text="BUY">
+                  <Text fill="#ef8354" layoutX="6.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units Available:" textAlignment="RIGHT" wrappingWidth="339.8203125">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <TextField fx:id="txtMPPrice" layoutX="161.0" layoutY="125.0" prefHeight="35.0" prefWidth="181.0" />
+                  <TextField fx:id="txtMPQuantity" layoutX="161.0" layoutY="169.0" prefHeight="35.0" prefWidth="181.0" />
+                  <Text fill="#ef8354" layoutX="63.0" layoutY="149.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price ($):" textAlignment="RIGHT" wrappingWidth="92.8203125">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#ef8354" layoutX="63.0" layoutY="193.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Quantity:" textAlignment="RIGHT" wrappingWidth="92.8203125">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
+                  <JFXButton fx:id="btnMPBuyConfirmOrder" layoutX="353.0" layoutY="135.0" prefHeight="64.0" prefWidth="181.0" ripplerFill="#8f4e32" stylesheets="@../css/UserMarketplace.css" text="Confirm Order">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </JFXButton>
-                  <JFXButton fx:id="btnMPSellAsset" layoutX="559.0" layoutY="22.0" onAction="#sceneMarketplaceSell" prefHeight="45.0" prefWidth="85.0" ripplerFill="#8b3737" stylesheets="@../css/UserMarketpalce.css" text="SELL">
+                  <Text fx:id="lblUnitsAvailable" fill="#ef8354" layoutX="353.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="180.8203125">
                      <font>
-                        <Font name="System Bold" size="14.0" />
+                        <Font name="System Bold" size="24.0" />
                      </font>
-                  </JFXButton>
+                  </Text>
                </children>
             </AnchorPane>
-            <AnchorPane fx:id="anchorpaneMPBuySell" prefHeight="145.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" />
-            <AnchorPane prefHeight="345.0" prefWidth="690.0">
+            <AnchorPane prefHeight="313.0" prefWidth="690.0">
                <children>
                   <LineChart layoutX="20.0" layoutY="31.0" prefHeight="303.0" prefWidth="650.0" style="-fx-border-color: #2d3142;">
                     <xAxis>

@@ -10,6 +10,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import java.awt.*;
 import java.io.IOException;
@@ -22,7 +24,7 @@ public class UserMarketplaceController {
 
 
     @FXML
-    private JFXComboBox<?> comboboxSelectAsset;
+    private AnchorPane anchorboxMP;
 
     @FXML
     private JFXButton btnMPBuyAsset;
@@ -31,18 +33,28 @@ public class UserMarketplaceController {
     private JFXButton btnMPSellAsset;
 
     @FXML
-    private AnchorPane anchorpaneMPBuySell;
+    private JFXComboBox<?> comboboxSelectAsset;
 
-    private FxmlLoader pageLoader = new FxmlLoader();
+    @FXML
+    private TextField txtMPPrice;
 
-    public void sceneMarketplaceBuy(ActionEvent event) throws IOException {
-        Pane view = pageLoader.getPage("MarketplaceBuy");
-        anchorpaneMPBuySell.getChildren().setAll(view);
+    @FXML
+    private TextField txtMPQuantity;
+
+    @FXML
+    private JFXButton btnMPBuyConfirmOrder;
+
+    @FXML
+    private Text lblUnitsAvailable;
+
+    public void buySelected(ActionEvent event) throws IOException {
+        String aStyle = String.format("-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;");
+        anchorboxMP.setStyle(aStyle);
     }
 
-    public void sceneMarketplaceSell(ActionEvent event) throws IOException {
-        Pane view = pageLoader.getPage("MarketplaceSell");
-        anchorpaneMPBuySell.getChildren().setAll(view);
+    public void sellSelected(ActionEvent event) throws IOException {
+        String aStyle = String.format("-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;");
+        anchorboxMP.setStyle(aStyle);
     }
 
 }

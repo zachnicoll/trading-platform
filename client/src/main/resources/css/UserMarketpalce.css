@@ -1,0 +1,13 @@
+#btnMPBuyAsset {
+    -fx-background-color: #5DC273;
+}
+#btnMPBuyAsset:hover {
+    -fx-background-color: #53AE67;
+}
+
+#btnMPSellAsset {
+    -fx-background-color: #e95d5d;
+}
+#btnMPSellAsset:hover {
+    -fx-background-color: #D15353;
+}

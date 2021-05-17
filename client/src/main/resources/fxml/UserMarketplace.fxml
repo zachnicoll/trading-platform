@@ -88,7 +88,7 @@
             </AnchorPane>
             <AnchorPane prefHeight="313.0" prefWidth="690.0">
                <children>
-                  <LineChart layoutX="20.0" layoutY="31.0" prefHeight="303.0" prefWidth="650.0" style="-fx-border-color: #2d3142;">
+                  <LineChart layoutX="238.0" layoutY="16.0" prefHeight="303.0" prefWidth="438.0" style="-fx-border-color: #2d3142;">
                     <xAxis>
                       <CategoryAxis side="BOTTOM" />
                     </xAxis>
@@ -96,6 +96,26 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </LineChart>
+                  <Text fill="#ef8354" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="lblMPBuyPrice" fill="#ef8354" layoutX="28.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.8203125">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#ef8354" layoutX="14.0" layoutY="186.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="lblMPSellPrice" fill="#ef8354" layoutX="28.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.8203125">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
          </children>

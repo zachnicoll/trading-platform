@@ -111,6 +111,11 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void deleteById(UUID id) throws SQLException {
+        PreparedStatement deleteUser = dbConnection.prepareStatement(
+                "DELETE FROM \"users\" WHERE \"userId\" = uuid(?);"
+        );
+        deleteUser.setString(1, id.toString());
 
+        deleteUser.execute();
     }
 }

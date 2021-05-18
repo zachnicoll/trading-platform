@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import models.AuthenticationToken;
 import models.Credentials;
+import models.User;
 
 import java.io.File;
 import java.io.IOException;
@@ -91,18 +92,53 @@ public class LoginController {
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
-        String requestURL = "http://localhost:8000/login/";
+        String loginRequestURL = "http://localhost:8000/login/";
 
-        HttpClient client = HttpClient.newBuilder().build();
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(requestURL))
-                .POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"sallysue123\", \"password\":\"password\"}"))
+        HttpClient loginClient = HttpClient.newBuilder().build();
+        HttpRequest loginRequest = HttpRequest.newBuilder()
+                .uri(URI.create(loginRequestURL))
+                .POST(HttpRequest.BodyPublishers.ofString(loginInfo.loginFormat()))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
+
+        Gson loginGson = new Gson();
+
+        AuthenticationToken authToken = loginGson.fromJson(loginResponse.body(), AuthenticationToken.class);
+
+        int loginApiResponse = loginResponse.statusCode();
+        System.out.println(authToken.toString());
 
 
-        System.out.println(response.statusCode());
+
+        /*String userRequestURL = "http://localhost:8000/user/";
+
+        HttpClient userClient = HttpClient.newBuilder().build();
+        HttpRequest userRequest = HttpRequest.newBuilder()
+                .uri(URI.create(userRequestURL))
+                .GET().setHeader(authToken)
+                .build();
+
+        HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+        Gson gson = new Gson();
+
+        User theUser = gson.fromJson(userResponse.body(), User.class);
+
+        int temp = userResponse.statusCode();
+        System.out.println(theUser.getUsername());*/
+
+        if (loginApiResponse == 200)
+        {
+
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Username and password combination invalid, please try again.", ButtonType.OK);
+            alert.showAndWait();
+            txtUsername.clear();
+            txtPassword.clear();
+        }
 
         //login is from a user
         if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {

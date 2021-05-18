@@ -8,4 +8,13 @@ public class Credentials {
         this.username = username;
         this.password = password;
     }
+
+    public String loginFormat()
+    {
+        String tempString = "{\"username\":\""+ this.username +"\", " +
+                                "\"password\":\"" + this.password + "\"}";
+        return tempString;
+
+    }
+
 }

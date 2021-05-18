@@ -2,7 +2,6 @@ package database.datasources;
 
 import database.DBConnection;
 import models.Asset;
-import models.OpenTrade;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,7 +21,28 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
         );
     }
 
-    public Asset getById(UUID id) { return null; }
+    public Asset getById(UUID id) {
+        return null;
+    }
+
+    public Asset getById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
+        PreparedStatement getById = dbConnection.prepareStatement(
+                "SELECT * FROM \"organisationalUnitAssets\" WHERE" +
+                        "\"organisationalUnitId\"::text = ? AND" +
+                        "\"assetTypeId\"::text = ?;"
+        );
+
+        getById.setString(1, orgUnitId.toString());
+        getById.setString(2, assetTypeId.toString());
+
+        ResultSet results = getById.executeQuery();
+
+        if (!results.next()) {
+            throw new SQLException("Organisational Unit does not own any of this AssetType");
+        }
+
+        return resultSetToObject(results);
+    }
 
     public ArrayList<Asset> getByOrgUnitId(UUID organisationalUnitId) throws SQLException {
         PreparedStatement getAllByOrgUnitId = dbConnection.prepareStatement(
@@ -42,12 +62,23 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
         return assets;
     }
 
-    public ArrayList<Asset> getAll() {
-        return null;
+    public ArrayList<Asset> getAll() throws SQLException {
+        PreparedStatement getAll = dbConnection.prepareStatement(
+                "SELECT * FROM \"organisationalUnitAssets\";"
+        );
+
+        ArrayList<Asset> assets = new ArrayList<>();
+
+        ResultSet results = getAll.executeQuery();
+        while (results.next()) {
+            Asset asset = resultSetToObject(results);
+            assets.add(asset);
+        }
+
+        return assets;
     }
 
     public void createNew(Asset newObject) {
-
     }
 
     public void createNew(Asset newObject, UUID organisationalUnitId) throws SQLException {
@@ -63,7 +94,6 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     }
 
     public void updateByAttribute(UUID id, String attribute, Asset value) throws SQLException {
-
     }
 
     public void updateAssetQuantity(UUID organisationalUnitId, UUID assetTypeId, Integer quantity) throws SQLException {
@@ -84,7 +114,32 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     }
 
     public void deleteById(UUID id) throws SQLException {
+    }
 
+    public boolean checkExistById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
+        PreparedStatement checkExistsById = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"organisationalUnitAssets\" WHERE " +
+                        "\"organisationalUnitId\"::text = ? AND" +
+                        "\"assetTypeId\"::text = ?);"
+        );
+
+        checkExistsById.setString(1, orgUnitId.toString());
+        checkExistsById.setString(2, assetTypeId.toString());
+
+        return checkExistsById.executeQuery().next();
+    }
+
+    public void deleteById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
+        PreparedStatement deleteById = dbConnection.prepareStatement(
+                "DELETE FROM \"organisationalUnitAssets\" WHERE " +
+                        "\"organisationalUnitId\"::text = ? AND" +
+                        "\"assetTypeId\"::text = ?;"
+        );
+
+        deleteById.setString(1, orgUnitId.toString());
+        deleteById.setString(2, assetTypeId.toString());
+
+        deleteById.execute();
     }
 
     public String getUpdateAssetQuantityQuery(UUID organisationalUnitId, UUID assetTypeId, Integer quantity) throws SQLException {

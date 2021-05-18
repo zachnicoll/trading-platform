@@ -203,4 +203,9 @@ public class OrganisationalUnit {
             assets.remove(existingAsset);
         }
     }
+
+    public String toString()
+    {
+        return this.unitName;
+    }
 }

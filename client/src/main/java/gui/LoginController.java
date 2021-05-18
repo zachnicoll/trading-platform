@@ -1,5 +1,6 @@
 package gui;
 
+import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.sun.glass.ui.CommonDialogs;
 import javafx.fxml.FXML;
@@ -18,8 +19,16 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import models.AuthenticationToken;
+import models.Credentials;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class LoginController {
 
@@ -71,7 +80,7 @@ public class LoginController {
     }
 
     @FXML
-    private void submitCredentials(ActionEvent event)  throws IOException {
+    private void submitCredentials(ActionEvent event) throws IOException, InterruptedException {
 
         //TODO implement submit checks
         String loginUsername;
@@ -80,7 +89,20 @@ public class LoginController {
         loginUsername = txtUsername.getText();
         loginPassword = txtPassword.getText();
 
+        Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
+        String requestURL = "http://localhost:8000/login/";
+
+        HttpClient client = HttpClient.newBuilder().build();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(requestURL))
+                .POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"sallysue123\", \"password\":\"password\"}"))
+                .build();
+
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+
+        System.out.println(response.statusCode());
 
         //login is from a user
         if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {

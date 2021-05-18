@@ -80,6 +80,8 @@ public class LoginController {
         loginUsername = txtUsername.getText();
         loginPassword = txtPassword.getText();
 
+
+
         //login is from a user
         if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {
 

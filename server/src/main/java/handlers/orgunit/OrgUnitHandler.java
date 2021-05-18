@@ -59,8 +59,8 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         }
 
         //check if unit's credit balance is less than zero
-        if(fullOrganisationalUnit.getCreditBalance() <= 0){
-            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than or equal to zero"));
+        if(fullOrganisationalUnit.getCreditBalance() < 0){
+            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than zero"));
             return;
         }
 

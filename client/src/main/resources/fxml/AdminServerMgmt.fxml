@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
@@ -24,13 +25,13 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="307.0" fitWidth="329.0" layoutX="337.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="307.0" fitWidth="329.0" layoutX="337.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/server.png" />
                </image>
             </ImageView>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="115.0" layoutX="146.0" layoutY="393.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
-            <TextField fx:id="txtNewOUName" layoutX="444.0" layoutY="428.0" prefHeight="45.0" prefWidth="400.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
+            <TextField fx:id="txtSMIp" layoutX="155.0" layoutY="444.0" prefHeight="45.0" prefWidth="349.0" promptText="IP Connection Address" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="16.0" />
                </font>
@@ -38,7 +39,7 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <TextField fx:id="txtNewOUBalance" layoutX="220.0" layoutY="428.0" prefHeight="45.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
+            <TextField fx:id="txtSMPort" layoutX="511.0" layoutY="444.0" prefHeight="45.0" prefWidth="146.0" promptText="Port Number" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="16.0" />
                </font>
@@ -46,11 +47,24 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <Text fill="WHITE" layoutX="146.0" layoutY="393.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Organisational Unit">
+            <Text fill="WHITE" layoutX="155.0" layoutY="425.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Server Config">
                <font>
                   <Font size="24.0" />
                </font>
             </Text>
+            <JFXButton fx:id="btnSMExport" layoutX="670.0" layoutY="440.0" onAction="#exportConfig" prefHeight="51.0" prefWidth="157.0" stylesheets="@../css/Login.css" text="Export" textFill="WHITE">
+               <font>
+                  <Font size="24.0" />
+               </font>
+               <padding>
+                  <Insets left="-25.0" />
+               </padding>
+            </JFXButton>
+            <ImageView fitHeight="38.0" fitWidth="38.0" layoutX="778.0" layoutY="447.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/login.png" />
+               </image>
+            </ImageView>
          </children>
       </AnchorPane>
    </center>

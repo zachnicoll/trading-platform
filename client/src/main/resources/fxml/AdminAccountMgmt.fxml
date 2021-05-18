@@ -5,27 +5,16 @@
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminOUMgmtController">
-   <center>
-      <TreeTableView fx:id="tblOU" prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
-         <columns>
-            <TreeTableColumn fx:id="tblcolAMStaffNo" editable="false" prefWidth="90.0" text="Staff No" />
-            <TreeTableColumn fx:id="tblcolAMName" editable="false" prefWidth="200.0" text="Name" />
-            <TreeTableColumn fx:id="tblcolAMOU" editable="false" minWidth="3.0" prefWidth="200.0" text="Organisational Unit" />
-            <TreeTableColumn fx:id="tblcolAMEdit" minWidth="0.0" prefWidth="100.0" text="Edit" />
-            <TreeTableColumn fx:id="tblcolAMDelete" prefWidth="100.0" text="Delete" />
-         </columns>
-      </TreeTableView>
-   </center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminAccountMgmtController">
    <left>
       <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
    </left>
@@ -92,4 +81,14 @@
          </children>
       </AnchorPane>
    </top>
+   <center>
+      <TableView fx:id="tblAM" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="200.0" text="Employee Name" />
+          <TableColumn fx:id="tblcolAMPassword" editable="false" prefWidth="190.0" text="Employee Password" />
+            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="200.0" text="Organisational Unit" />
+            <TableColumn fx:id="tblcolAMDelete" editable="false" prefWidth="100.0" text="Delete" />
+        </columns>
+      </TableView>
+   </center>
 </BorderPane>

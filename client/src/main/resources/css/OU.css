@@ -9,3 +9,23 @@
 #btnAddOU:hover {
     -fx-background-color: #475369;
 }
+
+#btnOMDeleteOU {
+    -fx-background-color: #e95d5d;
+}
+
+#btnOMDeleteOU:hover {
+    -fx-background-color: #D15353;
+}
+
+#btnOMAssetAdd {
+    -fx-graphic: url("../images/add.png");
+    -fx-background-size: 30;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 100%;
+    -fx-background-color: #4F5D75;
+}
+
+#btnOMAssetAdd:hover {
+    -fx-background-color: #475369;
+}

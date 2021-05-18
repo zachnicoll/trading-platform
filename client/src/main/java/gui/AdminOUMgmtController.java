@@ -58,13 +58,19 @@ public class AdminOUMgmtController {
     private JFXComboBox<AssetType> comboOMAssetAdd;
 
     @FXML
-    private TreeTableColumn<?, ?> tblcolOMAssets;
+    private TextField txtOUNewAssetQuantity;
 
     @FXML
-    private TreeTableColumn<?, ?> tblcolOMQuantity;
+    private TableView<?> tblOM;
 
     @FXML
-    private TreeTableColumn<?, ?> tblcolOMDelete;
+    private TableColumn<?, ?> tblcolOMAssets;
+
+    @FXML
+    private TableColumn<?, ?> tblcolOMQuantity;
+
+    @FXML
+    private TableColumn<?, ?> tblcolOMDelete;
 
     @FXML
     public void initialize()

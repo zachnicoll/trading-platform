@@ -3,9 +3,9 @@
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -131,14 +131,13 @@
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
-                  <TreeTableView prefHeight="249.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
-                     <columns>
-                        <TreeTableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="440.0" text="Assets" />
-                        <TreeTableColumn fx:id="tblcolOMQuantity" prefWidth="150.0" text="Quantity" />
-                        <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
-                        <TreeTableColumn fx:id="tblcolOMDelete" editable="false" prefWidth="100.0" text="Delete" />
-                     </columns>
-                  </TreeTableView>
+                  <TableView fx:id="tblOM" prefHeight="200.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
+                    <columns>
+                      <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="440.0" text="Assets" />
+                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="150.0" text="Quantity" />
+                        <TableColumn fx:id="tblcolOMDelete" editable="false" prefWidth="100.0" text="Delete" />
+                    </columns>
+                  </TableView>
                </children>
             </AnchorPane>
          </children>

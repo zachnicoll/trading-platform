@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TableColumn;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -51,22 +52,19 @@ import java.util.UUID;
 public class AdminAssetMgmtController {
 
     @FXML
-    private TreeTableView<?> tblOU;
-
-    @FXML
-    private TreeTableColumn<?, ?> tblcolAMName;
-
-    @FXML
-    private TreeTableColumn<?, ?> tblcolAMUuid;
-
-    @FXML
-    private TreeTableColumn<?, ?> tblcolAMDelete;
-
-    @FXML
     private TextField txtAssMAssetName;
 
     @FXML
     private JFXButton btnAssMNewAsset;
+
+    @FXML
+    private TableColumn<?, ?> tblcolAssMAsset;
+
+    @FXML
+    private TableColumn<?, ?> tblcolAssMUuid;
+
+    @FXML
+    private TableColumn<?, ?> tblcolAssMDelete;
 
 
 

@@ -2,9 +2,9 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.TreeTableColumn?>
-<?import javafx.scene.control.TreeTableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.shape.Rectangle?>
@@ -12,15 +12,6 @@
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminAssetMgmtController">
-   <center>
-      <TreeTableView fx:id="tblOU" prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
-         <columns>
-            <TreeTableColumn fx:id="tblcolAMName" editable="false" prefWidth="290.0" text="Asset Name" />
-            <TreeTableColumn fx:id="tblcolAMUuid" editable="false" prefWidth="300.0" text="UUID" />
-            <TreeTableColumn fx:id="tblcolAMDelete" editable="false" prefWidth="100.0" text="Delete" />
-         </columns>
-      </TreeTableView>
-   </center>
    <left>
       <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
    </left>
@@ -59,4 +50,13 @@
          </children>
       </AnchorPane>
    </top>
+   <center>
+      <TableView prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="tblcolAssMAsset" editable="false" prefWidth="295.0" text="Asset" />
+          <TableColumn fx:id="tblcolAssMUuid" editable="false" prefWidth="295.0" text="Asset UUID" />
+            <TableColumn fx:id="tblcolAssMDelete" editable="false" prefWidth="100.0" text="Delete" />
+        </columns>
+      </TableView>
+   </center>
 </BorderPane>

@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.TreeTableColumn?>
 <?import javafx.scene.control.TreeTableView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminOUMgmtController">
-   <center>
-      <TreeTableView prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
-         <columns>
-            <TreeTableColumn prefWidth="75.0" text="Column X" />
-            <TreeTableColumn prefWidth="150.0" text="Column X" />
-            <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
-            <TreeTableColumn prefWidth="149.0" text="Column X" />
-         </columns>
-      </TreeTableView>
-   </center>
    <left>
       <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER">
          <children>
@@ -35,8 +29,8 @@
    <bottom>
       <AnchorPane prefHeight="150.0" prefWidth="980.0" BorderPane.alignment="CENTER">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="90.0" layoutX="145.0" layoutY="30.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
-            <TextField fx:id="txtNewOUName" layoutX="163.0" layoutY="48.0" prefHeight="54.0" prefWidth="400.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="108.0" layoutX="145.0" layoutY="20.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
+            <TextField fx:id="txtNewOUName" layoutX="163.0" layoutY="65.0" prefHeight="45.0" prefWidth="400.0" promptText="Organisational Unit Name" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="18.0" />
                </font>
@@ -44,7 +38,7 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <TextField fx:id="txtNewOUBalance" layoutX="572.0" layoutY="48.0" prefHeight="54.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
+            <TextField fx:id="txtNewOUBalance" layoutX="572.0" layoutY="65.0" prefHeight="45.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="18.0" />
                </font>
@@ -52,7 +46,12 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="47.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+            <Text fill="WHITE" layoutX="163.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Organisation">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
          </children>
       </AnchorPane>
    </bottom>
@@ -67,4 +66,75 @@
          </children>
       </AnchorPane>
    </top>
+   <center>
+      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
+               <children>
+                  <JFXButton fx:id="btnOMAssetAdd" layoutX="591.0" layoutY="99.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="45.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </JFXComboBox>
+                  <TextField fx:id="txtOUExistingBalance" layoutX="308.0" layoutY="45.0" prefHeight="45.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </TextField>
+                  <JFXButton fx:id="btnOMDeleteOU" layoutX="513.0" layoutY="45.0" onAction="#exportConfig" prefHeight="45.0" prefWidth="148.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                     <padding>
+                        <Insets left="-35.0" />
+                     </padding>
+                  </JFXButton>
+                  <ImageView fitHeight="38.0" fitWidth="38.0" layoutX="614.0" layoutY="49.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/delete.png" />
+                     </image>
+                  </ImageView>
+                  <JFXComboBox fx:id="comboOUSelect1" focusColor="#4f5d75" layoutX="307.0" layoutY="105.0" prefHeight="45.0" prefWidth="275.0" promptText="Select an Asset to Add" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets left="15.0" />
+                     </padding>
+                  </JFXComboBox>
+                  <Text fill="WHITE" layoutX="15.0" layoutY="33.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Manage Existing Organisational Unit">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
+                  <Text fill="#ef8354" layoutX="186.0" layoutY="133.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an Asset:">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="45.0" prefWidth="690.0" style="-fx-background-color: #2d3142;" />
+            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <TreeTableView prefHeight="249.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
+                     <columns>
+                        <TreeTableColumn editable="false" prefWidth="440.0" text="Assets" />
+                        <TreeTableColumn prefWidth="150.0" text="Quantity" />
+                        <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
+                        <TreeTableColumn editable="false" prefWidth="100.0" text="Delete" />
+                     </columns>
+                  </TreeTableView>
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+   </center>
 </BorderPane>

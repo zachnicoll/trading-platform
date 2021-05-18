@@ -18,8 +18,8 @@
          <columns>
             <TreeTableColumn fx:id="tblcolAMName" editable="false" prefWidth="245.0" text="Asset Name" />
             <TreeTableColumn fx:id="tblcolAMOU" editable="false" minWidth="3.0" prefWidth="245.0" text="Organisational Unit" />
-            <TreeTableColumn fx:id="tblcolAMEdit" minWidth="0.0" prefWidth="100.0" text="Edit" />
-            <TreeTableColumn fx:id="tblcolAMDelete" prefWidth="100.0" text="Delete" />
+            <TreeTableColumn fx:id="tblcolAMEdit" minWidth="0.0" prefWidth="100.0" text="Quantity" />
+            <TreeTableColumn fx:id="tblcolAMDelete" editable="false" prefWidth="100.0" text="Delete" />
          </columns>
       </TreeTableView>
    </center>

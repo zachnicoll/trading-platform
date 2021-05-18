@@ -2,6 +2,7 @@ package database.datasources;
 
 import database.DBConnection;
 import models.OrganisationalUnit;
+import models.ResolvedTrade;
 
 import java.security.InvalidParameterException;
 import java.sql.Connection;
@@ -41,12 +42,30 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
         return resultSetToObject(results);
     }
 
-    public ArrayList<OrganisationalUnit> getAll() {
-        return null;
+    public ArrayList<OrganisationalUnit> getAll() throws SQLException {
+        PreparedStatement getAllOrgUnits = dbConnection.prepareStatement(
+                "SELECT * FROM \"organisationalUnits\" ORDER BY \"organisationalUnitName\" ASC;"
+        );
+        ResultSet results = getAllOrgUnits.executeQuery();
+
+        ArrayList<OrganisationalUnit> allOrganisationalUnits = new ArrayList<>();
+        while (results.next()) {
+            OrganisationalUnit unit = resultSetToObject(results);
+            allOrganisationalUnits.add(unit);
+        }
+        return allOrganisationalUnits;
     }
 
-    public void createNew(OrganisationalUnit newObject) {
+    public void createNew(OrganisationalUnit newObject) throws SQLException {
+        PreparedStatement createNew = dbConnection.prepareStatement(
+                "INSERT INTO \"organisationalUnits\" VALUES (uuid(?),?,?);"
+        );
 
+        createNew.setString(1, newObject.getUnitId().toString());
+        createNew.setString(2, newObject.getUnitName());
+        createNew.setFloat(3, newObject.getCreditBalance());
+
+        createNew.execute();
     }
 
     public void updateByAttribute(UUID id, String attribute, OrganisationalUnit value) throws SQLException, InvalidParameterException {
@@ -70,11 +89,22 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
-        return false;
+        PreparedStatement checkIfExist = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"organisationalUnits\" WHERE \"organisationalUnitId\"::text = ?);"
+        );
+
+        checkIfExist.setString(1, id.toString());
+
+        //checks if query returns a result set with at least one element, indicating a row exists with the given id
+        return checkIfExist.executeQuery().next();
     }
 
     public void deleteById(UUID id) throws SQLException {
-
+        PreparedStatement deleteStatement = dbConnection.prepareStatement(
+                "DELETE FROM \"organisationalUnits\" WHERE \"organisationalUnitId\"::text = ?;"
+        );
+        deleteStatement.setString(1, id.toString());
+        deleteStatement.execute();
     }
 
     public String getUpdateByAttributeQuery(UUID id, String attribute, OrganisationalUnit value) throws SQLException, InvalidParameterException {

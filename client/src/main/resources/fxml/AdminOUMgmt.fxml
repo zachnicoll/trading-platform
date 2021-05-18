@@ -46,7 +46,7 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
             <Text fill="WHITE" layoutX="163.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Organisation">
                <font>
                   <Font size="24.0" />
@@ -71,7 +71,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <JFXButton fx:id="btnOMAssetAdd" layoutX="591.0" layoutY="99.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXButton fx:id="btnOMAssetAdd" layoutX="591.0" layoutY="99.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
                   <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="45.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />
@@ -88,7 +88,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
-                  <JFXButton fx:id="btnOMDeleteOU" layoutX="513.0" layoutY="45.0" onAction="#exportConfig" prefHeight="45.0" prefWidth="148.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                  <JFXButton fx:id="btnOMDeleteOU" layoutX="513.0" layoutY="45.0" prefHeight="45.0" prefWidth="148.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
                      <font>
                         <Font size="24.0" />
                      </font>
@@ -101,7 +101,7 @@
                         <Image url="@../images/delete.png" />
                      </image>
                   </ImageView>
-                  <JFXComboBox fx:id="comboOUSelect1" focusColor="#4f5d75" layoutX="307.0" layoutY="105.0" prefHeight="45.0" prefWidth="275.0" promptText="Select an Asset to Add" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+                  <JFXComboBox fx:id="comboOMAssetAdd" focusColor="#4f5d75" layoutX="307.0" layoutY="105.0" prefHeight="45.0" prefWidth="275.0" promptText="Select an Asset to Add" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -121,15 +121,14 @@
                   </Text>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="45.0" prefWidth="690.0" style="-fx-background-color: #2d3142;" />
             <AnchorPane prefHeight="200.0" prefWidth="200.0">
                <children>
                   <TreeTableView prefHeight="249.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
                      <columns>
-                        <TreeTableColumn editable="false" prefWidth="440.0" text="Assets" />
-                        <TreeTableColumn prefWidth="150.0" text="Quantity" />
+                        <TreeTableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="440.0" text="Assets" />
+                        <TreeTableColumn fx:id="tblcolOMQuantity" prefWidth="150.0" text="Quantity" />
                         <TreeTableColumn minWidth="0.0" prefWidth="0.0" text="Column X" />
-                        <TreeTableColumn editable="false" prefWidth="100.0" text="Delete" />
+                        <TreeTableColumn fx:id="tblcolOMDelete" editable="false" prefWidth="100.0" text="Delete" />
                      </columns>
                   </TreeTableView>
                </children>

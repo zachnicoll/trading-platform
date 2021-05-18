@@ -123,6 +123,11 @@
                         </JFXButton>
                      </children>
                   </VBox>
+                  <ImageView fitHeight="94.0" fitWidth="104.0" layoutX="103.0" layoutY="31.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/logo.png" />
+                     </image>
+                  </ImageView>
                </children>
             </AnchorPane>
          </left>

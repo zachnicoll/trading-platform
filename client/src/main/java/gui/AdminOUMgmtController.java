@@ -20,6 +20,7 @@ import com.jfoenix.controls.JFXComboBox;
 
 import javafx.event.ActionEvent;
 import models.Asset;
+import models.AssetType;
 import models.OrganisationalUnit;
 
 import java.io.File;
@@ -54,7 +55,7 @@ public class AdminOUMgmtController {
     private JFXButton btnOMDeleteOU;
 
     @FXML
-    private JFXComboBox<?> comboOMAssetAdd;
+    private JFXComboBox<AssetType> comboOMAssetAdd;
 
     @FXML
     private TreeTableColumn<?, ?> tblcolOMAssets;
@@ -68,10 +69,8 @@ public class AdminOUMgmtController {
     @FXML
     public void initialize()
     {
-        //Initialize table
 
-
-        //Initialize combobox
+        //Initialize org combobox
         ObservableList<OrganisationalUnit> orgNames = FXCollections.observableArrayList();
 
         //TODO GET ORG LIST FROM DATABASE
@@ -86,6 +85,23 @@ public class AdminOUMgmtController {
         }
 
         comboOUSelect.setItems(orgNames);
+
+
+        //Initialize asset combobox
+        ObservableList<AssetType> assetNames = FXCollections.observableArrayList();
+
+        //TODO GET ASSETTYPE LIST FROM DATABASE
+        List<AssetType> temp2 = new ArrayList<AssetType>();
+        temp2.add(new AssetType(UUID. randomUUID(), "testasset"));
+        temp2.add(new AssetType(UUID. randomUUID(), "testasset1234"));
+        temp2.add(new AssetType(UUID. randomUUID(), "testasset5678"));
+
+        for(AssetType anAsset:temp2)
+        {
+            assetNames.add(anAsset);
+        }
+
+        comboOMAssetAdd.setItems(assetNames);
     }
 
 }

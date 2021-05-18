@@ -57,10 +57,7 @@ public class AdminAssetMgmtController {
     private TreeTableColumn<?, ?> tblcolAMName;
 
     @FXML
-    private TreeTableColumn<?, ?> tblcolAMOU;
-
-    @FXML
-    private TreeTableColumn<?, ?> tblcolAMEdit;
+    private TreeTableColumn<?, ?> tblcolAMUuid;
 
     @FXML
     private TreeTableColumn<?, ?> tblcolAMDelete;
@@ -71,37 +68,6 @@ public class AdminAssetMgmtController {
     @FXML
     private JFXButton btnAssMNewAsset;
 
-    @FXML
-    private JFXComboBox<OrganisationalUnit> comboAssMOU;
-
-    @FXML
-    public void initialize()
-    {
-        //Initialize table
 
 
-        //Initialize combobox
-        ObservableList<OrganisationalUnit> orgNames = FXCollections.observableArrayList();
-
-        //TODO GET ORG LIST FROM DATABASE
-        List<OrganisationalUnit> temp = new ArrayList<OrganisationalUnit>();
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit", 10000f, new ArrayList<Asset>()));
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit1234", 10000f, new ArrayList<Asset>()));
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit5678", 10000f, new ArrayList<Asset>()));
-
-        for(OrganisationalUnit anOrg:temp)
-        {
-            orgNames.add(anOrg);
-        }
-
-        comboAssMOU.setItems(orgNames);
-    }
-
-    public void populateAssetMgmtCombo(ActionEvent event) throws IOException {
-        ArrayList<AssetType> temp = new ArrayList<>();
-        temp.add(new AssetType(UUID. randomUUID(), "a1"));
-        temp.add(new AssetType(UUID. randomUUID(), "a2"));
-
-
-    }
 }

@@ -18,10 +18,9 @@
    <center>
       <TreeTableView fx:id="tblOU" prefHeight="476.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
          <columns>
-            <TreeTableColumn fx:id="tblcolAMStaffNo" editable="false" prefWidth="90.0" text="Staff No" />
             <TreeTableColumn fx:id="tblcolAMName" editable="false" prefWidth="200.0" text="Name" />
+            <TreeTableColumn fx:id="tblcolAMPassword" prefWidth="190.0" text="Password" />
             <TreeTableColumn fx:id="tblcolAMOU" editable="false" minWidth="3.0" prefWidth="200.0" text="Organisational Unit" />
-            <TreeTableColumn fx:id="tblcolAMEdit" minWidth="0.0" prefWidth="100.0" text="Edit" />
             <TreeTableColumn fx:id="tblcolAMDelete" prefWidth="100.0" text="Delete" />
          </columns>
       </TreeTableView>

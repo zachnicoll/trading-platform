@@ -46,4 +46,9 @@ public class AssetType {
     public UUID getAssetTypeId() {
         return assetTypeId;
     }
+
+    public String toString()
+    {
+        return this.assetName;
+    }
 }

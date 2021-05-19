@@ -16,7 +16,7 @@
          <center>
             <AnchorPane fx:id="UserMainPane" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" BorderPane.alignment="CENTER">
                <children>
-                  <Text fill="WHITE" layoutX="126.0" layoutY="342.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to the Trading Platform!" textAlignment="CENTER" wrappingWidth="728.12109375">
+                  <Text fx:id="lblWelcome" fill="WHITE" layoutX="126.0" layoutY="272.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome to the Trading Platform!" textAlignment="CENTER" wrappingWidth="728.12109375">
                      <font>
                         <Font size="72.0" />
                      </font>

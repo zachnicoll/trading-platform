@@ -36,4 +36,11 @@ public class ClientInfo {
         return single_instance;
     }
 
+    public void saveClientInfo(AuthenticationToken authToken, User currentUser)
+    {
+        this.authToken = authToken;
+        this.currentUser = currentUser;
+    }
+
+
 }

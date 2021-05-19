@@ -136,8 +136,7 @@ public class LoginController {
             {
                 ClientInfo clientInfo = ClientInfo.getInstance();
 
-                clientInfo.currentUser = theUser;
-                clientInfo.authToken = authToken;
+                clientInfo.saveClientInfo(authToken, theUser);
 
                 //Close login stage
                 Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
@@ -156,6 +155,10 @@ public class LoginController {
             //login is from an admin
             else if((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.ADMIN))
             {
+                ClientInfo clientInfo = ClientInfo.getInstance();
+
+                clientInfo.saveClientInfo(authToken, theUser);
+
                 //Close login stage
                 Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
                 loginStage.close();

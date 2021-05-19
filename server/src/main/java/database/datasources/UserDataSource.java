@@ -3,8 +3,10 @@ package database.datasources;
 import database.DBConnection;
 import models.Credentials;
 import models.AccountType;
+import models.ResolvedTrade;
 import models.User;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -76,11 +78,24 @@ public class UserDataSource extends AbstractDataSource<User> {
         );
     }
 
-    public ArrayList<User> getAll() {
-        return null;
+    public ArrayList<User> getAll() throws SQLException {
+
+        PreparedStatement getAllUsers = dbConnection.prepareStatement(
+                "SELECT * FROM \"users\" ORDER BY \"userType\", \"username\" ASC;"
+        );
+        ResultSet results = getAllUsers.executeQuery();
+
+        ArrayList<User> allUsers = new ArrayList<>();
+        while (results.next()) {
+            User aUser = resultSetToObject(results);
+            allUsers.add(aUser);
+        }
+
+        return allUsers;
     }
 
-    public void createNew(User newObject) {
+    public void createNew(User newObject) throws SQLException {
+
     }
 
     public void createNew(User newObject, String password) throws SQLException {
@@ -97,15 +112,44 @@ public class UserDataSource extends AbstractDataSource<User> {
         createNew.execute();
     }
 
-    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
+    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException, InvalidParameterException {
 
+        Object attrValue;
+        switch (attribute) {
+            case "organisationalUnitId":
+                attrValue = value.getOrganisationalUnitId();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateByAttribute = dbConnection.prepareStatement(
+                "UPDATE \"users\" SET \"?\" = uuid(?) WHERE \"userId\" = uuid(?);"
+        );
+
+
+        updateByAttribute.setString(1, attribute);
+        updateByAttribute.setString(2, attrValue.toString());
+        updateByAttribute.setString(3, id.toString());
+
+        updateByAttribute.execute();
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
-        return false;
+        PreparedStatement createQueryUser = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE \"userId\" = uuid(?));"
+        );
+        createQueryUser.setString(1, id.toString());
+
+        return createQueryUser.executeQuery().next();
     }
 
     public void deleteById(UUID id) throws SQLException {
+        PreparedStatement deleteUser = dbConnection.prepareStatement(
+                "DELETE FROM \"users\" WHERE \"userId\" = uuid(?);"
+        );
+        deleteUser.setString(1, id.toString());
 
+        deleteUser.execute();
     }
 }

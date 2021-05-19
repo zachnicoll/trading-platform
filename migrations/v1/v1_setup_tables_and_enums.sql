@@ -10,64 +10,65 @@ CREATE TYPE "tradeType" AS ENUM (
 
 CREATE TABLE "users" (
   "userId" uuid PRIMARY KEY,
-  "username" varchar UNIQUE,
-  "userType" "accountType",
-  "password" varchar,
-  "organisationalUnitId" uuid
+  "username" varchar UNIQUE NOT NULL,
+  "userType" "accountType" NOT NULL,
+  "password" varchar NOT NULL,
+  "organisationalUnitId" uuid NOT NULL
 );
 
 CREATE TABLE "organisationalUnits" (
   "organisationalUnitId" uuid PRIMARY KEY,
-  "organisationalUnitName" varchar UNIQUE,
-  "creditBalance" float
+  "organisationalUnitName" varchar UNIQUE NOT NULL,
+  "creditBalance" float NOT NULL
 );
 
 CREATE TABLE "assetTypes" (
   "assetTypeId" uuid PRIMARY KEY,
-  "assetName" varchar UNIQUE
+  "assetName" varchar UNIQUE NOT NULL
 );
 
 CREATE TABLE "organisationalUnitAssets" (
   "organisationalUnitId" uuid,
   "assetTypeId" uuid,
-  "quantity" int,
+  "quantity" int NOT NULL,
   PRIMARY KEY ("organisationalUnitId", "assetTypeId")
 );
 
 CREATE TABLE "openTrades" (
   "tradeId" uuid PRIMARY KEY,
-  "assetTypeId" uuid,
-  "organisationalUnitId" uuid,
-  "tradeType" "tradeType",
-  "quantity" int,
-  "price" float,
-  "dateOpened" timestamp
+  "assetTypeId" uuid NOT NULL,
+  "organisationalUnitId" uuid NOT NULL,
+  "tradeType" "tradeType" NOT NULL,
+  "quantity" int NOT NULL,
+  "price" float NOT NULL,
+  "dateOpened" timestamp NOT NULL
 );
 
 CREATE TABLE "resolvedTrades" (
   "buyTradeId" uuid,
   "sellTradeId" uuid,
-  "buyOrgUnitId" uuid,
-  "sellOrgUnitId" uuid,
-  "assetTypeId" uuid,
-  "quantity" int,
-  "price" float,
-  "dateResolved" timestamp,
+  "buyOrgUnitId" uuid NOT NULL,
+  "sellOrgUnitId" uuid NOT NULL,
+  "assetTypeId" uuid NOT NULL,
+  "quantity" int NOT NULL,
+  "price" float NOT NULL,
+  "dateResolved" timestamp NOT NULL,
+  CHECK ("quantity" > 0 AND "price" > 0),
   PRIMARY KEY ("buyTradeId", "sellTradeId")
 );
 
-ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
+ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId") ON DELETE CASCADE;
 
-ALTER TABLE "users" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "users" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId") ON DELETE CASCADE;
 
-ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "organisationalUnitAssets" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId") ON DELETE CASCADE;
 
-ALTER TABLE "openTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
+ALTER TABLE "openTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId") ON DELETE CASCADE;
 
-ALTER TABLE "openTrades" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "openTrades" ADD FOREIGN KEY ("organisationalUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId") ON DELETE CASCADE;
 
-ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("buyOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("buyOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId") ON DELETE CASCADE;
 
-ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("sellOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId");
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("sellOrgUnitId") REFERENCES "organisationalUnits" ("organisationalUnitId") ON DELETE CASCADE;
 
-ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId");
+ALTER TABLE "resolvedTrades" ADD FOREIGN KEY ("assetTypeId") REFERENCES "assetTypes" ("assetTypeId") ON DELETE CASCADE;

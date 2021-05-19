@@ -12,12 +12,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import models.ClientInfo;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class AdminMainMenuController implements Initializable {
+public class AdminMainMenuController{
 
     @FXML
     private AnchorPane adminMenuAnchorId;
@@ -77,7 +78,11 @@ public class AdminMainMenuController implements Initializable {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
+
             //do stuff
+            ClientInfo clientInfo = ClientInfo.getInstance();
+            clientInfo.currentUser = null;
+            clientInfo.authToken = null;
 
             //Close menu stage
             Stage loginStage = (Stage) adminMenuAnchorId.getScene().getWindow();
@@ -88,14 +93,6 @@ public class AdminMainMenuController implements Initializable {
 
         }
     }
-
-
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //TODO
-    }
-
 
 
 }

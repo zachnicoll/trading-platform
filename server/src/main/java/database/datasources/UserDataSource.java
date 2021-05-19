@@ -6,6 +6,7 @@ import models.AccountType;
 import models.ResolvedTrade;
 import models.User;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -94,16 +95,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void createNew(User newObject) throws SQLException {
-        PreparedStatement createUser = dbConnection.prepareStatement(
-                "INSERT INTO \"users\" VALUES (uuid(?), ?, ?, ?, uuid(?));"
-        );
-        createUser.setString(1, newObject.getUserId().toString());
-        createUser.setString(2, newObject.getUsername().toString());
-        createUser.setString(3, newObject.getAccountType().toString());
-        createUser.setString(4, newObject.getAccountType().toString()); //TODO ASK ZACH HOW TO PUT PASSWORD IN - TEMP VAR FOR NOW
-        createUser.setString(5, newObject.getOrganisationalUnitId().toString());
 
-        createUser.execute();
     }
 
     public void createNew(User newObject, String password) throws SQLException {
@@ -120,13 +112,32 @@ public class UserDataSource extends AbstractDataSource<User> {
         createNew.execute();
     }
 
-    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
-        //TODO CONFIRM WHAT THIS IS MEANT TO DO
+    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException, InvalidParameterException {
+
+        Object attrValue;
+        switch (attribute) {
+            case "organisationalUnitId":
+                attrValue = value.getOrganisationalUnitId();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateByAttribute = dbConnection.prepareStatement(
+                "UPDATE \"users\" SET \"?\" = uuid(?) WHERE \"userId\" = uuid(?);"
+        );
+
+
+        updateByAttribute.setString(1, attribute);
+        updateByAttribute.setString(2, attrValue.toString());
+        updateByAttribute.setString(3, id.toString());
+
+        updateByAttribute.execute();
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
         PreparedStatement createQueryUser = dbConnection.prepareStatement(
-                "SELECT * FROM \"users\" WHERE \"userId\" = uuid(?);"
+                "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE \"userId\" = uuid(?));"
         );
         createQueryUser.setString(1, id.toString());
 

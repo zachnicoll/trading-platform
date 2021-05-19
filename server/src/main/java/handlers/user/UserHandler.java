@@ -3,13 +3,28 @@ package handlers.user;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.UserDataSource;
+
 import handlers.AbstractRequestHandler;
 import models.AccountType;
+import models.AuthenticationToken;
 import models.User;
 import models.partial.PartialUser;
 
+
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.UUID;
+
+import database.DBConnection;
+import models.Asset;
+import models.ResolvedTrade;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -23,10 +38,15 @@ public class UserHandler extends AbstractRequestHandler {
         super(requiresAuth);
     }
 
+    private final Connection dbConnection = DBConnection.getInstance();
+
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        User user = new User(UUID.randomUUID(), "user_123", AccountType.USER, UUID.randomUUID());
-        writeResponseBody(exchange, user);
+    protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
+
+        String userId = getUserId(exchange);
+        UserDataSource user = new UserDataSource();
+
+        writeResponseBody(exchange, user.getById(UUID.fromString(userId)));
     }
 
     @Override

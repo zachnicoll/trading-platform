@@ -1,5 +1,6 @@
 package gui;
 
+import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.sun.glass.ui.CommonDialogs;
 import javafx.fxml.FXML;
@@ -18,8 +19,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import models.AccountType;
+import models.AuthenticationToken;
+import models.Credentials;
+import models.User;
+import models.ClientInfo;
+
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.time.Duration;
 
 public class LoginController {
 
@@ -71,47 +83,83 @@ public class LoginController {
     }
 
     @FXML
-    private void submitCredentials(ActionEvent event)  throws IOException {
+    private void submitCredentials(ActionEvent event) throws IOException, InterruptedException {
 
-        //TODO implement submit checks
         String loginUsername;
         String loginPassword;
 
         loginUsername = txtUsername.getText();
         loginPassword = txtPassword.getText();
 
-        //login is from a user
-        if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {
+        Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
-            //Close login stage
-            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-            loginStage.close();
+        Gson gson = new Gson();
 
-            //Create new User Menu stage
-            Stage UserMainMenuStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
-            UserMainMenuStage.setTitle("Main Menu");
-            Scene UserMainMenuScene = new Scene(root, 1280, 720);
-            UserMainMenuStage.setScene(UserMainMenuScene);
-            UserMainMenuStage.show();
-            UserMainMenuStage.setResizable(false);
+        String loginRequestURL = "http://localhost:8000/login/";
 
-        }
-        //login is from an admin
-        else if((loginUsername.equals("admin")) && (loginPassword.equals("password")))
+        HttpClient loginClient = HttpClient.newBuilder().build();
+        HttpRequest loginRequest = HttpRequest.newBuilder()
+                .uri(URI.create(loginRequestURL))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(loginInfo)))
+                .build();
+
+        HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
+
+        if (loginResponse.statusCode() == 200)
         {
-            //Close login stage
-            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-            loginStage.close();
 
-            //Create new User Menu stage
-            Stage AdminMainMenuStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
-            AdminMainMenuStage.setTitle("Admin Main Menu");
-            Scene AdminMainMenuScene = new Scene(root, 1280, 720);
-            AdminMainMenuStage.setScene(AdminMainMenuScene);
-            AdminMainMenuStage.show();
-            AdminMainMenuStage.setResizable(false);
+            AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
+
+            String userRequestURL = "http://localhost:8000/user/";
+
+            HttpClient userClient = HttpClient.newBuilder().build();
+            HttpRequest userRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(userRequestURL))
+                    .GET().setHeader("Authorization", "Bearer "+authToken.toString())
+                    .build();
+
+            HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+            //login is from a user
+            if (userResponse.statusCode() == 200) {
+                User theUser = gson.fromJson(userResponse.body(), User.class);
+
+                ClientInfo clientInfo = ClientInfo.getInstance();
+                clientInfo.saveClientInfo(authToken, theUser);
+
+                if (theUser.getAccountType() == AccountType.USER) {
+                    //Close login stage
+                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                    loginStage.close();
+
+                    //Create new User Menu stage
+                    Stage UserMainMenuStage = new Stage();
+                    Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+                    UserMainMenuStage.setTitle("Main Menu");
+                    Scene UserMainMenuScene = new Scene(root, 1280, 720);
+                    UserMainMenuStage.setScene(UserMainMenuScene);
+                    UserMainMenuStage.show();
+                    UserMainMenuStage.setResizable(false);
+                }
+                //login is from an admin
+                else if (theUser.getAccountType() == AccountType.ADMIN) {
+                    //Close login stage
+                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                    loginStage.close();
+
+                    //Create new User Menu stage
+                    Stage AdminMainMenuStage = new Stage();
+                    Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
+                    AdminMainMenuStage.setTitle("Admin Main Menu");
+                    Scene AdminMainMenuScene = new Scene(root, 1280, 720);
+                    AdminMainMenuStage.setScene(AdminMainMenuScene);
+                    AdminMainMenuStage.show();
+                    AdminMainMenuStage.setResizable(false);
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not fetch User information.", ButtonType.OK);
+                alert.showAndWait();
+            }
         }
         else
         {
@@ -120,6 +168,8 @@ public class LoginController {
             txtUsername.clear();
             txtPassword.clear();
         }
+
+
     }
 
 

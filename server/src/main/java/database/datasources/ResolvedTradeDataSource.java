@@ -4,6 +4,7 @@ import database.DBConnection;
 import models.Asset;
 import models.ResolvedTrade;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -82,7 +83,36 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         createResolvedTrade.execute();
     }
 
-    public void updateByAttribute(UUID buyId, String attribute, ResolvedTrade value) {
+    public void updateByAttribute(UUID buyId, String attribute, ResolvedTrade value) throws SQLException {
+        //TODO: DELETE ONCE FIXED
+    }
+
+    public void updateByAttribute(UUID buyId, UUID sellId, String attribute, ResolvedTrade value) throws SQLException, InvalidParameterException  {
+
+        Object attrValue;
+
+        switch (attribute) {
+            case "quantity":
+                attrValue = value.getQuantity();
+                break;
+            case "price":
+                attrValue = value.getPrice();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateByAttribute = dbConnection.prepareStatement(
+                    "UPDATE \"resolvedTrades\" SET \"(?)\" = (?) WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+            );
+
+
+        updateByAttribute.setString(1, attribute);
+        updateByAttribute.setString(2, attrValue.toString());
+        updateByAttribute.setString(3, buyId.toString());
+        updateByAttribute.setString(4, sellId.toString());
+
+        updateByAttribute.execute();
 
     }
 

@@ -93,27 +93,26 @@ public class LoginController {
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
+        Gson loginGson = new Gson();
+
         String loginRequestURL = "http://localhost:8000/login/";
 
         HttpClient loginClient = HttpClient.newBuilder().build();
         HttpRequest loginRequest = HttpRequest.newBuilder()
                 .uri(URI.create(loginRequestURL))
-                .POST(HttpRequest.BodyPublishers.ofString(loginInfo.loginFormat()))
+                .POST(HttpRequest.BodyPublishers.ofString(loginGson.toJson(loginInfo)))
                 .build();
 
         HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
 
-        Gson loginGson = new Gson();
-
-        AuthenticationToken authToken = loginGson.fromJson(loginResponse.body(), AuthenticationToken.class);
-
-        //TODO remove once done
-        System.out.println(authToken.toString());
-
-
-
         if (loginResponse.statusCode() == 200)
         {
+
+            AuthenticationToken authToken = loginGson.fromJson(loginResponse.body(), AuthenticationToken.class);
+
+            //TODO remove once done
+            System.out.println(authToken.toString());
+
             String userRequestURL = "http://localhost:8000/user/";
 
             HttpClient userClient = HttpClient.newBuilder().build();
@@ -132,45 +131,45 @@ public class LoginController {
             System.out.println(theUser.getAccountType());
 
             //login is from a user
-            if ((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.USER))
-            {
-                ClientInfo clientInfo = ClientInfo.getInstance();
+            if (userResponse.statusCode() == 200) {
+                if (theUser.getAccountType() == AccountType.USER) {
+                    ClientInfo clientInfo = ClientInfo.getInstance();
 
-                clientInfo.saveClientInfo(authToken, theUser);
+                    clientInfo.saveClientInfo(authToken, theUser);
 
-                //Close login stage
-                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-                loginStage.close();
+                    //Close login stage
+                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                    loginStage.close();
 
-                //Create new User Menu stage
-                Stage UserMainMenuStage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
-                UserMainMenuStage.setTitle("Main Menu");
-                Scene UserMainMenuScene = new Scene(root, 1280, 720);
-                UserMainMenuStage.setScene(UserMainMenuScene);
-                UserMainMenuStage.show();
-                UserMainMenuStage.setResizable(false);
+                    //Create new User Menu stage
+                    Stage UserMainMenuStage = new Stage();
+                    Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+                    UserMainMenuStage.setTitle("Main Menu");
+                    Scene UserMainMenuScene = new Scene(root, 1280, 720);
+                    UserMainMenuStage.setScene(UserMainMenuScene);
+                    UserMainMenuStage.show();
+                    UserMainMenuStage.setResizable(false);
+                }
+                //login is from an admin
+                else if (theUser.getAccountType() == AccountType.ADMIN)
+                {
+                    ClientInfo clientInfo = ClientInfo.getInstance();
 
-            }
-            //login is from an admin
-            else if((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.ADMIN))
-            {
-                ClientInfo clientInfo = ClientInfo.getInstance();
+                    clientInfo.saveClientInfo(authToken, theUser);
 
-                clientInfo.saveClientInfo(authToken, theUser);
+                    //Close login stage
+                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                    loginStage.close();
 
-                //Close login stage
-                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-                loginStage.close();
-
-                //Create new User Menu stage
-                Stage AdminMainMenuStage = new Stage();
-                Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
-                AdminMainMenuStage.setTitle("Admin Main Menu");
-                Scene AdminMainMenuScene = new Scene(root, 1280, 720);
-                AdminMainMenuStage.setScene(AdminMainMenuScene);
-                AdminMainMenuStage.show();
-                AdminMainMenuStage.setResizable(false);
+                    //Create new User Menu stage
+                    Stage AdminMainMenuStage = new Stage();
+                    Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
+                    AdminMainMenuStage.setTitle("Admin Main Menu");
+                    Scene AdminMainMenuScene = new Scene(root, 1280, 720);
+                    AdminMainMenuStage.setScene(AdminMainMenuScene);
+                    AdminMainMenuStage.show();
+                    AdminMainMenuStage.setResizable(false);
+                }
             }
         }
         else

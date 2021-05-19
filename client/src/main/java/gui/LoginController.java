@@ -23,6 +23,7 @@ import models.AccountType;
 import models.AuthenticationToken;
 import models.Credentials;
 import models.User;
+import models.ClientInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -133,6 +134,10 @@ public class LoginController {
             //login is from a user
             if ((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.USER))
             {
+                ClientInfo clientInfo = ClientInfo.getInstance();
+
+                clientInfo.currentUser = theUser;
+                clientInfo.authToken = authToken;
 
                 //Close login stage
                 Stage loginStage = (Stage) loginBorderId.getScene().getWindow();

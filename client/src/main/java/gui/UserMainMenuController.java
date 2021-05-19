@@ -7,17 +7,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import models.ClientInfo;
+
 import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class UserMainMenuController implements Initializable {
+public class UserMainMenuController {
 
     @FXML
     private Label label;
@@ -41,9 +44,20 @@ public class UserMainMenuController implements Initializable {
     private JFXButton btnLogout;
 
     @FXML
+    private Text lblWelcome;
+
+    @FXML
     private AnchorPane userMenuAnchorId;
 
     private FxmlLoader pageLoader = new FxmlLoader();
+
+    @FXML
+    public void initialize()
+    {
+        ClientInfo clientInfo = ClientInfo.getInstance();
+        lblWelcome.setText("Welcome to the Trading Platform, " +clientInfo.currentUser.getUsername() + "!");
+
+    }
 
     public void sceneDashboard(ActionEvent event) throws IOException {
         Pane view = pageLoader.getPage("UserDashboard");
@@ -72,6 +86,10 @@ public class UserMainMenuController implements Initializable {
 
         if (alert.getResult() == ButtonType.YES) {
             //do stuff
+            ClientInfo clientInfo = ClientInfo.getInstance();
+
+            clientInfo.currentUser = null;
+            clientInfo.authToken = null;
 
             //Close menu stage
             Stage loginStage = (Stage) userMenuAnchorId.getScene().getWindow();
@@ -81,10 +99,7 @@ public class UserMainMenuController implements Initializable {
         }
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        //TODO
-    }
+
 
 
 

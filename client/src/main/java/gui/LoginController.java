@@ -2,6 +2,7 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
+import helpers.Client;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +28,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import static helpers.Client.clientGet;
+import static helpers.Client.clientPost;
 
 public class LoginController {
 
@@ -90,30 +94,14 @@ public class LoginController {
 
         Gson gson = new Gson();
 
-        String loginRequestURL = "http://localhost:8000/login/";
-
-        HttpClient loginClient = HttpClient.newBuilder().build();
-        HttpRequest loginRequest = HttpRequest.newBuilder()
-                .uri(URI.create(loginRequestURL))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(loginInfo)))
-                .build();
-
-        HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> loginResponse = clientPost("/login/", loginInfo);
 
         if (loginResponse.statusCode() == 200)
         {
 
             AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
 
-            String userRequestURL = "http://localhost:8000/user/";
-
-            HttpClient userClient = HttpClient.newBuilder().build();
-            HttpRequest userRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(userRequestURL))
-                    .GET().setHeader("Authorization", "Bearer "+authToken.toString())
-                    .build();
-
-            HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> userResponse = clientGet("/user/", authToken);
 
             //login is from a user
             if (userResponse.statusCode() == 200) {

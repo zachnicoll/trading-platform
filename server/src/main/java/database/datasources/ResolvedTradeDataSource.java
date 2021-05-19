@@ -103,12 +103,12 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         }
 
         PreparedStatement updateByAttribute = dbConnection.prepareStatement(
-                    "UPDATE \"resolvedTrades\" SET \"(?)\" = (?) WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+                    "UPDATE \"resolvedTrades\" SET \"?\" = ? WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
             );
 
 
         updateByAttribute.setString(1, attribute);
-        updateByAttribute.setString(2, attrValue.toString());
+        updateByAttribute.setObject(2, attrValue);
         updateByAttribute.setString(3, buyId.toString());
         updateByAttribute.setString(4, sellId.toString());
 

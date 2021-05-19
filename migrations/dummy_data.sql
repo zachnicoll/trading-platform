@@ -5,12 +5,12 @@ DO $$
 declare
 	OU1_ID uuid = uuid_generate_v4();
 	USER1_ID uuid = uuid_generate_v4();
-	USER1_PASSWORD text = 'password';
+	USER1_PASSWORD text = '$2a$12$/MOiMr/t34HY.yId62iSs.9glKuSvla4wczxRkZBfhlo6.Czz1hnK'; -- password is "password"
 	TRADE1_ID uuid = uuid_generate_v4();
 
 	OU2_ID uuid = uuid_generate_v4();
 	USER2_ID uuid = uuid_generate_v4();
-	USER2_PASSWORD text = 'password';
+	USER2_PASSWORD text = '$2a$12$/MOiMr/t34HY.yId62iSs.9glKuSvla4wczxRkZBfhlo6.Czz1hnK';
 	TRADE2_ID uuid = uuid_generate_v4();
 
 	OUASSET_ID uuid = uuid_generate_v4();
@@ -32,15 +32,15 @@ BEGIN
 		USER1_ID,
 		'sallysue123',
 		'USER',
-		digest(USER1_PASSWORD, 'sha256'),
+		USER1_PASSWORD,
 		OU1_ID
 	);
 
 	insert into "users" values (
 		USER2_ID,
 		'billybob54',
-		'USER',
-		digest(USER2_PASSWORD, 'sha256'),
+		'ADMIN',
+		USER2_PASSWORD,
 		OU2_ID
 	);
 
@@ -68,7 +68,7 @@ BEGIN
 		'SELL',
 		50,
 		1.25,
-		CURRENT_TIMESTAMP,
+		CURRENT_TIMESTAMP
 	);
 
 	insert into "openTrades" values (
@@ -78,6 +78,6 @@ BEGIN
 		'BUY',
 		80,
 		1.1,
-		CURRENT_TIMESTAMP,
+		CURRENT_TIMESTAMP
 	);
 END $$;

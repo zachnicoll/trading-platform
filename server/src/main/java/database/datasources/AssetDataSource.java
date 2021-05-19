@@ -81,8 +81,16 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     }
 
     public ArrayList<Asset> getAll() throws SQLException {
+        // Join asset names
         PreparedStatement getAll = dbConnection.prepareStatement(
-                "SELECT * FROM \"organisationalUnitAssets\";"
+                """
+                             SELECT\s
+                             oua."assetTypeId",\s
+                             oua."quantity",
+                             ast."assetName" FROM\s
+                             "organisationalUnitAssets" oua JOIN\s
+                             "assetTypes" ast ON (oua."assetTypeId" = ast."assetTypeId");
+                        """
         );
 
         ArrayList<Asset> assets = new ArrayList<>();

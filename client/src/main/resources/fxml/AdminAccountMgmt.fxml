@@ -1,19 +1,94 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXComboBox?>
+<?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.AdminAccountMgmtController">
+   <left>
+      <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <AnchorPane prefHeight="536.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <AnchorPane prefHeight="225.0" prefWidth="980.0" BorderPane.alignment="CENTER">
+         <children>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#4f5d75" height="165.0" layoutX="145.0" layoutY="14.0" stroke="#4f5d75" strokeType="INSIDE" width="690.0" />
+            <TextField fx:id="txtAMFirstName" layoutX="177.0" layoutY="61.0" prefHeight="45.0" prefWidth="275.0" promptText="First Name" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </TextField>
+            <TextField fx:id="txtAMLastName" layoutX="468.0" layoutY="61.0" prefHeight="45.0" prefWidth="275.0" promptText="Last Name" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="16.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </TextField>
+            <JFXButton fx:id="btnAMNewMember" layoutX="759.0" layoutY="87.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" text="">
+               <stylesheets>
+                  <URL value="@../../../../build/resources/main/css/OU.css" />
+                  <URL value="@../css/AM.css" />
+               </stylesheets></JFXButton>
+            <PasswordField layoutX="177.0" layoutY="120.0" prefHeight="45.0" prefWidth="275.0" promptText="Password" style="-fx-background-color: c4c4c4;">
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </PasswordField>
+            <JFXComboBox fx:id="comboAMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="120.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </JFXComboBox>
+            <Text fill="WHITE" layoutX="177.0" layoutY="47.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Member">
+               <font>
+                  <Font size="24.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
+   </bottom>
    <top>
-      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Management" BorderPane.alignment="CENTER_LEFT">
-         <font>
-            <Font size="64.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets left="25.0" top="10.0" />
-         </BorderPane.margin>
-      </Text>
+      <AnchorPane prefHeight="150.0" prefWidth="980.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" layoutX="14.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Account Management">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
    </top>
+   <center>
+      <TableView fx:id="tblAM" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+        <columns>
+          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="200.0" text="Employee Name" />
+          <TableColumn fx:id="tblcolAMPassword" editable="false" prefWidth="190.0" text="Employee Password" />
+            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="200.0" text="Organisational Unit" />
+            <TableColumn fx:id="tblcolAMDelete" editable="false" prefWidth="100.0" text="Delete" />
+        </columns>
+      </TableView>
+   </center>
 </BorderPane>

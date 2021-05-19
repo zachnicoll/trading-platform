@@ -93,14 +93,14 @@ public class LoginController {
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
-        Gson loginGson = new Gson();
+        Gson gson = new Gson();
 
         String loginRequestURL = "http://localhost:8000/login/";
 
         HttpClient loginClient = HttpClient.newBuilder().build();
         HttpRequest loginRequest = HttpRequest.newBuilder()
                 .uri(URI.create(loginRequestURL))
-                .POST(HttpRequest.BodyPublishers.ofString(loginGson.toJson(loginInfo)))
+                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(loginInfo)))
                 .build();
 
         HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
@@ -108,10 +108,7 @@ public class LoginController {
         if (loginResponse.statusCode() == 200)
         {
 
-            AuthenticationToken authToken = loginGson.fromJson(loginResponse.body(), AuthenticationToken.class);
-
-            //TODO remove once done
-            System.out.println(authToken.toString());
+            AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
 
             String userRequestURL = "http://localhost:8000/user/";
 
@@ -123,20 +120,14 @@ public class LoginController {
 
             HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
 
-            Gson gson = new Gson();
-
-            User theUser = gson.fromJson(userResponse.body(), User.class);
-
-            //TODO remove once done
-            System.out.println(theUser.getAccountType());
-
             //login is from a user
             if (userResponse.statusCode() == 200) {
+                User theUser = gson.fromJson(userResponse.body(), User.class);
+
+                ClientInfo clientInfo = ClientInfo.getInstance();
+                clientInfo.saveClientInfo(authToken, theUser);
+
                 if (theUser.getAccountType() == AccountType.USER) {
-                    ClientInfo clientInfo = ClientInfo.getInstance();
-
-                    clientInfo.saveClientInfo(authToken, theUser);
-
                     //Close login stage
                     Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
                     loginStage.close();
@@ -151,12 +142,7 @@ public class LoginController {
                     UserMainMenuStage.setResizable(false);
                 }
                 //login is from an admin
-                else if (theUser.getAccountType() == AccountType.ADMIN)
-                {
-                    ClientInfo clientInfo = ClientInfo.getInstance();
-
-                    clientInfo.saveClientInfo(authToken, theUser);
-
+                else if (theUser.getAccountType() == AccountType.ADMIN) {
                     //Close login stage
                     Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
                     loginStage.close();
@@ -170,6 +156,9 @@ public class LoginController {
                     AdminMainMenuStage.show();
                     AdminMainMenuStage.setResizable(false);
                 }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not fetch User information.", ButtonType.OK);
+                alert.showAndWait();
             }
         }
         else

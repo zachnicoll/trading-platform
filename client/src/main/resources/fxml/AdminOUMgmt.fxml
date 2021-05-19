@@ -71,7 +71,7 @@
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <JFXButton fx:id="btnOMAssetAdd" layoutX="611.0" layoutY="105.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXButton fx:id="btnOMAssetAdd" layoutX="513.0" layoutY="128.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
                   <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="50.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />
@@ -101,7 +101,7 @@
                         <Image url="@../images/delete.png" />
                      </image>
                   </ImageView>
-                  <JFXComboBox fx:id="comboOMAssetAdd" focusColor="#4f5d75" layoutX="138.0" layoutY="110.0" prefHeight="45.0" prefWidth="275.0" promptText="Select an Asset to Add" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+                  <JFXComboBox fx:id="comboOMAssetAdd" focusColor="#4f5d75" layoutX="17.0" layoutY="133.0" prefHeight="45.0" prefWidth="275.0" promptText="Select an Asset to Add" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -114,12 +114,12 @@
                         <Font size="24.0" />
                      </font>
                   </Text>
-                  <Text fill="#ef8354" layoutX="17.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an Asset:">
+                  <Text fill="#ef8354" layoutX="17.0" layoutY="122.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Add an Asset:">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="txtOUNewAssetQuantity" layoutX="427.0" layoutY="110.0" prefHeight="45.0" prefWidth="187.0" promptText="Quantity" style="-fx-background-color: c4c4c4;">
+                  <TextField fx:id="txtOUNewAssetQuantity" layoutX="308.0" layoutY="133.0" prefHeight="45.0" prefWidth="187.0" promptText="Quantity" style="-fx-background-color: c4c4c4;">
                      <font>
                         <Font size="18.0" />
                      </font>

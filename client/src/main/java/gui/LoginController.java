@@ -2,7 +2,8 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
-import helpers.Client;
+import helpers.PasswordHasher;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,14 +15,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import javafx.event.ActionEvent;
 import models.AccountType;
 import models.AuthenticationToken;
 import models.Credentials;
 import models.User;
 import helpers.ClientInfo;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -52,24 +50,6 @@ public class LoginController {
     @FXML
     private BorderPane loginBorderId;
 
-
-
-    @FXML
-    private void browseFile(ActionEvent event){
-        final FileChooser fileChooser = new FileChooser();
-        Stage currentStage = (Stage) loginBorderId.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
-        File file = fileChooser.showOpenDialog(currentStage);
-
-        //TODO implement file read
-
-        if(file != null)
-        {
-            System.out.println(("Path: " + file.getAbsolutePath()));
-            txtFile.setText(file.getAbsolutePath());
-        }
-    }
-
     @FXML
     public static void showLogin() throws IOException {
         Stage LoginStage = new Stage();
@@ -82,13 +62,29 @@ public class LoginController {
     }
 
     @FXML
+    private void browseFile(ActionEvent event) {
+        final FileChooser fileChooser = new FileChooser();
+        Stage currentStage = (Stage) loginBorderId.getScene().getWindow();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
+        File file = fileChooser.showOpenDialog(currentStage);
+
+        //TODO implement file read
+
+        if (file != null) {
+            System.out.println(("Path: " + file.getAbsolutePath()));
+            txtFile.setText(file.getAbsolutePath());
+        }
+    }
+
+    @FXML
     private void submitCredentials(ActionEvent event) throws IOException, InterruptedException {
 
         String loginUsername;
         String loginPassword;
 
         loginUsername = txtUsername.getText();
-        loginPassword = txtPassword.getText();
+        // Hash password before sending to server
+        loginPassword = PasswordHasher.hashPassword(txtPassword.getText());
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
@@ -96,11 +92,9 @@ public class LoginController {
 
         HttpResponse<String> loginResponse = clientPost("/login/", loginInfo);
 
-        if (loginResponse.statusCode() == 200)
-        {
+        if (loginResponse.statusCode() == 200) {
 
             AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
-
             HttpResponse<String> userResponse = clientGet("/user/", authToken);
 
             //login is from a user
@@ -143,9 +137,7 @@ public class LoginController {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Could not fetch User information.", ButtonType.OK);
                 alert.showAndWait();
             }
-        }
-        else
-        {
+        } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Username and password combination invalid, please try again.", ButtonType.OK);
             alert.showAndWait();
             txtUsername.clear();

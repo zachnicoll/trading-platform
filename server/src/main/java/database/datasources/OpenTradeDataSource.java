@@ -25,8 +25,20 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
         );
     }
 
-    public OpenTrade getById(UUID id) {
-        return null;
+    public OpenTrade getById(UUID id) throws SQLException {
+        PreparedStatement getById = dbConnection.prepareStatement(
+                "SELECT * FROM \"openTrades\" WHERE \"tradeId\"::text = ?;"
+        );
+
+        getById.setString(1, id.toString());
+
+        ResultSet results = getById.executeQuery();
+
+        if (!results.next()) {
+            throw new SQLException("OpenTrade does not exist");
+        }
+
+        return resultSetToObject(results);
     }
 
     public ArrayList<OpenTrade> getAll() throws SQLException {
@@ -80,8 +92,15 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
         updateStatement.execute();
     }
 
-    public boolean checkExistById(UUID id) {
-        return false;
+    public boolean checkExistById(UUID id) throws SQLException {
+        PreparedStatement checkIfExist = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"openTrades\" WHERE \"tradeId\"::text = ?);"
+        );
+
+        checkIfExist.setString(1, id.toString());
+
+        //checks if query returns a result set with at least one element, indicating a row exists with the given id
+        return checkIfExist.executeQuery().next();
     }
 
     public void deleteById(UUID id) throws SQLException {

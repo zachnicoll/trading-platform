@@ -1,8 +1,10 @@
 package database.datasources;
 
 import database.DBConnection;
+import models.Asset;
 import models.ResolvedTrade;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,9 +27,29 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 results.getTimestamp("dateResolved")
         );
     }
-
-    public ResolvedTrade getById(UUID id) {
+    public ResolvedTrade getById(UUID buyId)
+    {
+        //TODO: DELETE ONCE FIXED
         return null;
+    }
+
+
+    public ResolvedTrade getById(UUID buyId, UUID sellId) throws SQLException {
+
+        PreparedStatement getById = dbConnection.prepareStatement(
+                "SELECT * FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        getById.setString(1, buyId.toString());
+        getById.setString(2, sellId.toString());
+
+        ResultSet results = getById.executeQuery();
+
+        if (!results.next()) {
+            throw new SQLException("ResolvedTrade does not exist");
+        }
+
+        return resultSetToObject(results);
+
     }
 
     public ArrayList<ResolvedTrade> getAll() throws SQLException {
@@ -61,16 +83,65 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         createResolvedTrade.execute();
     }
 
-    public void updateByAttribute(UUID id, String attribute, ResolvedTrade value) {
+    public void updateByAttribute(UUID buyId, String attribute, ResolvedTrade value) throws SQLException {
+        //TODO: DELETE ONCE FIXED
+    }
+
+    public void updateByAttribute(UUID buyId, UUID sellId, String attribute, ResolvedTrade value) throws SQLException, InvalidParameterException  {
+
+        Object attrValue;
+
+        switch (attribute) {
+            case "quantity":
+                attrValue = value.getQuantity();
+                break;
+            case "price":
+                attrValue = value.getPrice();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateByAttribute = dbConnection.prepareStatement(
+                    "UPDATE \"resolvedTrades\" SET \"?\" = ? WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+            );
+
+
+        updateByAttribute.setString(1, attribute);
+        updateByAttribute.setObject(2, attrValue);
+        updateByAttribute.setString(3, buyId.toString());
+        updateByAttribute.setString(4, sellId.toString());
+
+        updateByAttribute.execute();
 
     }
 
-    public boolean checkExistById(UUID id) {
+    public boolean checkExistById(UUID id) throws SQLException {
+        //TODO: DELETE ONCE FIXED
         return false;
     }
+    public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {
+        PreparedStatement createQueryTrade = dbConnection.prepareStatement(
+                "SELECT * FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        createQueryTrade.setString(1, buyId.toString());
+        createQueryTrade.setString(2, sellId.toString());
 
-    public void deleteById(UUID id) {
+        return createQueryTrade.executeQuery().next();
+    }
 
+    public void deleteById(UUID Id) throws SQLException {
+        //TODO: DELETE ONCE FIXED
+    }
+
+    public void deleteById(UUID buyId, UUID sellId) throws SQLException {
+        PreparedStatement createDeleteTrade = dbConnection.prepareStatement(
+                "DELETE FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
+        createDeleteTrade.setString(1, buyId.toString());
+        createDeleteTrade.setString(2, sellId.toString());
+
+        createDeleteTrade.execute();
     }
 
     public String getCreateNewQuery(ResolvedTrade newObject) throws SQLException {

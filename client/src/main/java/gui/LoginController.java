@@ -19,6 +19,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javafx.event.ActionEvent;
+import models.AccountType;
 import models.AuthenticationToken;
 import models.Credentials;
 import models.User;
@@ -83,7 +84,6 @@ public class LoginController {
     @FXML
     private void submitCredentials(ActionEvent event) throws IOException, InterruptedException {
 
-        //TODO implement submit checks
         String loginUsername;
         String loginPassword;
 
@@ -106,31 +106,64 @@ public class LoginController {
 
         AuthenticationToken authToken = loginGson.fromJson(loginResponse.body(), AuthenticationToken.class);
 
-        int loginApiResponse = loginResponse.statusCode();
+        //TODO remove once done
         System.out.println(authToken.toString());
 
 
 
-        /*String userRequestURL = "http://localhost:8000/user/";
-
-        HttpClient userClient = HttpClient.newBuilder().build();
-        HttpRequest userRequest = HttpRequest.newBuilder()
-                .uri(URI.create(userRequestURL))
-                .GET().setHeader(authToken)
-                .build();
-
-        HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
-
-        Gson gson = new Gson();
-
-        User theUser = gson.fromJson(userResponse.body(), User.class);
-
-        int temp = userResponse.statusCode();
-        System.out.println(theUser.getUsername());*/
-
-        if (loginApiResponse == 200)
+        if (loginResponse.statusCode() == 200)
         {
+            String userRequestURL = "http://localhost:8000/user/";
 
+            HttpClient userClient = HttpClient.newBuilder().build();
+            HttpRequest userRequest = HttpRequest.newBuilder()
+                    .uri(URI.create(userRequestURL))
+                    .GET().setHeader("Authorization", "Bearer "+authToken.toString())
+                    .build();
+
+            HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
+
+            Gson gson = new Gson();
+
+            User theUser = gson.fromJson(userResponse.body(), User.class);
+
+            //TODO remove once done
+            System.out.println(theUser.getAccountType());
+
+            //login is from a user
+            if ((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.USER))
+            {
+
+                //Close login stage
+                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                loginStage.close();
+
+                //Create new User Menu stage
+                Stage UserMainMenuStage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
+                UserMainMenuStage.setTitle("Main Menu");
+                Scene UserMainMenuScene = new Scene(root, 1280, 720);
+                UserMainMenuStage.setScene(UserMainMenuScene);
+                UserMainMenuStage.show();
+                UserMainMenuStage.setResizable(false);
+
+            }
+            //login is from an admin
+            else if((userResponse.statusCode() == 200) && (theUser.getAccountType()== AccountType.ADMIN))
+            {
+                //Close login stage
+                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                loginStage.close();
+
+                //Create new User Menu stage
+                Stage AdminMainMenuStage = new Stage();
+                Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
+                AdminMainMenuStage.setTitle("Admin Main Menu");
+                Scene AdminMainMenuScene = new Scene(root, 1280, 720);
+                AdminMainMenuStage.setScene(AdminMainMenuScene);
+                AdminMainMenuStage.show();
+                AdminMainMenuStage.setResizable(false);
+            }
         }
         else
         {
@@ -140,46 +173,7 @@ public class LoginController {
             txtPassword.clear();
         }
 
-        //login is from a user
-        if ((loginUsername.equals("user")) && (loginPassword.equals("password"))) {
 
-            //Close login stage
-            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-            loginStage.close();
-
-            //Create new User Menu stage
-            Stage UserMainMenuStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/UserMainMenu.fxml"));
-            UserMainMenuStage.setTitle("Main Menu");
-            Scene UserMainMenuScene = new Scene(root, 1280, 720);
-            UserMainMenuStage.setScene(UserMainMenuScene);
-            UserMainMenuStage.show();
-            UserMainMenuStage.setResizable(false);
-
-        }
-        //login is from an admin
-        else if((loginUsername.equals("admin")) && (loginPassword.equals("password")))
-        {
-            //Close login stage
-            Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-            loginStage.close();
-
-            //Create new User Menu stage
-            Stage AdminMainMenuStage = new Stage();
-            Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
-            AdminMainMenuStage.setTitle("Admin Main Menu");
-            Scene AdminMainMenuScene = new Scene(root, 1280, 720);
-            AdminMainMenuStage.setScene(AdminMainMenuScene);
-            AdminMainMenuStage.show();
-            AdminMainMenuStage.setResizable(false);
-        }
-        else
-        {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Username and password combination invalid, please try again.", ButtonType.OK);
-            alert.showAndWait();
-            txtUsername.clear();
-            txtPassword.clear();
-        }
     }
 
 

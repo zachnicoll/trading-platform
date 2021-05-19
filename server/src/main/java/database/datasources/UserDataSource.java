@@ -95,16 +95,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void createNew(User newObject) throws SQLException {
-        PreparedStatement createUser = dbConnection.prepareStatement(
-                "INSERT INTO \"users\" VALUES (uuid(?), ?, ?, ?, uuid(?));"
-        );
-        createUser.setString(1, newObject.getUserId().toString());
-        createUser.setString(2, newObject.getUsername().toString());
-        createUser.setString(3, newObject.getAccountType().toString());
-        createUser.setString(4, newObject.getAccountType().toString()); //TODO ASK ZACH HOW TO PUT PASSWORD IN - TEMP VAR FOR NOW
-        createUser.setString(5, newObject.getOrganisationalUnitId().toString());
 
-        createUser.execute();
     }
 
     public void createNew(User newObject, String password) throws SQLException {
@@ -124,7 +115,6 @@ public class UserDataSource extends AbstractDataSource<User> {
     public void updateByAttribute(UUID id, String attribute, User value) throws SQLException, InvalidParameterException {
 
         Object attrValue;
-        //TODO SOMEHOW IMPLEMENT PASSWORD CHANGES
         switch (attribute) {
             case "organisationalUnitId":
                 attrValue = value.getOrganisationalUnitId();
@@ -134,7 +124,7 @@ public class UserDataSource extends AbstractDataSource<User> {
         }
 
         PreparedStatement updateByAttribute = dbConnection.prepareStatement(
-                "UPDATE \"users\" SET \"(?)\" = uuid(?) WHERE \"userId\" = uuid(?);"
+                "UPDATE \"users\" SET \"?\" = uuid(?) WHERE \"userId\" = uuid(?);"
         );
 
 
@@ -147,7 +137,7 @@ public class UserDataSource extends AbstractDataSource<User> {
 
     public boolean checkExistById(UUID id) throws SQLException {
         PreparedStatement createQueryUser = dbConnection.prepareStatement(
-                "SELECT * FROM \"users\" WHERE \"userId\" = uuid(?);"
+                "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE \"userId\" = uuid(?));"
         );
         createQueryUser.setString(1, id.toString());
 

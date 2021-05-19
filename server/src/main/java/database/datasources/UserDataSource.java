@@ -6,6 +6,7 @@ import models.AccountType;
 import models.ResolvedTrade;
 import models.User;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -120,8 +121,28 @@ public class UserDataSource extends AbstractDataSource<User> {
         createNew.execute();
     }
 
-    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException {
-        //TODO CONFIRM WHAT THIS IS MEANT TO DO
+    public void updateByAttribute(UUID id, String attribute, User value) throws SQLException, InvalidParameterException {
+
+        Object attrValue;
+        //TODO SOMEHOW IMPLEMENT PASSWORD CHANGES
+        switch (attribute) {
+            case "organisationalUnitId":
+                attrValue = value.getOrganisationalUnitId();
+                break;
+            default:
+                throw new InvalidParameterException();
+        }
+
+        PreparedStatement updateByAttribute = dbConnection.prepareStatement(
+                "UPDATE \"users\" SET \"(?)\" = uuid(?) WHERE \"userId\" = uuid(?);"
+        );
+
+
+        updateByAttribute.setString(1, attribute);
+        updateByAttribute.setString(2, attrValue.toString());
+        updateByAttribute.setString(3, id.toString());
+
+        updateByAttribute.execute();
     }
 
     public boolean checkExistById(UUID id) throws SQLException {

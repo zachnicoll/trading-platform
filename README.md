@@ -9,6 +9,6 @@
 ## Setup
 
 ## Running
-### Client
+### helpers.Client
 
 ### Server

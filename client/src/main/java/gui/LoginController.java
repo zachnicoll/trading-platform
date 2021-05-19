@@ -2,7 +2,6 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
-import com.sun.glass.ui.CommonDialogs;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,10 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -23,7 +19,7 @@ import models.AccountType;
 import models.AuthenticationToken;
 import models.Credentials;
 import models.User;
-import models.ClientInfo;
+import helpers.ClientInfo;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +27,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 
 public class LoginController {
 

@@ -1,4 +1,4 @@
-package models;
+package helpers;
 
 import models.AuthenticationToken;
 import models.User;

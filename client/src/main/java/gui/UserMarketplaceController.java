@@ -52,8 +52,6 @@ public class UserMarketplaceController {
     private Text unitsAvailable;
 
     private ClientInfo clientInfo;
-    private List<Asset> buyAssetTypes = null;
-    private List<Asset> sellAssetTypes = null;
     private TradeType tradeType = null;
 
     private void handleOrderTypeChange(TradeType orderType) {
@@ -69,7 +67,7 @@ public class UserMarketplaceController {
             // Change border to green to indicate BUY selected
             String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
-        } else if (orderType== TradeType.SELL) {
+        } else if (orderType == TradeType.SELL) {
             // Change border to red to indicate SELL selected
             String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
@@ -84,20 +82,20 @@ public class UserMarketplaceController {
     public void buySelected(ActionEvent event) throws IOException, InterruptedException {
         handleOrderTypeChange(TradeType.BUY);
 
-        if (buyAssetTypes == null) {
-            // Get all AssetTypes to display in dropdown
-            HttpResponse<String> assetTypeResponse = clientGet(Route.getRoute(Route.assettype));
 
-            // Extract AssetType array from response
-            buyAssetTypes = new ArrayList<>();
-            AssetType[] assetTypes = gson.fromJson(assetTypeResponse.body(), AssetType[].class).clone();
+        // Get all AssetTypes to display in dropdown
+        HttpResponse<String> assetTypeResponse = clientGet(Route.getRoute(Route.assettype));
 
-            // Convert AssetTypes to Assets
-            for (AssetType assetType : assetTypes) {
-                Asset asset = new Asset(assetType.getAssetTypeId(), -1, assetType.getAssetName());
-                buyAssetTypes.add(asset);
-            }
+        // Extract AssetType array from response
+        List<Asset> buyAssetTypes = new ArrayList<>();
+        AssetType[] assetTypes = gson.fromJson(assetTypeResponse.body(), AssetType[].class).clone();
+
+        // Convert AssetTypes to Assets
+        for (AssetType assetType : assetTypes) {
+            Asset asset = new Asset(assetType.getAssetTypeId(), -1, assetType.getAssetName());
+            buyAssetTypes.add(asset);
         }
+
 
         assetNames.setAll(buyAssetTypes);
 
@@ -108,17 +106,15 @@ public class UserMarketplaceController {
     public void sellSelected(ActionEvent event) throws IOException, InterruptedException {
         handleOrderTypeChange(TradeType.SELL);
 
-        if (sellAssetTypes == null) {
-            // Get all Assets that an Org Unit owns to display in dropdown
-            HttpResponse<String> assetResponse = clientGet(
-                    Route.getRoute(Route.assets) +
-                            clientInfo.currentUser.getOrganisationalUnitId()
-            );
 
-            sellAssetTypes = new ArrayList<>();
-            // Extract Asset array from response
-            sellAssetTypes = Arrays.asList(gson.fromJson(assetResponse.body(), Asset[].class).clone());
-        }
+        // Get all Assets that an Org Unit owns to display in dropdown
+        HttpResponse<String> assetResponse = clientGet(
+                Route.getRoute(Route.assets) +
+                        clientInfo.currentUser.getOrganisationalUnitId()
+        );
+
+        // Extract Asset array from response
+        List<Asset> sellAssetTypes = Arrays.asList(gson.fromJson(assetResponse.body(), Asset[].class).clone());
 
         assetNames.setAll(sellAssetTypes);
 
@@ -130,7 +126,7 @@ public class UserMarketplaceController {
         Asset selectedAsset = comboboxSelectAsset.getValue();
 
         // Quantity of -1 means it's from the BUY assets, which should not display a quantity
-        if (selectedAsset.getQuantity() > -1) {
+        if (selectedAsset != null && selectedAsset.getQuantity() > -1) {
             unitsAvailable.setText(selectedAsset.getQuantity().toString());
         }
     }
@@ -141,7 +137,7 @@ public class UserMarketplaceController {
         Float price = Float.valueOf(txtMPPrice.getText());
 
         PartialOpenTrade newOpenTrade = new PartialOpenTrade(
-            tradeType,
+                tradeType,
                 clientInfo.currentUser.getOrganisationalUnitId(),
                 selectedAsset.getAssetTypeId(),
                 quantity,

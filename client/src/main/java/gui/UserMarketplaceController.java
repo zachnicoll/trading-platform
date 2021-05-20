@@ -27,6 +27,7 @@ public class UserMarketplaceController {
 
 
     private final Gson gson = new Gson();
+    private final ObservableList<Asset> assetNames = FXCollections.observableArrayList();
     @FXML
     private AnchorPane anchorboxMP;
     @FXML
@@ -45,10 +46,28 @@ public class UserMarketplaceController {
     private Text lblUnitsAvailable;
     @FXML
     private Text unitsAvailable;
+
     private ClientInfo clientInfo;
-    private final ObservableList<Asset> assetNames = FXCollections.observableArrayList();
     private List<Asset> buyAssetTypes = null;
     private List<Asset> sellAssetTypes = null;
+
+    private void handleOrderTypeChange(String orderType) {
+        // Clear combo box
+        assetNames.setAll();
+
+        // Clear displayed units available
+        unitsAvailable.setText("");
+
+        if (orderType.equals("BUY")) {
+            // Change border to green to indicate BUY selected
+            String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
+            anchorboxMP.setStyle(aStyle);
+        } else if (orderType.equals("SELL")) {
+            // Change border to red to indicate SELL selected
+            String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
+            anchorboxMP.setStyle(aStyle);
+        }
+    }
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -56,12 +75,7 @@ public class UserMarketplaceController {
     }
 
     public void buySelected(ActionEvent event) throws IOException, InterruptedException {
-        // Change border to green to indicate BUY selected
-        String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
-        anchorboxMP.setStyle(aStyle);
-
-        // Clear combo box
-        assetNames.setAll();
+        handleOrderTypeChange("BUY");
 
         if (buyAssetTypes == null) {
             // Get all AssetTypes to display in dropdown
@@ -71,6 +85,7 @@ public class UserMarketplaceController {
             buyAssetTypes = new ArrayList<>();
             AssetType[] assetTypes = gson.fromJson(assetTypeResponse.body(), AssetType[].class).clone();
 
+            // Convert AssetTypes to Assets
             for (AssetType assetType : assetTypes) {
                 Asset asset = new Asset(assetType.getAssetTypeId(), -1, assetType.getAssetName());
                 buyAssetTypes.add(asset);
@@ -84,12 +99,7 @@ public class UserMarketplaceController {
     }
 
     public void sellSelected(ActionEvent event) throws IOException, InterruptedException {
-        // Change border to red to indicate SELL selected
-        String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
-        anchorboxMP.setStyle(aStyle);
-
-        // Clear combo box
-        assetNames.setAll();
+        handleOrderTypeChange("SELL");
 
         if (sellAssetTypes == null) {
             // Get all Assets that an Org Unit owns to display in dropdown
@@ -109,4 +119,12 @@ public class UserMarketplaceController {
         comboboxSelectAsset.setItems(assetNames);
     }
 
+    public void comboBoxSelected(ActionEvent event) {
+        Asset selectedAsset = comboboxSelectAsset.getValue();
+
+        // Quantity of -1 means it's from the BUY assets, which should not display a quantity
+        if (selectedAsset.getQuantity() > -1) {
+            unitsAvailable.setText(selectedAsset.getQuantity().toString());
+        }
+    }
 }

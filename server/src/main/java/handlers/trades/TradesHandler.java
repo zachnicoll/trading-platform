@@ -109,7 +109,7 @@ public class TradesHandler extends AbstractRequestHandler {
         if (fullTrade.getTradeType() == TradeType.BUY && orgUnit.getCreditBalance() < totalPrice) {
             writeResponseBody(exchange, new JsonError("Organisational Unit does not have enough credits to place this order"), 400);
             return;
-        } else {
+        } else if (fullTrade.getTradeType() == TradeType.SELL) {
             Asset existingAsset = orgUnit.findExistingAsset(fullTrade.getAssetType());
 
             if (existingAsset == null || existingAsset.getQuantity() < fullTrade.getQuantity()) {

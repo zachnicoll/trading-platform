@@ -7,9 +7,13 @@ package errors;
  * }
  */
 public class JsonError {
-    private String error;
+    private final String error;
 
     public JsonError(String error) {
         this.error = error;
+    }
+
+    public String getError() {
+        return this.error;
     }
 }

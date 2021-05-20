@@ -2,6 +2,8 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
+import errors.JsonError;
+import helpers.ClientInfo;
 import helpers.PasswordHasher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,14 +17,17 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import models.*;
+import models.AccountType;
+import models.AuthenticationToken;
+import models.Credentials;
+import models.User;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+
+import static helpers.Client.clientGet;
+import static helpers.Client.clientPost;
 
 public class LoginController {
 
@@ -72,53 +77,41 @@ public class LoginController {
 
     @FXML
     private void submitCredentials(ActionEvent event) throws IOException, InterruptedException {
+        Gson gson = new Gson();
+        JsonError errorResponse;
 
         String loginUsername;
         String loginPassword;
 
         loginUsername = txtUsername.getText();
+
         // Hash password before sending to server
         loginPassword = PasswordHasher.hashPassword(txtPassword.getText());
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
-        Gson gson = new Gson();
-
-        String loginRequestURL = "http://localhost:8000/login/";
-
-        HttpClient loginClient = HttpClient.newBuilder().build();
-        HttpRequest loginRequest = HttpRequest.newBuilder()
-                .uri(URI.create(loginRequestURL))
-                .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(loginInfo)))
-                .build();
-
-        HttpResponse<String> loginResponse = loginClient.send(loginRequest, HttpResponse.BodyHandlers.ofString());
+        HttpResponse<String> loginResponse = clientPost("/login/", loginInfo);
 
         if (loginResponse.statusCode() == 200) {
+            ClientInfo clientInfo = ClientInfo.getInstance();
 
             AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
+            clientInfo.saveClientInfo(authToken, null); // Save auth token for use in following request
 
-            String userRequestURL = "http://localhost:8000/user/";
+            HttpResponse<String> userResponse = clientGet("/user/");
 
-            HttpClient userClient = HttpClient.newBuilder().build();
-            HttpRequest userRequest = HttpRequest.newBuilder()
-                    .uri(URI.create(userRequestURL))
-                    .GET().setHeader("Authorization", "Bearer " + authToken.toString())
-                    .build();
-
-            HttpResponse<String> userResponse = userClient.send(userRequest, HttpResponse.BodyHandlers.ofString());
-
-            //login is from a user
             if (userResponse.statusCode() == 200) {
                 User theUser = gson.fromJson(userResponse.body(), User.class);
 
-                ClientInfo clientInfo = ClientInfo.getInstance();
+                // As user response successful, save the user info as well
                 clientInfo.saveClientInfo(authToken, theUser);
 
+                //Close login stage
+                Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
+                loginStage.close();
+
                 if (theUser.getAccountType() == AccountType.USER) {
-                    //Close login stage
-                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-                    loginStage.close();
+                    // Logging-in as a USER
 
                     //Create new User Menu stage
                     Stage UserMainMenuStage = new Stage();
@@ -128,14 +121,10 @@ public class LoginController {
                     UserMainMenuStage.setScene(UserMainMenuScene);
                     UserMainMenuStage.show();
                     UserMainMenuStage.setResizable(false);
-                }
-                //login is from an admin
-                else if (theUser.getAccountType() == AccountType.ADMIN) {
-                    //Close login stage
-                    Stage loginStage = (Stage) loginBorderId.getScene().getWindow();
-                    loginStage.close();
+                } else if (theUser.getAccountType() == AccountType.ADMIN) {
+                    // Logging-in as an ADMIN
 
-                    //Create new User Menu stage
+                    //Create new Admin Menu stage
                     Stage AdminMainMenuStage = new Stage();
                     Parent root = FXMLLoader.load(getClass().getResource("../fxml/AdminMainMenu.fxml"));
                     AdminMainMenuStage.setTitle("Admin Main Menu");
@@ -145,7 +134,12 @@ public class LoginController {
                     AdminMainMenuStage.setResizable(false);
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not fetch User information.", ButtonType.OK);
+                errorResponse = gson.fromJson(userResponse.body(), JsonError.class);
+                Alert alert = new Alert(
+                        Alert.AlertType.ERROR,
+                        "Could not fetch User information. " + errorResponse.getError(),
+                        ButtonType.OK
+                );
                 alert.showAndWait();
             }
         } else {

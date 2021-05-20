@@ -3,11 +3,13 @@ import server.TradeResolver;
 
 import java.io.IOException;
 import java.util.Timer;
+import java.sql.SQLException;
+
 
 public class Main {
     private static final Integer tradeResolvePeriod = 1000 * 30;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, SQLException {
         // Start RestApi Server
         RestApi restApi = new RestApi();
         restApi.start();

@@ -3,22 +3,16 @@ package gui;
 import com.jfoenix.controls.JFXButton;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import models.ClientInfo;
+import helpers.ClientInfo;
 
 import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class UserMainMenuController {
 
@@ -78,6 +72,8 @@ public class UserMainMenuController {
         Pane view = pageLoader.getPage("UserProfile");
         UserMainPane.getChildren().setAll(view);
     }
+
+
 
     public void logout(ActionEvent event) throws IOException {
 

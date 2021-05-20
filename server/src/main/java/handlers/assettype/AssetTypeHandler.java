@@ -1,10 +1,13 @@
 package handlers.assettype;
 
 import com.sun.net.httpserver.HttpExchange;
+import database.datasources.AssetTypeDataSource;
 import handlers.AbstractRequestHandler;
 import models.AssetType;
 
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -20,8 +23,9 @@ public class AssetTypeHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        AssetType assetType = new AssetType(UUID.randomUUID(), "some_asset_name");
-        writeResponseBody(exchange, assetType);
+    protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
+        AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
+        ArrayList<AssetType> assetTypes = assetTypeDataSource.getAll();
+        writeResponseBody(exchange, assetTypes);
     }
 }

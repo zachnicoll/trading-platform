@@ -15,9 +15,18 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     private final Connection dbConnection = DBConnection.getInstance();
 
     protected Asset resultSetToObject(ResultSet results) throws SQLException {
+        boolean assetNameExists;
+        try {
+            results.findColumn("assetName");
+            assetNameExists = true;
+        } catch (Exception e) {
+            assetNameExists = false;
+        }
+
         return new Asset(
                 UUID.fromString(results.getString("assetTypeId")),
-                results.getInt("quantity")
+                results.getInt("quantity"),
+                assetNameExists ? results.getString("assetName") : null
         );
     }
 
@@ -45,8 +54,17 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     }
 
     public ArrayList<Asset> getByOrgUnitId(UUID organisationalUnitId) throws SQLException {
+        // Need to join assetTypes table to get assetName for displaying on frontend
         PreparedStatement getAllByOrgUnitId = dbConnection.prepareStatement(
-                "SELECT * FROM \"organisationalUnitAssets\" WHERE \"organisationalUnitId\"::text = ?;"
+                """
+                             SELECT\s
+                             oua."assetTypeId",\s
+                             oua."quantity",
+                             ast."assetName" FROM\s
+                             "organisationalUnitAssets" oua JOIN\s
+                             "assetTypes" ast ON (oua."assetTypeId" = ast."assetTypeId")
+                             WHERE "organisationalUnitId"::text = ?;
+                        """
         );
 
         getAllByOrgUnitId.setString(1, organisationalUnitId.toString());
@@ -63,8 +81,16 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     }
 
     public ArrayList<Asset> getAll() throws SQLException {
+        // Join asset names
         PreparedStatement getAll = dbConnection.prepareStatement(
-                "SELECT * FROM \"organisationalUnitAssets\";"
+                """
+                             SELECT\s
+                             oua."assetTypeId",\s
+                             oua."quantity",
+                             ast."assetName" FROM\s
+                             "organisationalUnitAssets" oua JOIN\s
+                             "assetTypes" ast ON (oua."assetTypeId" = ast."assetTypeId");
+                        """
         );
 
         ArrayList<Asset> assets = new ArrayList<>();

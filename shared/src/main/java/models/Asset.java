@@ -11,10 +11,17 @@ import java.util.UUID;
 public class Asset {
     private final UUID assetTypeId;
     private Integer quantity;
+    private String name = null;
 
     public Asset (UUID assetTypeId, Integer quantity) {
         this.assetTypeId = assetTypeId;
         this.quantity = quantity;
+    }
+
+    public Asset (UUID assetTypeId, Integer quantity, String name) {
+        this.assetTypeId = assetTypeId;
+        this.quantity = quantity;
+        this.name = name;
     }
 
     /**
@@ -67,5 +74,14 @@ public class Asset {
      */
     public Integer getQuantity() {
         return quantity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String toString()
+    {
+        return this.name;
     }
 }

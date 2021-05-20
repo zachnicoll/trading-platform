@@ -167,7 +167,7 @@ public class TradeResolver extends TimerTask {
         }
 
         // Only proceed if there are trades to resolve
-        if (buyTradesMap.size() == 0 || sellTradesMap.size() == 0) {
+        if (buyTradesMap.size() <= 0 || sellTradesMap.size() <= 0) {
             return;
         }
 
@@ -175,6 +175,12 @@ public class TradeResolver extends TimerTask {
         for (UUID assetTypeId : buyTradesMap.keySet()) {
             // Make sure that the lists at each key are sorted by date
             buyTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
+
+            if (sellTradesMap.get(assetTypeId) == null) {
+                // No SELL orders with this assetTypeId, skip to next id
+                continue;
+            }
+
             sellTradesMap.get(assetTypeId).sort(OpenTrade.tradeDateComparator);
             ArrayList<OpenTrade> sellTradesOfSameAssetType = sellTradesMap.get(assetTypeId);
 

@@ -49,6 +49,8 @@ public class UserMarketplaceController {
     @FXML
     private JFXButton btnMPBuyConfirmOrder;
     @FXML
+    private Text lblUnitsAvailable;
+    @FXML
     private Text unitsAvailable;
 
     private ClientInfo clientInfo;
@@ -67,10 +69,15 @@ public class UserMarketplaceController {
             // Change border to green to indicate BUY selected
             String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
+
+            lblUnitsAvailable.setVisible(false);
+
         } else if (orderType == TradeType.SELL) {
             // Change border to red to indicate SELL selected
             String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
+
+            lblUnitsAvailable.setVisible(true);
         }
     }
 

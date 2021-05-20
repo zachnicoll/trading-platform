@@ -64,7 +64,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </JFXComboBox>
-                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="100.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units Available:" textAlignment="RIGHT" wrappingWidth="339.8203125">
+                  <Text fx:id="lblUnitsAvailable" boundsType="VISUAL" fill="#ef8354" layoutX="100.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units Available:" textAlignment="RIGHT" visible="false" wrappingWidth="339.8203125">
                      <font>
                         <Font name="System Bold" size="16.0" />
                      </font>

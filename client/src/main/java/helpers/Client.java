@@ -10,44 +10,36 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class Client {
+    // TODO: Retrieve this from config file
+    private static final String baseUrl = "http://localhost:8000";
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final Gson gson = new Gson();
 
+    private static HttpRequest.Builder builderWithHeaders() {
+        ClientInfo clientInfo = ClientInfo.getInstance();
+        return HttpRequest.newBuilder()
+                .setHeader("Content-Type", "application/json")
+                .setHeader("Authorization", "Bearer " + clientInfo.authToken);
+    }
 
-    private static String http;
-
-    public static HttpResponse<String> clientPost(String url, Object object) throws IOException, InterruptedException {
-
-        http = "http://localhost:8000"; //TODO CHANGE ONCE TXT READ IS READY
-
-        Gson gson = new Gson();
-
-        String requestUrl = http + url;
-
-        HttpClient client = HttpClient.newBuilder().build();
-        HttpRequest request = HttpRequest.newBuilder()
+    public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {
+        String requestUrl = baseUrl + route;
+        HttpRequest request = builderWithHeaders()
                 .uri(URI.create(requestUrl))
                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(object)))
                 .build();
 
-        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return response;
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    public static HttpResponse<String> clientGet(String url, AuthenticationToken authToken) throws IOException, InterruptedException {
-
-        http = "http://localhost:8000"; //TODO CHANGE ONCE TXT READ IS READY
-
-        String requestUrl = http + url;
-
-        HttpClient client = HttpClient.newBuilder().build();
-        HttpRequest request = HttpRequest.newBuilder()
+    public static HttpResponse<String> clientGet(String route) throws IOException, InterruptedException {
+        String requestUrl = baseUrl + route;
+        HttpRequest request = builderWithHeaders()
                 .uri(URI.create(requestUrl))
-                .GET().setHeader("Authorization", "Bearer "+ authToken.toString())
+                .GET()
                 .build();
 
-        HttpResponse<String> userResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-        return userResponse;
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
 

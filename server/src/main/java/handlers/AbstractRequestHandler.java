@@ -17,9 +17,6 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -184,6 +181,7 @@ public abstract class AbstractRequestHandler implements HttpHandler {
 
     /**
      * Extract the UserId from the JWt token provided in the header of the request
+     *
      * @param exchange HttpExchange to extract the UserId from
      * @return UserId as a String, or null if extraction fails
      */
@@ -225,8 +223,9 @@ public abstract class AbstractRequestHandler implements HttpHandler {
     /**
      * Converts the body of the request from a JSON string to an object of type T.
      * The object is not cast to T, however, so this will need to be done manually.
+     *
      * @param exchange HttpExchange to read request body from
-     * @param T Type to convert the JSON object to
+     * @param T        Type to convert the JSON object to
      * @return Object of type T, although not explicitly casted
      */
     protected Object readRequestBody(HttpExchange exchange, Type T) {

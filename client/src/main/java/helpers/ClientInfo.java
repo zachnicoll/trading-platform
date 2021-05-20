@@ -16,11 +16,9 @@ public class ClientInfo {
     /**
      * Constructor saves user data.
      */
-    private ClientInfo()
-    {
+    private ClientInfo() {
         authToken = null;
         currentUser = null;
-
     }
 
     /**
@@ -28,19 +26,15 @@ public class ClientInfo {
      *
      * @return the user's JWT token.
      */
-    public static ClientInfo getInstance()
-    {
+    public static ClientInfo getInstance() {
         if (single_instance == null)
             single_instance = new ClientInfo();
 
         return single_instance;
     }
 
-    public void saveClientInfo(AuthenticationToken authToken, User currentUser)
-    {
+    public void saveClientInfo(AuthenticationToken authToken, User currentUser) {
         this.authToken = authToken;
         this.currentUser = currentUser;
     }
-
-
 }

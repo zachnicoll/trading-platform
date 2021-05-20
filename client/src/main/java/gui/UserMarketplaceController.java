@@ -17,6 +17,9 @@ import models.AssetType;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static helpers.Client.clientGet;
 
@@ -31,7 +34,7 @@ public class UserMarketplaceController {
     @FXML
     private JFXButton btnMPSellAsset;
     @FXML
-    private JFXComboBox<AssetType> comboboxSelectAsset;
+    private JFXComboBox<Asset> comboboxSelectAsset;
     @FXML
     private TextField txtMPPrice;
     @FXML
@@ -40,7 +43,12 @@ public class UserMarketplaceController {
     private JFXButton btnMPBuyConfirmOrder;
     @FXML
     private Text lblUnitsAvailable;
+    @FXML
+    private Text unitsAvailable;
     private ClientInfo clientInfo;
+    private final ObservableList<Asset> assetNames = FXCollections.observableArrayList();
+    private List<Asset> buyAssetTypes = null;
+    private List<Asset> sellAssetTypes = null;
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -52,14 +60,24 @@ public class UserMarketplaceController {
         String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
         anchorboxMP.setStyle(aStyle);
 
-        ObservableList<AssetType> assetNames = FXCollections.observableArrayList();
+        // Clear combo box
+        assetNames.setAll();
 
-        // Get all AssetTypes to display in dropdown
-        HttpResponse<String> assetTypeResponse = clientGet(Route.getRoute(Route.assettype));
+        if (buyAssetTypes == null) {
+            // Get all AssetTypes to display in dropdown
+            HttpResponse<String> assetTypeResponse = clientGet(Route.getRoute(Route.assettype));
 
-        // Extract AssetType array from response
-        AssetType[] allAssetTypes = gson.fromJson(assetTypeResponse.body(), AssetType[].class).clone();
-        assetNames.addAll(allAssetTypes);
+            // Extract AssetType array from response
+            buyAssetTypes = new ArrayList<>();
+            AssetType[] assetTypes = gson.fromJson(assetTypeResponse.body(), AssetType[].class).clone();
+
+            for (AssetType assetType : assetTypes) {
+                Asset asset = new Asset(assetType.getAssetTypeId(), -1, assetType.getAssetName());
+                buyAssetTypes.add(asset);
+            }
+        }
+
+        assetNames.setAll(buyAssetTypes);
 
         // Set combo-box items to response data
         comboboxSelectAsset.setItems(assetNames);
@@ -70,21 +88,22 @@ public class UserMarketplaceController {
         String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
         anchorboxMP.setStyle(aStyle);
 
-        ObservableList<AssetType> assetNames = FXCollections.observableArrayList();
+        // Clear combo box
+        assetNames.setAll();
 
-        // Get all Assets that an Org Unit owns to display in dropdown
-        HttpResponse<String> assetResponse = clientGet(
-                Route.getRoute(Route.assets) +
-                        clientInfo.currentUser.getOrganisationalUnitId()
-        );
+        if (sellAssetTypes == null) {
+            // Get all Assets that an Org Unit owns to display in dropdown
+            HttpResponse<String> assetResponse = clientGet(
+                    Route.getRoute(Route.assets) +
+                            clientInfo.currentUser.getOrganisationalUnitId()
+            );
 
-        // Extract Asset array from response
-        Asset[] orgAssets = gson.fromJson(assetResponse.body(), Asset[].class).clone();
-        for (Asset asset : orgAssets) {
-            // Convert to AssetType
-            AssetType assetType = new AssetType(asset.getAssetTypeId(), asset.getName());
-            assetNames.add(assetType);
+            sellAssetTypes = new ArrayList<>();
+            // Extract Asset array from response
+            sellAssetTypes = Arrays.asList(gson.fromJson(assetResponse.body(), Asset[].class).clone());
         }
+
+        assetNames.setAll(sellAssetTypes);
 
         // Set combo-box items to response data
         comboboxSelectAsset.setItems(assetNames);

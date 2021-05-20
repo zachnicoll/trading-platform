@@ -18,7 +18,14 @@
       <AnchorPane prefHeight="555.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
    </left>
    <right>
-      <AnchorPane prefHeight="555.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+      <AnchorPane prefHeight="555.0" prefWidth="145.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text boundsType="VISUAL" fill="#ef8354" layoutX="-219.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="RIGHT" wrappingWidth="339.8203125">
+               <font>
+                  <Font name="System Bold" size="16.0" />
+               </font>
+            </Text>
+         </children></AnchorPane>
    </right>
    <bottom>
       <AnchorPane prefHeight="40.0" prefWidth="980.0" BorderPane.alignment="CENTER" />
@@ -57,9 +64,9 @@
                         <Insets left="15.0" />
                      </padding>
                   </JFXComboBox>
-                  <Text fill="#ef8354" layoutX="6.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units Available:" textAlignment="RIGHT" wrappingWidth="339.8203125">
+                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="100.0" layoutY="84.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Units Available:" textAlignment="RIGHT" wrappingWidth="339.8203125">
                      <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
                   <TextField fx:id="txtMPPrice" layoutX="161.0" layoutY="125.0" prefHeight="35.0" prefWidth="181.0" />
@@ -79,9 +86,9 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </JFXButton>
-                  <Text fx:id="lblUnitsAvailable" fill="#ef8354" layoutX="353.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="180.8203125">
+                  <Text fx:id="unitsAvailable" boundsType="VISUAL" fill="#ef8354" layoutX="442.0" layoutY="85.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="180.8203125">
                      <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
                </children>
@@ -96,24 +103,14 @@
                       <NumberAxis side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <Text fill="#ef8354" layoutX="14.0" layoutY="113.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-20.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
                      <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <Text fx:id="lblMPBuyPrice" fill="#ef8354" layoutX="28.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.8203125">
+                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-21.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
                      <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Text>
-                  <Text fill="#ef8354" layoutX="14.0" layoutY="186.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
-                     </font>
-                  </Text>
-                  <Text fx:id="lblMPSellPrice" fill="#ef8354" layoutX="28.0" layoutY="221.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="209.8203125">
-                     <font>
-                        <Font name="System Bold" size="24.0" />
+                        <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
                </children>

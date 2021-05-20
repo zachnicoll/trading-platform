@@ -69,8 +69,8 @@
                         <Font name="System Bold" size="16.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="txtMPPrice" layoutX="161.0" layoutY="125.0" prefHeight="35.0" prefWidth="181.0" />
-                  <TextField fx:id="txtMPQuantity" layoutX="161.0" layoutY="169.0" prefHeight="35.0" prefWidth="181.0" />
+                  <TextField fx:id="txtMPPrice" layoutX="161.0" layoutY="125.0" prefHeight="35.0" prefWidth="181.0" promptText="10.0" />
+                  <TextField fx:id="txtMPQuantity" layoutX="161.0" layoutY="169.0" prefHeight="35.0" prefWidth="181.0" promptText="100" />
                   <Text boundsType="VISUAL" fill="#ef8354" layoutX="50.0" layoutY="148.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price ($):" textAlignment="RIGHT" wrappingWidth="104.8203125">
                      <font>
                         <Font name="System Bold" size="18.0" />
@@ -81,7 +81,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <JFXButton fx:id="btnMPBuyConfirmOrder" layoutX="353.0" layoutY="135.0" prefHeight="64.0" prefWidth="181.0" ripplerFill="#8f4e32" stylesheets="@../css/UserMarketplace.css" text="Confirm Order">
+                  <JFXButton fx:id="btnMPBuyConfirmOrder" layoutX="353.0" layoutY="135.0" onAction="#confirmOrder" prefHeight="64.0" prefWidth="181.0" ripplerFill="#8f4e32" stylesheets="@../css/UserMarketplace.css" text="Confirm Order">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

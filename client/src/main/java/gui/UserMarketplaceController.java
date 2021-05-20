@@ -3,17 +3,22 @@ package gui;
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
+import errors.JsonError;
 import helpers.ClientInfo;
 import helpers.Route;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import models.Asset;
 import models.AssetType;
+import models.TradeType;
+import models.partial.PartialOpenTrade;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -22,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static helpers.Client.clientGet;
+import static helpers.Client.clientPost;
 
 public class UserMarketplaceController {
 
@@ -43,26 +49,27 @@ public class UserMarketplaceController {
     @FXML
     private JFXButton btnMPBuyConfirmOrder;
     @FXML
-    private Text lblUnitsAvailable;
-    @FXML
     private Text unitsAvailable;
 
     private ClientInfo clientInfo;
     private List<Asset> buyAssetTypes = null;
     private List<Asset> sellAssetTypes = null;
+    private TradeType tradeType = null;
 
-    private void handleOrderTypeChange(String orderType) {
+    private void handleOrderTypeChange(TradeType orderType) {
         // Clear combo box
         assetNames.setAll();
 
         // Clear displayed units available
         unitsAvailable.setText("");
 
-        if (orderType.equals("BUY")) {
+        tradeType = orderType;
+
+        if (orderType == TradeType.BUY) {
             // Change border to green to indicate BUY selected
             String aStyle = "-fx-border-color: #5DC273; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
-        } else if (orderType.equals("SELL")) {
+        } else if (orderType== TradeType.SELL) {
             // Change border to red to indicate SELL selected
             String aStyle = "-fx-border-color: #e95d5d; -fx-background-color: #4f5d75; -fx-border-width: 5;";
             anchorboxMP.setStyle(aStyle);
@@ -75,7 +82,7 @@ public class UserMarketplaceController {
     }
 
     public void buySelected(ActionEvent event) throws IOException, InterruptedException {
-        handleOrderTypeChange("BUY");
+        handleOrderTypeChange(TradeType.BUY);
 
         if (buyAssetTypes == null) {
             // Get all AssetTypes to display in dropdown
@@ -99,7 +106,7 @@ public class UserMarketplaceController {
     }
 
     public void sellSelected(ActionEvent event) throws IOException, InterruptedException {
-        handleOrderTypeChange("SELL");
+        handleOrderTypeChange(TradeType.SELL);
 
         if (sellAssetTypes == null) {
             // Get all Assets that an Org Unit owns to display in dropdown
@@ -125,6 +132,31 @@ public class UserMarketplaceController {
         // Quantity of -1 means it's from the BUY assets, which should not display a quantity
         if (selectedAsset.getQuantity() > -1) {
             unitsAvailable.setText(selectedAsset.getQuantity().toString());
+        }
+    }
+
+    public void confirmOrder(ActionEvent event) throws IOException, InterruptedException {
+        Asset selectedAsset = comboboxSelectAsset.getValue();
+        Integer quantity = Integer.valueOf(txtMPQuantity.getText());
+        Float price = Float.valueOf(txtMPPrice.getText());
+
+        PartialOpenTrade newOpenTrade = new PartialOpenTrade(
+            tradeType,
+                clientInfo.currentUser.getOrganisationalUnitId(),
+                selectedAsset.getAssetTypeId(),
+                quantity,
+                price
+        );
+
+        HttpResponse<String> tradeResponse = clientPost(Route.getRoute(Route.trades), newOpenTrade);
+
+        if (tradeResponse.statusCode() == 200) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully created new Trade!", ButtonType.OK);
+            alert.showAndWait();
+        } else {
+            JsonError responseError = gson.fromJson(tradeResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create new Trade. Error: " + responseError.getError(), ButtonType.OK);
+            alert.showAndWait();
         }
     }
 }

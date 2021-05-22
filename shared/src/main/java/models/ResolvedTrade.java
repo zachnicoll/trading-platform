@@ -4,7 +4,10 @@ import java.sql.Timestamp;
 import java.util.UUID;
 
 /**
- * Class for storing and retrieving trade information from the resolvedTrades table.
+ * Represents trade information stored in the resolvedTrades table in the database.
+ * It details the Organisational Units involved in the resolution of an OpenTrade e.g. the one
+ * that placed the BUY trade, and the one that placed the SELL trade. The resolved price, quantity,
+ * and date are also stored here for viewing and analysing trade history data over time.
  */
 public class ResolvedTrade {
     /**

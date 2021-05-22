@@ -1,14 +1,14 @@
 package server;
 
 import com.sun.net.httpserver.HttpServer;
-import handlers.assets.AssetsHandler;
-import handlers.assettype.AssetTypeHandler;
-import handlers.login.LoginHandler;
-import handlers.orgunit.OrgUnitHandler;
-import handlers.refresh.RefreshHandler;
-import handlers.resetpassword.ResetPasswordHandler;
-import handlers.trades.TradesHandler;
-import handlers.user.UserHandler;
+import handlers.AssetsHandler;
+import handlers.AssetTypeHandler;
+import handlers.LoginHandler;
+import handlers.OrgUnitHandler;
+import handlers.RefreshHandler;
+import handlers.ResetPasswordHandler;
+import handlers.TradesHandler;
+import handlers.UserHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;

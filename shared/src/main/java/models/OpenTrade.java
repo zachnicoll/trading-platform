@@ -6,7 +6,9 @@ import java.util.Date;
 import java.util.UUID;
 
 /**
- * Class for storing and retrieving trade information from the openTrades table.
+ * Represents trade information stored in the openTrades table in the database.
+ * It contains the type of trade (BUY/SELL), which Organisational Unit placed the trade,
+ * and for how many of a given AssetType (via assetTypeId).
  */
 public class OpenTrade {
 
@@ -41,7 +43,7 @@ public class OpenTrade {
     private final Float pricePerAsset;
 
     /**
-     * Date that the trade order was opened
+     * Date that the trade order was openedstoring and retrieving
      */
     private final Timestamp dateOpened;
 

@@ -1,4 +1,4 @@
-package handlers.login;
+package handlers;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.auth0.jwt.JWT;

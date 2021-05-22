@@ -1,15 +1,15 @@
 package gui;
 
 import com.jfoenix.controls.JFXButton;
+import helpers.ClientInfo;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.text.Text;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import helpers.ClientInfo;
 
 import java.awt.*;
 import java.io.IOException;
@@ -46,10 +46,9 @@ public class UserMainMenuController {
     private FxmlLoader pageLoader = new FxmlLoader();
 
     @FXML
-    public void initialize()
-    {
+    public void initialize() {
         ClientInfo clientInfo = ClientInfo.getInstance();
-        lblWelcome.setText("Welcome to the Trading Platform, " +clientInfo.currentUser.getUsername() + "!");
+        lblWelcome.setText("Welcome to the Trading Platform, " + clientInfo.getCurrentUser().getUsername() + "!");
 
     }
 
@@ -74,7 +73,6 @@ public class UserMainMenuController {
     }
 
 
-
     public void logout(ActionEvent event) throws IOException {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to logout?", ButtonType.YES, ButtonType.NO);
@@ -83,9 +81,7 @@ public class UserMainMenuController {
         if (alert.getResult() == ButtonType.YES) {
             //do stuff
             ClientInfo clientInfo = ClientInfo.getInstance();
-
-            clientInfo.currentUser = null;
-            clientInfo.authToken = null;
+            clientInfo.resetClientInfo();
 
             //Close menu stage
             Stage loginStage = (Stage) userMenuAnchorId.getScene().getWindow();
@@ -94,9 +90,6 @@ public class UserMainMenuController {
             LoginController.showLogin();
         }
     }
-
-
-
 
 
 }

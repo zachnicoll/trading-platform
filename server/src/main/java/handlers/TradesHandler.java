@@ -1,4 +1,4 @@
-package handlers.trades;
+package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.AssetTypeDataSource;

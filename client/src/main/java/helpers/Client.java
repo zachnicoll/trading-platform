@@ -9,6 +9,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
+/**
+ * Static class containing methods for performing HTTP requests and returning the response.
+ */
 public class Client {
     // TODO: Retrieve this from config file
     private static final String baseUrl = "http://localhost:8000";
@@ -19,7 +22,7 @@ public class Client {
         ClientInfo clientInfo = ClientInfo.getInstance();
         return HttpRequest.newBuilder()
                 .setHeader("Content-Type", "application/json")
-                .setHeader("Authorization", "Bearer " + clientInfo.authToken);
+                .setHeader("Authorization", "Bearer " + clientInfo.getAuthToken());
     }
 
     public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {
@@ -41,6 +44,4 @@ public class Client {
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
-
-
 }

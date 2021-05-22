@@ -1,4 +1,4 @@
-package handlers.user;
+package handlers;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;

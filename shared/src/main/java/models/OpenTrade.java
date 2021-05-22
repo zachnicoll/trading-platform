@@ -43,7 +43,7 @@ public class OpenTrade {
     private final Float pricePerAsset;
 
     /**
-     * Date that the trade order was openedstoring and retrieving
+     * Date that the trade order was opened
      */
     private final Timestamp dateOpened;
 

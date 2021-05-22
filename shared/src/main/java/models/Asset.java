@@ -38,6 +38,9 @@ public class Asset {
      * @param quantity value to increase quantity by
      */
     public void addQuantity (Integer quantity) {
+        if (quantity < 0) {
+            throw new ArithmeticException();
+        }
         this.quantity += quantity;
     }
 
@@ -48,7 +51,7 @@ public class Asset {
      * @throws ArithmeticException if resulting quantity would be less than 0
      */
     public void subtractQuantity (Integer quantity) throws ArithmeticException {
-        if (this.quantity - quantity < 0) {
+        if (this.quantity - quantity < 0 || quantity < 0) {
             throw new ArithmeticException();
         }
         this.quantity -= quantity;

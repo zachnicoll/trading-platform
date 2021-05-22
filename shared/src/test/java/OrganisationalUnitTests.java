@@ -103,7 +103,7 @@ public class OrganisationalUnitTests {
      * Test 8: Update OU Credit Balance : Succeed
      */
     @Test
-    public void updateCreditBalanceSucceed() throws ApiException
+    public void updateCreditBalanceSucceed() throws InvalidTransactionException
     {
         organisationalUnit.updateCreditBalance(2000f);
         assertEquals(2000f, organisationalUnit.getCreditBalance());

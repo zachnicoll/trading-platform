@@ -12,8 +12,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
-import models.Asset;
 import models.AssetType;
+import models.partial.PartialAssetType;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -21,32 +21,43 @@ import java.util.UUID;
 
 public class AdminAssetMgmtController {
 
+    ObservableList<AssetType> tableData;
     @FXML
     private TextField txtAssMAssetName;
-
     @FXML
     private JFXButton btnAssMNewAsset;
-
     @FXML
     private TableColumn<?, ?> tblcolAssMAsset;
-
     @FXML
     private TableColumn<?, ?> tblcolAssMUuid;
-
     @FXML
     private TableColumn<?, ?> tblcolAssMDelete;
-
     @FXML
     private TableView<AssetType> assetTypeTable;
-
-    ObservableList<AssetType> tableData;
-
     private ClientInfo clientInfo;
     private Gson gson = new Gson();
+
+    @FXML
+    public void initialize() throws IOException, InterruptedException {
+        tblcolAssMUuid.setCellValueFactory(new PropertyValueFactory<>("assetTypeId"));
+        tblcolAssMAsset.setCellValueFactory(new PropertyValueFactory<>("assetName"));
+
+        clientInfo = ClientInfo.getInstance();
+
+        refreshTable();
+
+        addDeleteButtonsToTable();
+    }
 
     private AssetType[] getAllAssetTypes() throws IOException, InterruptedException {
         HttpResponse<String> assetTypesResponse = Client.clientGet(Route.getRoute(Route.assettype));
         return gson.fromJson(assetTypesResponse.body(), AssetType[].class);
+    }
+
+    private void refreshTable() throws IOException, InterruptedException {
+        tableData = FXCollections.observableArrayList();
+        tableData.setAll(getAllAssetTypes());
+        assetTypeTable.setItems(tableData);
     }
 
     private void handleDelete(UUID assetTypeId) throws IOException, InterruptedException {
@@ -57,22 +68,20 @@ public class AdminAssetMgmtController {
             alert.showAndWait();
 
             // Re-fetch AssetTypes and set table data
-            tableData = FXCollections.observableArrayList();
-            tableData.setAll(getAllAssetTypes());
-            assetTypeTable.setItems(tableData);
+            refreshTable();
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete AssetType.");
             alert.showAndWait();
         }
     }
 
-    private void addButtonToTable() {
+    private void addDeleteButtonsToTable() {
         TableColumn<AssetType, Void> colBtn = new TableColumn("");
 
         Callback<TableColumn<AssetType, Void>, TableCell<AssetType, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<AssetType, Void> call(final TableColumn<AssetType, Void> param) {
-                final TableCell<AssetType, Void> cell = new TableCell<>() {
+                return new TableCell<>() {
 
                     private final Button btn = new Button("Delete");
 
@@ -97,7 +106,6 @@ public class AdminAssetMgmtController {
                         }
                     }
                 };
-                return cell;
             }
         };
 
@@ -107,17 +115,27 @@ public class AdminAssetMgmtController {
     }
 
     @FXML
-    public void initialize() throws IOException, InterruptedException {
-        tblcolAssMUuid.setCellValueFactory(new PropertyValueFactory<>("assetTypeId"));
-        tblcolAssMAsset.setCellValueFactory(new PropertyValueFactory<>("assetName"));
+    public void handleCreateNew() throws IOException, InterruptedException {
+        // Return early if input is empty
+        if (txtAssMAssetName.getText().strip().length() == 0) {
+            return;
+        }
 
-        clientInfo = ClientInfo.getInstance();
+        PartialAssetType newAssetType = new PartialAssetType(txtAssMAssetName.getText().strip());
+        HttpResponse<String> newAssetTypeResponse = Client.clientPost(Route.getRoute(Route.assettype), newAssetType);
 
-        tableData = FXCollections.observableArrayList();
-        tableData.setAll(getAllAssetTypes());
+        if (newAssetTypeResponse.statusCode() == 200) {
+            txtAssMAssetName.clear();
 
-        assetTypeTable.setItems(tableData);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created AssetType.");
+            alert.showAndWait();
 
-        addButtonToTable();
+            // Re-fetch AssetTypes and set table data
+            refreshTable();
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create AssetType.");
+            alert.showAndWait();
+        }
     }
+
 }

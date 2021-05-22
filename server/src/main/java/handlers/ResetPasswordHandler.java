@@ -1,4 +1,4 @@
-package handlers.resetpassword;
+package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import handlers.AbstractRequestHandler;

@@ -3,8 +3,8 @@ package models;
 import java.util.UUID;
 
 /**
- * Class for storing the UUID and Name of an AssetType. Quantity
- * of the AssetType is NOT stored here.
+ * Class for storing the UUID and Name of an AssetType.
+ * Quantity of the AssetType is NOT stored here. It is the equivalent of the assetType table in the database.
  * @see Asset for pairing with a quantity
  */
 public class AssetType {

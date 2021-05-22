@@ -6,7 +6,7 @@ import java.util.UUID;
  * Pairs an AssetType with a given quantity. Used for storing how
  * much of a given AssetType an OrganisationUnit has. This de-couples
  * directly using the AssetType class inside the OrganisationalUnit class.
- * Is the equivalent of the asset-orgunit table in the database.
+ * Is the equivalent of the organisationalUnitAsset table in the database.
  */
 public class Asset {
     private final UUID assetTypeId;
@@ -38,6 +38,9 @@ public class Asset {
      * @param quantity value to increase quantity by
      */
     public void addQuantity (Integer quantity) {
+        if (quantity < 0) {
+            throw new ArithmeticException();
+        }
         this.quantity += quantity;
     }
 
@@ -48,7 +51,7 @@ public class Asset {
      * @throws ArithmeticException if resulting quantity would be less than 0
      */
     public void subtractQuantity (Integer quantity) throws ArithmeticException {
-        if (this.quantity - quantity < 0) {
+        if (this.quantity - quantity < 0 || quantity < 0) {
             throw new ArithmeticException();
         }
         this.quantity -= quantity;

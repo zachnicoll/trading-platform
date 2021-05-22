@@ -38,7 +38,7 @@ public class AdminMainMenuController{
     @FXML
     private JFXButton btnLogout;
 
-    private FxmlLoader pageLoader = new FxmlLoader();
+    private final FxmlLoader pageLoader = new FxmlLoader();
 
     public void sceneAdminOrganisations(ActionEvent event) throws IOException {
         Pane view = pageLoader.getPage("AdminOUMgmt");
@@ -75,8 +75,7 @@ public class AdminMainMenuController{
 
             //do stuff
             ClientInfo clientInfo = ClientInfo.getInstance();
-            clientInfo.currentUser = null;
-            clientInfo.authToken = null;
+            clientInfo.resetClientInfo();
 
             //Close menu stage
             Stage loginStage = (Stage) adminMenuAnchorId.getScene().getWindow();

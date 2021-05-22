@@ -117,7 +117,7 @@ public class UserMarketplaceController {
         // Get all Assets that an Org Unit owns to display in dropdown
         HttpResponse<String> assetResponse = clientGet(
                 Route.getRoute(Route.assets) +
-                        clientInfo.currentUser.getOrganisationalUnitId()
+                        clientInfo.getCurrentUser().getOrganisationalUnitId()
         );
 
         // Extract Asset array from response
@@ -145,7 +145,7 @@ public class UserMarketplaceController {
 
         PartialOpenTrade newOpenTrade = new PartialOpenTrade(
                 tradeType,
-                clientInfo.currentUser.getOrganisationalUnitId(),
+                clientInfo.getCurrentUser().getOrganisationalUnitId(),
                 selectedAsset.getAssetTypeId(),
                 quantity,
                 price

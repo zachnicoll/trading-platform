@@ -32,43 +32,36 @@ public class UserTests {
         );
     }
 
-    /* Test 2: Checking authenticated without logging-in
-     */
-    @Test
-    public void checkAuthenticatedNoLogin() {
-        Boolean isAuthed = user.IsAuthenticated();
-        assertEquals(isAuthed, false);
-    }
 
-    /* Test 3: Get User's AccountType
+    /* Test 2: Get User's AccountType
      */
     @Test
     public void getAccountType() {
         assertEquals(user.getAccountType(), accountType);
     }
 
-    /* Test 4: Get User's Id
+    /* Test 3: Get User's Id
      */
     @Test
     public void getUserId() {
         assertEquals(user.getUserId(), userId);
     }
 
-    /* Test 5: Get User's Organisational Unit Id
+    /* Test 4: Get User's Organisational Unit Id
      */
     @Test
     public void getOrgUnitId() {
         assertEquals(user.getOrganisationalUnitId(), organisationalUnitId);
     }
 
-    /* Test 6: Get User's username
+    /* Test 5: Get User's username
      */
     @Test
     public void getUsername() {
         assertEquals(user.getUsername(), username);
     }
 
-    /* Test 7: Change a User's password with mis-matching password and
+    /* Test 6: Change a User's password with mis-matching password and
      * confirmPassword
      */
     @Test
@@ -76,24 +69,7 @@ public class UserTests {
         assertThrows(AuthenticationException.class, () -> user.changePassword("password1", "password2"));
     }
 
-    /* Test 8: Attempt to login with username and password and check if authenticated
-     */
-    @Test
-    public void loginCheckAuthenticated() throws AuthenticationException {
-        String authToken = User.Login(username, "password");
-        user.setAuthenticationToken(authToken);
-        assertEquals(user.IsAuthenticated(), true);
-    }
-
-    /* Test 9: Login with incorrect credentials
-     */
-    @Test
-    public void loginIncorrectCredentials() {
-        // TODO: Make this fail correctly when API is hooked-up
-        assertThrows(AuthenticationException.class, () -> User.Login(username, "wrong_password"));
-    }
-
-    /* Test 10: Update User information
+    /* Test 7: Update User information
      */
     @Test
     public void updateUser() throws ApiException {
@@ -102,15 +78,5 @@ public class UserTests {
         user.updateUser(newAccountType, newOrgUnitId);
         assertEquals(newAccountType, user.getAccountType());
         assertEquals(newOrgUnitId, user.getOrganisationalUnitId());
-    }
-
-    /* Test 11: Login and logout, check for auth status
-     */
-    @Test
-    public void loginLogout() throws AuthenticationException {
-        String authToken = User.Login(username, "password");
-        user.setAuthenticationToken(authToken);
-        user.Logout();
-        assertEquals(false, user.IsAuthenticated());
     }
 }

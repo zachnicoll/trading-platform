@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * Class for storing and manipulating Organisational Unit information locally and on the server.
+ * Class for storing and manipulating Organisational Unit information, including the
+ * Assets that an Organisational Unit owns. It is equivalent to the organisationalUnit table in
+ * the database, with the relevant entries from the organisationalUnitAsset table
+ * joined on the UUID of the Organisational Unit.
  */
 public class OrganisationalUnit {
     /**

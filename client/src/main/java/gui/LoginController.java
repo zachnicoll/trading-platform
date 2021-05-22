@@ -98,6 +98,9 @@ public class LoginController {
             AuthenticationToken authToken = gson.fromJson(loginResponse.body(), AuthenticationToken.class);
             clientInfo.saveClientInfo(authToken, null); // Save auth token for use in following request
 
+            // For development
+            System.out.println(authToken.toString());
+
             HttpResponse<String> userResponse = clientGet("/user/");
 
             if (userResponse.statusCode() == 200) {

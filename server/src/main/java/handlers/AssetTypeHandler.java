@@ -2,6 +2,8 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.AssetTypeDataSource;
+import errors.JsonError;
+import models.Asset;
 import models.AssetType;
 import models.partial.PartialAssetType;
 
@@ -30,6 +32,8 @@ public class AssetTypeHandler extends AbstractRequestHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange) throws SQLException, IOException {
+        checkIsAdmin(exchange);
+
         PartialAssetType partialAssetType = (PartialAssetType) readRequestBody(exchange, PartialAssetType.class);
         AssetType newAssetType = new AssetType(
                 UUID.randomUUID(),
@@ -40,5 +44,22 @@ public class AssetTypeHandler extends AbstractRequestHandler {
         assetTypeDataSource.createNew(newAssetType);
 
         writeResponseBody(exchange, newAssetType);
+    }
+
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws SQLException, IOException {
+        checkIsAdmin(exchange);
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        if (params.length == 3) {
+            // AssetType ID is present in the URL, use it to delete AssetType
+            AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
+            UUID assetTypeId = UUID.fromString(params[2]);
+            assetTypeDataSource.deleteById(assetTypeId);
+            writeResponseBody(exchange, null);
+        } else {
+            JsonError jsonError = new JsonError("AssetType not found");
+            writeResponseBody(exchange, jsonError,404);
+        }
     }
 }

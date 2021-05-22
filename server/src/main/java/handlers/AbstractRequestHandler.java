@@ -70,6 +70,10 @@ public abstract class AbstractRequestHandler implements HttpHandler {
                     exchange.getResponseBody().close();
                 }
             }
+        } catch (JWTVerificationException exception) {
+            // User is not authenticated
+            JsonError jsonError = new JsonError("You are not authenticated");
+            writeResponseBody(exchange, jsonError, 403);
         } catch (Exception e) {
             /*
              * A 'catch-all' error message sent back to client if an uncaught exception occurs.
@@ -121,35 +125,29 @@ public abstract class AbstractRequestHandler implements HttpHandler {
      * @throws IOException If writing response body fails
      */
     private void checkIsAuthorised(HttpExchange exchange) throws IOException {
-        try {
-            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
-            String token = getTokenFromHeader(exchange);
+        // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+        String token = getTokenFromHeader(exchange);
 
-            // Construct verifier, expect our issuer 'cab302-group10' to be present
-            Algorithm algorithm = Algorithm.HMAC256("secret"); // TODO: get secret from config file
-            JWTVerifier verifier = JWT.require(algorithm)
-                    .withIssuer("cab302-group10")
-                    .build();
+        // Construct verifier, expect our issuer 'cab302-group10' to be present
+        Algorithm algorithm = Algorithm.HMAC256("secret"); // TODO: get secret from config file
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer("cab302-group10")
+                .build();
 
-            /*
-             * Decode JWT token string - this will throw a JWTVerificationException if:
-             * - The token has expired
-             * - The token is invalid
-             * - The token's secret is incorrect
-             *
-             * If an error is not thrown, this JWT token is valid.
-             */
-            DecodedJWT jwt = verifier.verify(token);
+        /*
+         * Decode JWT token string - this will throw a JWTVerificationException if:
+         * - The token has expired
+         * - The token is invalid
+         * - The token's secret is incorrect
+         *
+         * If an error is not thrown, this JWT token is valid.
+         */
+        DecodedJWT jwt = verifier.verify(token);
 
-            /**
-             * TODO: Potentially check if provided UserId in token exists, and 'type' claim matches the User's
-             *      AccountType - when DB is implemented
-             */
-        } catch (JWTVerificationException exception) {
-            // Invalid signature/claims
-            JsonError jsonError = new JsonError("You are not authenticated");
-            writeResponseBody(exchange, jsonError, 403);
-        }
+        /**
+         * TODO: Potentially check if provided UserId in token exists, and 'type' claim matches the User's
+         *      AccountType - when DB is implemented
+         */
     }
 
     /**
@@ -162,21 +160,15 @@ public abstract class AbstractRequestHandler implements HttpHandler {
      * @throws IOException If writing response body fails
      */
     protected void checkIsAdmin(HttpExchange exchange) throws IOException {
-        try {
-            // Extract token string from header - Authorization: "Bearer eyJ0eX..."
-            String token = getTokenFromHeader(exchange);
+        // Extract token string from header - Authorization: "Bearer eyJ0eX..."
+        String token = getTokenFromHeader(exchange);
 
-            Algorithm algorithm = Algorithm.HMAC256("secret");
-            JWTVerifier verifier = JWT.require(algorithm)
-                    // Expect claim 'type' to equal 'ADMIN'
-                    .withClaim("type", AccountType.ADMIN.toString())
-                    .build();
-            verifier.verify(token);
-        } catch (JWTVerificationException exception) {
-            // User is not ADMIN AccountType
-            JsonError jsonError = new JsonError("You are not authenticated");
-            writeResponseBody(exchange, jsonError, 403);
-        }
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        JWTVerifier verifier = JWT.require(algorithm)
+                // Expect claim 'type' to equal 'ADMIN'
+                .withClaim("type", AccountType.ADMIN.toString())
+                .build();
+        verifier.verify(token);
     }
 
     /**
@@ -296,7 +288,7 @@ public abstract class AbstractRequestHandler implements HttpHandler {
     /**
      * Handles DELETE method of route. Return 501 - Not Implemented by default.
      */
-    protected void handleDelete(HttpExchange exchange) throws IOException {
+    protected void handleDelete(HttpExchange exchange) throws IOException, SQLException {
         respondNotImplemented(exchange);
     }
 }

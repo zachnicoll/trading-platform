@@ -82,7 +82,7 @@ public class LoginHandler extends AbstractRequestHandler {
                     .withIssuedAt(new Date()) // Issued right now
                     .withExpiresAt(tokenExpiryTime()) // Expires in 24 hours
                     .withSubject(loggedInUser.getUserId().toString())
-                    .withClaim("type", AccountType.USER.toString())
+                    .withClaim("type", loggedInUser.getAccountType().toString())
                     .sign(algorithm);
 
             AuthenticationToken authenticationToken = new AuthenticationToken(token);

@@ -51,11 +51,10 @@
       </AnchorPane>
    </top>
    <center>
-      <TableView prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+      <TableView fx:id="assetTypeTable" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="tblcolAssMAsset" editable="false" prefWidth="295.0" text="Asset" />
-          <TableColumn fx:id="tblcolAssMUuid" editable="false" prefWidth="295.0" text="Asset UUID" />
-            <TableColumn fx:id="tblcolAssMDelete" editable="false" prefWidth="100.0" text="Delete" />
+          <TableColumn fx:id="tblcolAssMAsset" editable="false" prefWidth="273.0" text="Asset Type Name" />
+          <TableColumn fx:id="tblcolAssMUuid" editable="false" prefWidth="277.0" text="Asset Type Id" />
         </columns>
       </TableView>
    </center>

@@ -8,6 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.UUID;
 
 /**
  * Static class containing methods for performing HTTP requests and returning the response.
@@ -25,8 +26,12 @@ public class Client {
                 .setHeader("Authorization", "Bearer " + clientInfo.getAuthToken());
     }
 
+    private static String makeUrl(String route) {
+        return baseUrl + route;
+    }
+
     public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {
-        String requestUrl = baseUrl + route;
+        String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
                 .uri(URI.create(requestUrl))
                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(object)))
@@ -36,10 +41,20 @@ public class Client {
     }
 
     public static HttpResponse<String> clientGet(String route) throws IOException, InterruptedException {
-        String requestUrl = baseUrl + route;
+        String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
                 .uri(URI.create(requestUrl))
                 .GET()
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static HttpResponse<String> clientDelete(String route) throws IOException, InterruptedException {
+        String requestUrl = makeUrl(route);
+        HttpRequest request = builderWithHeaders()
+                .uri(URI.create(requestUrl))
+                .DELETE()
                 .build();
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());

@@ -98,7 +98,7 @@ public class AssetTypeDataSource extends AbstractDataSource<AssetType> {
 
     public void deleteById(UUID id) throws SQLException {
         PreparedStatement deleteById = dbConnection.prepareStatement(
-                "DELETE * FROM \"assetTypes\" WHERE \"assetTypeId\"::text = ?;"
+                "DELETE FROM \"assetTypes\" WHERE \"assetTypeId\"::text = ?;"
         );
 
         deleteById.setString(1, id.toString());

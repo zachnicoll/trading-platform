@@ -34,6 +34,8 @@ public class AdminAssetMgmtController {
     private TableColumn<?, ?> tblcolAssMDelete;
     @FXML
     private TableView<AssetType> assetTypeTable;
+    @FXML
+    private TableColumn<?, ?> colBtn;
     private ClientInfo clientInfo;
     private Gson gson = new Gson();
 
@@ -45,8 +47,8 @@ public class AdminAssetMgmtController {
         clientInfo = ClientInfo.getInstance();
 
         refreshTable();
-
         addDeleteButtonsToTable();
+
     }
 
     private AssetType[] getAllAssetTypes() throws IOException, InterruptedException {
@@ -78,12 +80,13 @@ public class AdminAssetMgmtController {
     private void addDeleteButtonsToTable() {
         TableColumn<AssetType, Void> colBtn = new TableColumn("");
 
+        colBtn.setPrefWidth(88);
         Callback<TableColumn<AssetType, Void>, TableCell<AssetType, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<AssetType, Void> call(final TableColumn<AssetType, Void> param) {
                 return new TableCell<>() {
 
-                    private final Button btn = new Button("Delete");
+                    private final JFXButton btn = new JFXButton("Delete");
 
                     {
                         btn.setOnAction((ActionEvent event) -> {

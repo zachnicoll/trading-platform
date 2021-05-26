@@ -3,6 +3,7 @@ package database.datasources;
 import database.DBConnection;
 import models.OpenTrade;
 import models.TradeType;
+import models.partial.PartialReadableOpenTrade;
 
 import java.security.InvalidParameterException;
 import java.sql.*;
@@ -19,6 +20,18 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
                 TradeType.valueOf(results.getString("tradeType")),
                 UUID.fromString(results.getString("organisationalUnitId")),
                 UUID.fromString(results.getString("assetTypeId")),
+                results.getInt("quantity"),
+                results.getFloat("price"),
+                results.getTimestamp("dateOpened")
+        );
+    }
+
+    protected PartialReadableOpenTrade resultSetToReadableObject(ResultSet results) throws SQLException {
+        return new PartialReadableOpenTrade(
+                UUID.fromString(results.getString("tradeId")),
+                TradeType.valueOf(results.getString("tradeType")),
+                String.valueOf(results.getString("organisationalUnitName")),
+                String.valueOf(results.getString("assetName")),
                 results.getInt("quantity"),
                 results.getFloat("price"),
                 results.getTimestamp("dateOpened")
@@ -55,6 +68,36 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
 
         return allOpenTrades;
     }
+
+    public ArrayList<PartialReadableOpenTrade> getAllReadable() throws SQLException {
+        PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
+                """
+                        SELECT
+                                      ot."tradeId",
+                                      ot."tradeType",
+                                      ou."organisationalUnitName",
+                                      at2."assetName",
+                                      ot.quantity,
+                                      ot.price,
+                                      ot.quantity,
+                                      ot."dateOpened"\s
+                                      FROM
+                                      "openTrades" as ot\s
+                                      JOIN "organisationalUnits" ou ON ou."organisationalUnitId" = ot."organisationalUnitId"
+                                      JOIN "assetTypes" at2 ON at2."assetTypeId" = ot."assetTypeId";""");
+
+        ResultSet results = getAllUnresolved.executeQuery();
+
+        ArrayList<PartialReadableOpenTrade> allOpenTrades = new ArrayList<>();
+        while (results.next()) {
+            PartialReadableOpenTrade trade = resultSetToReadableObject(results);
+            allOpenTrades.add(trade);
+        }
+
+        return allOpenTrades;
+    }
+
+
 
     public void createNew(OpenTrade newObject) throws SQLException {
         PreparedStatement createNew = dbConnection.prepareStatement(

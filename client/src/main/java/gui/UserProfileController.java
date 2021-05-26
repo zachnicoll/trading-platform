@@ -50,7 +50,7 @@ public class UserProfileController {
     }
 
     @FXML
-    void submitPChange(ActionEvent event) {
-
+    private void submitPChange(ActionEvent event) {
+        return;
     }
 }

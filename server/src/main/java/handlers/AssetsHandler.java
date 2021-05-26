@@ -28,7 +28,6 @@ public class AssetsHandler extends AbstractRequestHandler {
         AssetDataSource assetDataSource = new AssetDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
         ArrayList<Asset>  assets;
-
         if (params.length == 3) {
             // Organisational Unit Id is present in URL, use it to filter assets
             UUID orgUnitId = UUID.fromString(params[2]);

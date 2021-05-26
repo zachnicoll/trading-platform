@@ -29,3 +29,15 @@
 #btnOMAssetAdd:hover {
     -fx-background-color: #475369;
 }
+
+#btnOMBalance {
+    -fx-graphic: url("../images/add.png");
+    -fx-background-size: 30;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: 100%;
+    -fx-background-color: #4F5D75;
+}
+
+#btnOMBalance:hover {
+    -fx-background-color: #475369;
+}

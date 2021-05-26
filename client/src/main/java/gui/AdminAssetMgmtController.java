@@ -64,7 +64,7 @@ public class AdminAssetMgmtController {
         HttpResponse<String> deleteResponse = Client.clientDelete(Route.getRoute(Route.assettype) + assetTypeId);
 
         if (deleteResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Successfully deleted AssetType.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted AssetType.");
             alert.showAndWait();
 
             // Re-fetch AssetTypes and set table data
@@ -127,7 +127,7 @@ public class AdminAssetMgmtController {
         if (newAssetTypeResponse.statusCode() == 200) {
             txtAssMAssetName.clear();
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Successfully created AssetType.");
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully created AssetType.");
             alert.showAndWait();
 
             // Re-fetch AssetTypes and set table data

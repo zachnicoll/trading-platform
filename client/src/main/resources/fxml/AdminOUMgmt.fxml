@@ -67,11 +67,11 @@
       </AnchorPane>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="200.0" prefWidth="100.0" stylesheets="@../css/OM.css" BorderPane.alignment="CENTER">
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <JFXButton fx:id="btnOMAssetAdd" layoutX="513.0" layoutY="128.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXButton fx:id="btnOMAssetAdd" layoutX="513.0" layoutY="128.0" onAction="#addAsset" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
                   <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="50.0" onAction="#selectedOU" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />

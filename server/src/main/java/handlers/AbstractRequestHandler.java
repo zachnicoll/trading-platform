@@ -281,7 +281,7 @@ public abstract class AbstractRequestHandler implements HttpHandler {
     /**
      * Handles PUT method of route. Return 501 - Not Implemented by default.
      */
-    protected void handlePut(HttpExchange exchange) throws IOException {
+    protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
         respondNotImplemented(exchange);
     }
 

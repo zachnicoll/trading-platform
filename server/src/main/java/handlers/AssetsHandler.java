@@ -2,11 +2,14 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.AssetDataSource;
+import database.datasources.AssetTypeDataSource;
 import database.datasources.OrganisationalUnitDataSource;
 import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.Asset;
+import models.AssetType;
 import models.OrganisationalUnit;
+import models.partial.PartialAssetType;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -62,6 +65,31 @@ public class AssetsHandler extends AbstractRequestHandler {
         }
         else{
             assetDataSource.deleteById(assetTypeId, orgUnitId);
+            writeResponseBody(exchange, null, 200);
+        }
+    }
+
+    @Override
+    protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
+
+        AssetDataSource assetDataSource = new AssetDataSource();
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+
+        Asset asset = (Asset) readRequestBody(exchange, Asset.class);
+
+        if (asset.getQuantity() < 1)
+        {
+            JsonError jsonError = new JsonError("Provided Quantity is less than 1");
+            writeResponseBody(exchange, jsonError, 400);
+        }
+        else {
+            if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
+                assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
+            } else {
+                assetDataSource.createNew(asset, orgUnitId);
+            }
             writeResponseBody(exchange, null, 200);
         }
     }

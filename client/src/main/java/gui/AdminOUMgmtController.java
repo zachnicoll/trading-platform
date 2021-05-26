@@ -79,16 +79,13 @@ public class AdminOUMgmtController {
     @FXML
     private TableColumn<?, ?> tblcolOMQuantity;
 
-    @FXML
-    private TableColumn<?, ?> tblcolOMDelete;
 
     private ClientInfo clientInfo;
     private UUID currentOrg;
     private Gson gson = new Gson();
 
     @FXML
-    public void initialize()
-    {
+    public void initialize() throws IOException, InterruptedException {
         tblcolOMAssets.setCellValueFactory(new PropertyValueFactory<>("name"));
         tblcolOMQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
@@ -97,7 +94,6 @@ public class AdminOUMgmtController {
         //refreshTable();
         //addDeleteButtonsToTable();
         UUID tempa = clientInfo.getCurrentUser().getOrganisationalUnitId();
-
 
 
         //Initialize org combobox
@@ -116,22 +112,18 @@ public class AdminOUMgmtController {
 
         comboOUSelect.setItems(orgNames);
 
-        /*
+        AssetType[] allAssetTypes = getAllAssetTypes();
+
         //Initialize asset combobox
         ObservableList<AssetType> assetNames = FXCollections.observableArrayList();
 
-        //TODO GET ASSETTYPE LIST FROM DATABASE
-        List<AssetType> temp2 = new ArrayList<AssetType>();
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset"));
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset1234"));
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset5678"));
 
-        for(AssetType anAsset:temp2)
+        for(AssetType anAsset:allAssetTypes)
         {
             assetNames.add(anAsset);
         }
 
-        comboOMAssetAdd.setItems(assetNames);*/
+        comboOMAssetAdd.setItems(assetNames);
     }
 
     @FXML
@@ -145,7 +137,13 @@ public class AdminOUMgmtController {
         return gson.fromJson(assetResponse.body(), Asset[].class);
     }
 
+    private AssetType[] getAllAssetTypes() throws IOException, InterruptedException {
+        HttpResponse<String> assetTypesResponse = Client.clientGet(Route.getRoute(Route.assettype));
+        return gson.fromJson(assetTypesResponse.body(), AssetType[].class);
+    }
+
     private void refreshTable(UUID orgUnit) throws IOException, InterruptedException {
+        tblOM.getItems().clear();
         tableData = FXCollections.observableArrayList();
         tableData.setAll(getAllAsset(orgUnit));
         tblOM.setItems(tableData);
@@ -153,9 +151,9 @@ public class AdminOUMgmtController {
     }
 
     private void addDeleteButtonsToTable() {
-        TableColumn<Asset, Void> colDelBtn = new TableColumn("");
+        TableColumn<Asset, Void> tblcolOMDelete = new TableColumn("");
 
-        colDelBtn.setPrefWidth(98);
+        tblcolOMDelete.setPrefWidth(98);
         Callback<TableColumn<Asset, Void>, TableCell<Asset, Void>> cellFactory = new Callback<>() {
 
 
@@ -189,9 +187,9 @@ public class AdminOUMgmtController {
             }
         };
 
-        colDelBtn.setCellFactory(cellFactory);
+        tblcolOMDelete.setCellFactory(cellFactory);
 
-        tblOM.getColumns().add(colDelBtn);
+        tblOM.getColumns().add(tblcolOMDelete);
     }
 
     private void handleDelete(UUID assetTypeId) throws IOException, InterruptedException {
@@ -209,5 +207,29 @@ public class AdminOUMgmtController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.");
             alert.showAndWait();
         }
+    }
+
+    @FXML
+    private void addAsset() throws IOException, InterruptedException {
+
+
+        int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
+
+        Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
+
+        HttpResponse<String> putResponse = Client.clientPut("/assets/"+ currentOrg, asset);
+
+        if (putResponse.statusCode() == 200) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
+            alert.showAndWait();
+
+            // Re-fetch AssetTypes and set table data
+            refreshTable(currentOrg);
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.");
+            alert.showAndWait();
+        }
+
     }
 }

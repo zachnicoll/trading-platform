@@ -109,7 +109,7 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
 
     public void createNew(Asset newObject, UUID organisationalUnitId) throws SQLException {
         PreparedStatement createStatement = dbConnection.prepareStatement(
-                "INSERT INTO \"organisationUnitAssets\" VALUES (uuid(?), uuid(?), ?);"
+                "INSERT INTO \"organisationalUnitAssets\" VALUES (uuid(?), uuid(?), ?);"
         );
 
         createStatement.setString(1, organisationalUnitId.toString());
@@ -125,8 +125,8 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
     public void updateAssetQuantity(UUID organisationalUnitId, UUID assetTypeId, Integer quantity) throws SQLException {
         PreparedStatement updateStatement = dbConnection.prepareStatement(
                 "UPDATE \"organisationalUnitAssets\" SET quantity = ? WHERE" +
-                        "\"organisationalUnitId\"::text = ? AND" +
-                        "\"assetTypeId\"::text = ?;"
+                        "\"organisationalUnitId\" = uuid(?) AND" +
+                        "\"assetTypeId\" = uuid(?);"
         );
         updateStatement.setInt(1, quantity);
         updateStatement.setString(2, organisationalUnitId.toString());
@@ -144,9 +144,9 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
 
     public boolean checkExistById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
         PreparedStatement checkExistsById = dbConnection.prepareStatement(
-                "SELECT EXISTS(SELECT 1 FROM \"organisationalUnitAssets\" WHERE " +
-                        "\"organisationalUnitId\"::text = ? AND" +
-                        "\"assetTypeId\"::text = ?);"
+                "SELECT * FROM \"organisationalUnitAssets\" WHERE " +
+                        "\"organisationalUnitId\"= uuid(?) AND" +
+                        "\"assetTypeId\"= uuid(?);"
         );
 
         checkExistsById.setString(1, orgUnitId.toString());
@@ -179,6 +179,7 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
         updateStatement.setString(3, assetTypeId.toString());
 
         return updateStatement.toString();
+
     }
 
     public String getCreateNewQuery(Asset newObject, UUID organisationalUnitId) throws SQLException {

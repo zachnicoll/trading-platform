@@ -35,23 +35,23 @@
    <center>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <ImageView fitHeight="205.0" fitWidth="265.0" layoutX="64.0" layoutY="118.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="205.0" fitWidth="265.0" layoutX="54.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/profile_image.png" />
                </image>
             </ImageView>
-            <Text fx:id="lblUPName" fill="#ef8354" layoutX="296.0" layoutY="172.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="375.09375">
+            <Text fx:id="lblUPName" fill="#ef8354" layoutX="293.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="375.09375">
                <font>
                   <Font size="36.0" />
                </font>
             </Text>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4c4c4" height="40.0" layoutX="296.0" layoutY="236.0" stroke="#c4c4c4" strokeType="INSIDE" width="300.0" />
-            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="302.0" layoutY="243.0" pickOnBounds="true" preserveRatio="true">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4c4c4" height="40.0" layoutX="293.0" layoutY="221.0" stroke="#c4c4c4" strokeType="INSIDE" width="300.0" />
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="299.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../images/password.png" />
                </image>
             </ImageView>
-            <PasswordField fx:id="txtUPPassword" layoutX="331.0" layoutY="237.0" prefHeight="38.0" prefWidth="263.0" promptText="New Password" style="-fx-background-color: c4c4c4;">
+            <PasswordField fx:id="txtUPPassword" layoutX="328.0" layoutY="222.0" prefHeight="38.0" prefWidth="263.0" promptText="New Password" style="-fx-background-color: c4c4c4;">
                <font>
                   <Font size="18.0" />
                </font>
@@ -59,16 +59,30 @@
                   <Insets left="15.0" />
                </padding>
             </PasswordField>
-            <JFXButton fx:id="btnUPSumbit" layoutX="296.0" layoutY="283.0" onAction="#submitPChange" prefHeight="26.0" prefWidth="300.0" stylesheets="@../css/Login.css" text="Submit" textFill="WHITE">
+            <JFXButton fx:id="btnUPSumbit" layoutX="293.0" layoutY="314.0" onAction="#submitPChange" prefHeight="26.0" prefWidth="300.0" stylesheets="@../css/Login.css" text="Submit" textFill="WHITE">
                <font>
                   <Font size="14.0" />
                </font>
             </JFXButton>
-            <Text fill="#ef8354" layoutX="296.0" layoutY="225.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Password:" wrappingWidth="375.09375">
+            <Text fill="#ef8354" layoutX="293.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Password:" wrappingWidth="375.09375">
                <font>
                   <Font size="18.0" />
                </font>
             </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4c4c4" height="40.0" layoutX="293.0" layoutY="268.0" stroke="#c4c4c4" strokeType="INSIDE" width="300.0" />
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="299.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/password.png" />
+               </image>
+            </ImageView>
+            <PasswordField fx:id="txtUPPasswordConfirm" layoutX="328.0" layoutY="269.0" prefHeight="38.0" prefWidth="263.0" promptText="Confirm New Password" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </PasswordField>
          </children>
       </AnchorPane>
    </center>

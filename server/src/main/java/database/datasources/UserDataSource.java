@@ -95,7 +95,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void createNew(User newObject) throws SQLException {
-
+        //TODO FIGURE OUT WHAT THIS IS FOR
     }
 
     public void createNew(User newObject, String password) throws SQLException {

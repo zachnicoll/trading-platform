@@ -3,6 +3,7 @@ package gui;
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.sun.glass.ui.CommonDialogs;
+import errors.JsonError;
 import helpers.Client;
 import helpers.ClientInfo;
 import helpers.Route;
@@ -82,6 +83,7 @@ public class AdminOUMgmtController {
     private TableColumn<?, ?> tblcolOMDelete;
 
     private ClientInfo clientInfo;
+    private UUID currentOrg;
     private Gson gson = new Gson();
 
     @FXML
@@ -134,7 +136,8 @@ public class AdminOUMgmtController {
 
     @FXML
     void selectedOU(ActionEvent event) throws IOException, InterruptedException {
-        refreshTable(comboOUSelect.getValue().getUnitId());
+        currentOrg = comboOUSelect.getValue().getUnitId();
+        refreshTable(currentOrg);
     }
 
     private Asset[] getAllAsset(UUID orgUnit) throws IOException, InterruptedException {
@@ -146,6 +149,7 @@ public class AdminOUMgmtController {
         tableData = FXCollections.observableArrayList();
         tableData.setAll(getAllAsset(orgUnit));
         tblOM.setItems(tableData);
+        addDeleteButtonsToTable();
     }
 
     private void addDeleteButtonsToTable() {
@@ -191,14 +195,16 @@ public class AdminOUMgmtController {
     }
 
     private void handleDelete(UUID assetTypeId) throws IOException, InterruptedException {
-        HttpResponse<String> deleteResponse = Client.clientDelete(Route.getRoute(Route.assettype) + assetTypeId);
+        HttpResponse<String> deleteResponse = Client.clientDelete("/assets/"+ currentOrg + "/" + assetTypeId);
+
 
         if (deleteResponse.statusCode() == 200) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
             alert.showAndWait();
 
             // Re-fetch AssetTypes and set table data
-            refreshTable();
+            refreshTable(currentOrg);
+
         } else {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.");
             alert.showAndWait();

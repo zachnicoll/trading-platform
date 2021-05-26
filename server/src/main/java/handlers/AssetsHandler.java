@@ -2,8 +2,11 @@ package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.AssetDataSource;
+import database.datasources.OrganisationalUnitDataSource;
+import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.Asset;
+import models.OrganisationalUnit;
 
 import java.io.IOException;
 import java.sql.ResultSet;
@@ -39,4 +42,28 @@ public class AssetsHandler extends AbstractRequestHandler {
 
         writeResponseBody(exchange, assets);
     }
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws IOException, SQLException {
+
+        AssetDataSource assetDataSource = new AssetDataSource();
+        OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+        UUID assetTypeId = UUID.fromString(params[3]);
+
+        if (!orgUnitDataSource.checkExistById(orgUnitId)) {
+            JsonError jsonError = new JsonError("Organisational Unit does not exist");
+            writeResponseBody(exchange, jsonError, 404);
+        }
+        else if (!assetDataSource.checkExistById(assetTypeId, orgUnitId)){
+            JsonError jsonError = new JsonError("Organisational Unit does not own any of the given Asset Type");
+            writeResponseBody(exchange, jsonError, 400);
+        }
+        else{
+            assetDataSource.deleteById(assetTypeId, orgUnitId);
+            writeResponseBody(exchange, null, 200);
+        }
+    }
+
 }

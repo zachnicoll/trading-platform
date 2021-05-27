@@ -30,10 +30,27 @@ public class OrgUnitHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        ArrayList<Asset> assets = new ArrayList<>();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit(UUID.randomUUID(), "Org Unit Name", 1000.0f, assets);
-        writeResponseBody(exchange, organisationalUnit);
+    protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
+
+        OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+        ArrayList<OrganisationalUnit>  orgUnits = null;
+        if (params.length == 3) {
+            // Organisational Unit Id is present in URL, use it to filter assets
+            UUID orgUnitId = UUID.fromString(params[2]);
+            if (orgUnitDataSource.checkExistById(orgUnitId)) {
+                orgUnits.add(orgUnitDataSource.getById(orgUnitId));
+            }
+            else
+            {
+                writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
+            }
+        } else {
+            // Otherwise just get all
+            orgUnits = orgUnitDataSource.getAll();
+        }
+
+        writeResponseBody(exchange, orgUnits, 200);
     }
 
     @Override

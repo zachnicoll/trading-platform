@@ -2,7 +2,6 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
-import com.sun.glass.ui.CommonDialogs;
 import errors.JsonError;
 import helpers.Client;
 import helpers.ClientInfo;
@@ -10,18 +9,9 @@ import helpers.Route;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import com.jfoenix.controls.JFXComboBox;
 
 import javafx.event.ActionEvent;
@@ -31,10 +21,8 @@ import models.AssetType;
 import models.OrganisationalUnit;
 import models.partial.PartialOrganisationalUnit;
 
-import java.io.File;
 import java.io.IOException;
 
-import java.awt.*;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
@@ -85,6 +73,7 @@ public class AdminOUMgmtController {
     private UUID currentOrg;
     private Gson gson = new Gson();
     JsonError errorResponse;
+    ObservableList<OrganisationalUnit> orgNames;
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -93,26 +82,7 @@ public class AdminOUMgmtController {
 
         clientInfo = ClientInfo.getInstance();
 
-        //refreshTable();
-        //addDeleteButtonsToTable();
-        UUID tempa = clientInfo.getCurrentUser().getOrganisationalUnitId();
-
-
-        //Initialize org combobox
-        ObservableList<OrganisationalUnit> orgNames = FXCollections.observableArrayList();
-
-        //TODO GET ORG LIST FROM DATABASE
-        List<OrganisationalUnit> temp = new ArrayList<OrganisationalUnit>();
-        temp.add(new OrganisationalUnit(tempa, "testunit", 10000f, new ArrayList<Asset>()));
-        //temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit1234", 10000f, new ArrayList<Asset>()));
-        //temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit5678", 10000f, new ArrayList<Asset>()));
-
-        for(OrganisationalUnit anOrg:temp)
-        {
-            orgNames.add(anOrg);
-        }
-
-        comboOUSelect.setItems(orgNames);
+        getAllOrgsRefresh();
 
         AssetType[] allAssetTypes = getAllAssetTypes();
 
@@ -137,6 +107,28 @@ public class AdminOUMgmtController {
     private Asset[] getAllAsset(UUID orgUnit) throws IOException, InterruptedException {
         HttpResponse<String> assetResponse = Client.clientGet("/assets/"+ orgUnit);
         return gson.fromJson(assetResponse.body(), Asset[].class);
+    }
+
+    private void getAllOrgsRefresh() throws IOException, InterruptedException {
+        HttpResponse<String> orgResponse = Client.clientGet(Route.getRoute(Route.orgunit));
+
+        if (orgResponse.statusCode() == 200) {
+            OrganisationalUnit[] tempOrgs = gson.fromJson(orgResponse.body(), OrganisationalUnit[].class);
+
+            orgNames = FXCollections.observableArrayList();
+
+            for(OrganisationalUnit anOrg:tempOrgs)
+            {
+                orgNames.add(anOrg);
+            }
+
+            comboOUSelect.setItems(orgNames);
+
+        } else {
+            errorResponse = gson.fromJson(orgResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not all Organisations." + errorResponse.getError());
+            alert.showAndWait();
+        }
     }
 
     private AssetType[] getAllAssetTypes() throws IOException, InterruptedException {

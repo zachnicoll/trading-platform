@@ -88,7 +88,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
-                  <JFXButton fx:id="btnOMDeleteOU" layoutX="573.0" layoutY="8.0" prefHeight="33.0" prefWidth="106.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                  <JFXButton fx:id="btnOMDeleteOU" layoutX="544.0" layoutY="8.0" prefHeight="33.0" prefWidth="135.0" stylesheets="@../css/OU.css" text="Delete OU" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -135,14 +135,32 @@
                   </Text>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <TableView fx:id="tblOM" prefHeight="220.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
+                  <TableView fx:id="tblOM" prefHeight="220.0" prefWidth="500.0" style="-fx-background-color: #4f5d75;">
                     <columns>
-                      <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="440.0" text="Assets" />
-                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="150.0" text="Quantity" />
+                      <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="375.0" text="Assets" />
+                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="125.0" text="Quantity" />
                     </columns>
                   </TableView>
+                  <JFXButton fx:id="btnOMDeleteAsset" layoutX="536.0" layoutY="125.0" prefHeight="33.0" prefWidth="109.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets left="-35.0" />
+                     </padding>
+                  </JFXButton>
+                  <ImageView fitHeight="29.0" fitWidth="28.0" layoutX="610.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/delete.png" />
+                     </image>
+                  </ImageView>
+                  <Text fill="WHITE" layoutX="502.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an Asset to Delete" textAlignment="CENTER" wrappingWidth="176.125">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
          </children>

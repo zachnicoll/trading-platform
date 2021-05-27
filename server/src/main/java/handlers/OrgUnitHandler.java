@@ -89,5 +89,41 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         // Respond with created Object
         writeResponseBody(exchange, fullOrganisationalUnit, 200);
     }
+
+    @Override
+    protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
+
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
+
+        // Create new OrganisationalUnit in DB
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+
+        // Make new OrganisationalUnit object from json in request body
+        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, PartialOrganisationalUnit.class);
+
+
+        //check if unit's credit balance is greater than zero
+        if(partialOrganisationalUnit.getCreditBalance() < 0){
+            writeResponseBody(exchange, new JsonError("New credit balance is less than zero"),400);
+            return;
+        }
+        else if(!organisationalUnitDataSource.checkExistById(orgUnitId)){
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"),404);
+            return;
+        }
+        else
+        {
+            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.getCreditBalance(), null);
+            organisationalUnitDataSource.updateByAttribute(orgUnitId, "creditBalance", tempOrg);
+            // Respond
+            writeResponseBody(exchange, null, 200);
+        }
+
+    }
 }
 

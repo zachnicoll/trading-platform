@@ -88,7 +88,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
-                  <JFXButton fx:id="btnOMDeleteOU" layoutX="538.0" layoutY="139.0" prefHeight="33.0" prefWidth="135.0" stylesheets="@../css/OU.css" text="Delete OU" textFill="WHITE">
+                  <JFXButton fx:id="btnOMDeleteOU" layoutX="538.0" layoutY="139.0" onAction="#handleDeleteOrg" prefHeight="33.0" prefWidth="135.0" stylesheets="@../css/OU.css" text="Delete OU" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>

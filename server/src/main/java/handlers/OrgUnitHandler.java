@@ -125,5 +125,32 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         }
 
     }
+
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws IOException, SQLException {
+
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
+
+        // Create new OrganisationalUnit in DB
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+
+        if(organisationalUnitDataSource.checkExistById(orgUnitId)){
+
+            organisationalUnitDataSource.deleteById(orgUnitId);
+            // Respond
+            writeResponseBody(exchange, null, 200);
+        }
+        else
+        {
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"),404);
+            return;
+        }
+
+    }
 }
 

@@ -141,53 +141,15 @@ public class AdminOUMgmtController {
         tableData = FXCollections.observableArrayList();
         tableData.setAll(getAllAsset(orgUnit));
         tblOM.setItems(tableData);
-        addDeleteButtonsToTable();
     }
 
-    private void addDeleteButtonsToTable() {
-        TableColumn<Asset, Void> tblcolOMDelete = new TableColumn("");
 
-        tblcolOMDelete.setPrefWidth(98);
-        Callback<TableColumn<Asset, Void>, TableCell<Asset, Void>> cellFactory = new Callback<>() {
+    @FXML
+    private void handleDeleteAsset() throws IOException, InterruptedException {
 
+        Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
 
-            @Override
-            public TableCell<Asset, Void> call(final TableColumn<Asset, Void> param) {
-                return new TableCell<>() {
-
-                    private final JFXButton btn = new JFXButton("Delete");
-
-                    {
-                        btn.setOnAction((ActionEvent event) -> {
-                            Asset selectedAsset = getTableView().getItems().get(getIndex());
-                            try {
-                                handleDelete(selectedAsset.getAssetTypeId());
-                            } catch (IOException | InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(Void item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            setGraphic(btn);
-                        }
-                    }
-                };
-            }
-        };
-
-        tblcolOMDelete.setCellFactory(cellFactory);
-
-        tblOM.getColumns().add(tblcolOMDelete);
-    }
-
-    private void handleDelete(UUID assetTypeId) throws IOException, InterruptedException {
-        HttpResponse<String> deleteResponse = Client.clientDelete("/assets/"+ currentOrg + "/" + assetTypeId);
+        HttpResponse<String> deleteResponse = Client.clientDelete("/assets/"+ currentOrg + "/" + toDelete.getAssetTypeId());
 
 
         if (deleteResponse.statusCode() == 200) {
@@ -201,6 +163,8 @@ public class AdminOUMgmtController {
             errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
             Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
             alert.showAndWait();
+            // Re-fetch AssetTypes and set table data
+            refreshTable(currentOrg);
         }
     }
 

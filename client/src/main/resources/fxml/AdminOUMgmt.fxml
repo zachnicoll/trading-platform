@@ -140,10 +140,10 @@
                   <TableView fx:id="tblOM" prefHeight="220.0" prefWidth="500.0" style="-fx-background-color: #4f5d75;">
                     <columns>
                       <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="375.0" text="Assets" />
-                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="125.0" text="Quantity" />
+                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="123.0" text="Quantity" />
                     </columns>
                   </TableView>
-                  <JFXButton fx:id="btnOMDeleteAsset" layoutX="536.0" layoutY="125.0" prefHeight="33.0" prefWidth="109.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                  <JFXButton fx:id="btnOMDeleteAsset" layoutX="536.0" layoutY="125.0" onAction="#handleDeleteAsset" prefHeight="33.0" prefWidth="109.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
                      <font>
                         <Font size="18.0" />
                      </font>

@@ -46,7 +46,7 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
             <Text fill="WHITE" layoutX="163.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Organisation">
                <font>
                   <Font size="24.0" />
@@ -80,7 +80,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </JFXComboBox>
-                  <TextField fx:id="txtOUExistingBalance" layoutX="308.0" layoutY="50.0" prefHeight="45.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
+                  <TextField fx:id="txtOUExistingBalance" layoutX="477.0" layoutY="50.0" prefHeight="45.0" prefWidth="150.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -127,7 +127,12 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
-                  <JFXButton fx:id="btnOMBalance" layoutX="513.0" layoutY="45.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXButton fx:id="btnOMBalance" layoutX="627.0" layoutY="45.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <Text fill="#ef8354" layoutX="308.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\$__________________" wrappingWidth="152.5673828125">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
             <AnchorPane prefHeight="200.0" prefWidth="200.0">

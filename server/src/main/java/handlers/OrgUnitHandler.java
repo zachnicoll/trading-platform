@@ -43,7 +43,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         checkIsAdmin(exchange);
 
         // Make new OrganisationalUnit object from json in request body
-        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, OrganisationalUnit.class);
+        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, PartialOrganisationalUnit.class);
         OrganisationalUnit fullOrganisationalUnit =
                 new OrganisationalUnit(
                         UUID.randomUUID(),
@@ -54,13 +54,13 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
         //check if unit name is not null
         if(fullOrganisationalUnit.getUnitName() == null){
-            writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"));
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"),400);
             return;
         }
 
         //check if unit's credit balance is less than zero
         if(fullOrganisationalUnit.getCreditBalance() < 0){
-            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than zero"));
+            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than zero"),400);
             return;
         }
 
@@ -70,7 +70,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         organisationalUnitDataSource.createNew(fullOrganisationalUnit);
 
         // Respond with created Object
-        writeResponseBody(exchange, fullOrganisationalUnit);
+        writeResponseBody(exchange, fullOrganisationalUnit, 200);
     }
 }
 

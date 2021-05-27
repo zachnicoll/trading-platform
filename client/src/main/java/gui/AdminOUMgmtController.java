@@ -29,6 +29,7 @@ import javafx.util.Callback;
 import models.Asset;
 import models.AssetType;
 import models.OrganisationalUnit;
+import models.partial.PartialOrganisationalUnit;
 
 import java.io.File;
 import java.io.IOException;
@@ -83,6 +84,7 @@ public class AdminOUMgmtController {
     private ClientInfo clientInfo;
     private UUID currentOrg;
     private Gson gson = new Gson();
+    JsonError errorResponse;
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -204,7 +206,8 @@ public class AdminOUMgmtController {
             refreshTable(currentOrg);
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.");
+            errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
             alert.showAndWait();
         }
     }
@@ -227,7 +230,37 @@ public class AdminOUMgmtController {
             refreshTable(currentOrg);
 
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.");
+            errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation." + errorResponse.getError());
+            alert.showAndWait();
+        }
+
+    }
+
+
+    @FXML
+    private void addOU() throws IOException, InterruptedException {
+
+
+        String newOrgName = txtNewOUName.getText();
+        Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
+
+        PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
+
+
+        HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
+
+
+        if (postResponse.statusCode() == 200) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
+            alert.showAndWait();
+
+            // Re-fetch AssetTypes and set table data
+            refreshTable(currentOrg);
+
+        } else {
+            errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation." + errorResponse.getError());
             alert.showAndWait();
         }
 

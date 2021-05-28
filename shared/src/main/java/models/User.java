@@ -59,24 +59,6 @@ public class User {
         organisationalUnitId = newOrganisationalUnitId;
     }
 
-    /**
-     * Change a User's password via the /user/[userId]/change-password endpoint
-     * @throws ApiException if an error occurs while making the API request
-     */
-    public void changePassword(String password, String confirmPassword) throws ApiException, AuthenticationException {
-        if (password.compareTo(confirmPassword) != 0) {
-            throw new AuthenticationException();
-        }
-
-        /**
-         * Hash the password
-         */
-
-        /**
-         * Make POST request to the API to update password
-         */
-        return;
-    }
 
     /**
      * Get the AccountType of the User for displaying.

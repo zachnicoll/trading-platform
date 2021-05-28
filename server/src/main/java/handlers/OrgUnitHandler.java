@@ -30,10 +30,27 @@ public class OrgUnitHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        ArrayList<Asset> assets = new ArrayList<>();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit(UUID.randomUUID(), "Org Unit Name", 1000.0f, assets);
-        writeResponseBody(exchange, organisationalUnit);
+    protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
+
+        OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+        ArrayList<OrganisationalUnit>  orgUnits = null;
+        if (params.length == 3) {
+            // Organisational Unit Id is present in URL, use it to filter assets
+            UUID orgUnitId = UUID.fromString(params[2]);
+            if (orgUnitDataSource.checkExistById(orgUnitId)) {
+                orgUnits.add(orgUnitDataSource.getById(orgUnitId));
+            }
+            else
+            {
+                writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
+            }
+        } else {
+            // Otherwise just get all
+            orgUnits = orgUnitDataSource.getAll();
+        }
+
+        writeResponseBody(exchange, orgUnits, 200);
     }
 
     @Override
@@ -43,7 +60,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         checkIsAdmin(exchange);
 
         // Make new OrganisationalUnit object from json in request body
-        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, OrganisationalUnit.class);
+        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, PartialOrganisationalUnit.class);
         OrganisationalUnit fullOrganisationalUnit =
                 new OrganisationalUnit(
                         UUID.randomUUID(),
@@ -54,13 +71,13 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
         //check if unit name is not null
         if(fullOrganisationalUnit.getUnitName() == null){
-            writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"));
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"),400);
             return;
         }
 
         //check if unit's credit balance is less than zero
         if(fullOrganisationalUnit.getCreditBalance() < 0){
-            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than zero"));
+            writeResponseBody(exchange, new JsonError("Organisational Unit has credit balance less than zero"),400);
             return;
         }
 
@@ -70,7 +87,70 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         organisationalUnitDataSource.createNew(fullOrganisationalUnit);
 
         // Respond with created Object
-        writeResponseBody(exchange, fullOrganisationalUnit);
+        writeResponseBody(exchange, fullOrganisationalUnit, 200);
+    }
+
+    @Override
+    protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
+
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
+
+        // Create new OrganisationalUnit in DB
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+
+        // Make new OrganisationalUnit object from json in request body
+        PartialOrganisationalUnit partialOrganisationalUnit = (PartialOrganisationalUnit) readRequestBody(exchange, PartialOrganisationalUnit.class);
+
+
+        //check if unit's credit balance is greater than zero
+        if(partialOrganisationalUnit.getCreditBalance() < 0){
+            writeResponseBody(exchange, new JsonError("New credit balance is less than zero"),400);
+            return;
+        }
+        else if(!organisationalUnitDataSource.checkExistById(orgUnitId)){
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"),404);
+            return;
+        }
+        else
+        {
+            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.getCreditBalance(), null);
+            organisationalUnitDataSource.updateByAttribute(orgUnitId, "creditBalance", tempOrg);
+            // Respond
+            writeResponseBody(exchange, null, 200);
+        }
+
+    }
+
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws IOException, SQLException {
+
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
+
+        // Create new OrganisationalUnit in DB
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        UUID orgUnitId = UUID.fromString(params[2]);
+
+        if(organisationalUnitDataSource.checkExistById(orgUnitId)){
+
+            organisationalUnitDataSource.deleteById(orgUnitId);
+            // Respond
+            writeResponseBody(exchange, null, 200);
+        }
+        else
+        {
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"),404);
+            return;
+        }
+
     }
 }
 

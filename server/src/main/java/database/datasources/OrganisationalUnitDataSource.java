@@ -3,6 +3,7 @@ package database.datasources;
 import database.DBConnection;
 import models.OrganisationalUnit;
 import models.ResolvedTrade;
+import models.partial.PartialOrganisationalUnit;
 
 import java.security.InvalidParameterException;
 import java.sql.Connection;

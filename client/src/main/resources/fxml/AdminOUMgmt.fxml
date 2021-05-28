@@ -46,7 +46,7 @@
                   <Insets left="15.0" />
                </padding>
             </TextField>
-            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+            <JFXButton fx:id="btnAddOU" layoutX="765.0" layoutY="60.0" onAction="#addOU" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
             <Text fill="WHITE" layoutX="163.0" layoutY="51.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Create New Organisation">
                <font>
                   <Font size="24.0" />
@@ -67,12 +67,12 @@
       </AnchorPane>
    </top>
    <center>
-      <VBox prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+      <VBox prefHeight="200.0" prefWidth="100.0" stylesheets="@../css/OM.css" BorderPane.alignment="CENTER">
          <children>
             <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <JFXButton fx:id="btnOMAssetAdd" layoutX="513.0" layoutY="128.0" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
-                  <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="50.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+                  <JFXButton fx:id="btnOMAssetAdd" layoutX="449.0" layoutY="128.0" onAction="#addAsset" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <JFXComboBox fx:id="comboOUSelect" focusColor="#4f5d75" layoutX="17.0" layoutY="50.0" onAction="#selectedOU" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                      <opaqueInsets>
                         <Insets />
                      </opaqueInsets>
@@ -80,7 +80,7 @@
                         <Insets left="15.0" />
                      </padding>
                   </JFXComboBox>
-                  <TextField fx:id="txtOUExistingBalance" layoutX="308.0" layoutY="50.0" prefHeight="45.0" prefWidth="187.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
+                  <TextField fx:id="txtOUExistingBalance" layoutX="476.0" layoutY="50.0" prefHeight="45.0" prefWidth="150.0" promptText="Balance" style="-fx-background-color: c4c4c4;">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -88,15 +88,15 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
-                  <JFXButton fx:id="btnOMDeleteOU" layoutX="513.0" layoutY="50.0" prefHeight="45.0" prefWidth="148.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                  <JFXButton fx:id="btnOMDeleteOU" layoutX="538.0" layoutY="139.0" onAction="#handleDeleteOrg" prefHeight="33.0" prefWidth="135.0" stylesheets="@../css/OU.css" text="Delete OU" textFill="WHITE">
                      <font>
-                        <Font size="24.0" />
+                        <Font size="18.0" />
                      </font>
                      <padding>
                         <Insets left="-35.0" />
                      </padding>
                   </JFXButton>
-                  <ImageView fitHeight="38.0" fitWidth="38.0" layoutX="614.0" layoutY="54.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="29.0" fitWidth="28.0" layoutX="637.0" layoutY="142.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/delete.png" />
                      </image>
@@ -119,7 +119,7 @@
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <TextField fx:id="txtOUNewAssetQuantity" layoutX="308.0" layoutY="133.0" prefHeight="45.0" prefWidth="187.0" promptText="Quantity" style="-fx-background-color: c4c4c4;">
+                  <TextField fx:id="txtOUNewAssetQuantity" layoutX="302.0" layoutY="133.0" prefHeight="45.0" prefWidth="151.0" promptText="Quantity" style="-fx-background-color: c4c4c4;">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -127,17 +127,40 @@
                         <Insets left="15.0" />
                      </padding>
                   </TextField>
+                  <JFXButton fx:id="btnOMBalance" layoutX="627.0" layoutY="45.0" onAction="#handleChangeBal" prefHeight="56.0" prefWidth="44.0" ripplerFill="#27ae60" stylesheets="@../css/OU.css" text="" />
+                  <Text fx:id="lblOMOUBalance" fill="#ef8354" layoutX="308.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="152.5673828125">
+                     <font>
+                        <Font name="System Bold" size="18.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
-            <AnchorPane prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;">
                <children>
-                  <TableView fx:id="tblOM" prefHeight="200.0" prefWidth="690.0" style="-fx-background-color: #4f5d75;">
+                  <TableView fx:id="tblOM" prefHeight="220.0" prefWidth="500.0" style="-fx-background-color: #4f5d75;">
                     <columns>
-                      <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="440.0" text="Assets" />
-                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="150.0" text="Quantity" />
-                        <TableColumn fx:id="tblcolOMDelete" editable="false" prefWidth="100.0" text="Delete" />
+                      <TableColumn fx:id="tblcolOMAssets" editable="false" prefWidth="375.0" text="Assets" />
+                      <TableColumn fx:id="tblcolOMQuantity" editable="false" prefWidth="123.0" text="Quantity" />
                     </columns>
                   </TableView>
+                  <JFXButton fx:id="btnOMDeleteAsset" layoutX="536.0" layoutY="125.0" onAction="#handleDeleteAsset" prefHeight="33.0" prefWidth="109.0" stylesheets="@../css/OU.css" text="Delete" textFill="WHITE">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets left="-35.0" />
+                     </padding>
+                  </JFXButton>
+                  <ImageView fitHeight="29.0" fitWidth="28.0" layoutX="610.0" layoutY="128.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/delete.png" />
+                     </image>
+                  </ImageView>
+                  <Text fill="WHITE" layoutX="502.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select an Asset to Delete" textAlignment="CENTER" wrappingWidth="176.125">
+                     <font>
+                        <Font size="24.0" />
+                     </font>
+                  </Text>
                </children>
             </AnchorPane>
          </children>

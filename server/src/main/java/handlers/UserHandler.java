@@ -19,6 +19,7 @@ import java.util.UUID;
 import database.DBConnection;
 import models.Asset;
 import models.ResolvedTrade;
+import org.xml.sax.ext.DeclHandler;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,6 +52,9 @@ public class UserHandler extends AbstractRequestHandler {
 
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
+        //only admin can create new users
+        checkIsAdmin(exchange);
+
         PartialUser partialUser = (PartialUser) readRequestBody(exchange, PartialUser.class);
         User fullUser = new User(
                 UUID.randomUUID(),

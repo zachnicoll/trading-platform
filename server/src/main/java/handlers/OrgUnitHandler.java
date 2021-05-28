@@ -32,9 +32,6 @@ public class OrgUnitHandler extends AbstractRequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
 
-        //checks if user has admin privileges
-        checkIsAdmin(exchange);
-
         OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
         ArrayList<OrganisationalUnit>  orgUnits = null;
@@ -49,6 +46,8 @@ public class OrgUnitHandler extends AbstractRequestHandler {
                 writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
             }
         } else {
+            //checks if user has admin privileges
+            checkIsAdmin(exchange);
             // Otherwise just get all
             orgUnits = orgUnitDataSource.getAll();
         }

@@ -43,11 +43,19 @@ public class UserHandler extends AbstractRequestHandler {
 
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
+        UserDataSource userDataSource = new UserDataSource();
 
-        String userId = getUserId(exchange);
-        UserDataSource user = new UserDataSource();
+        if(getUserId(exchange) == null){
+            //sends all users to the client
+            ArrayList<User> users = userDataSource.getAll();
+            writeResponseBody(exchange, users);
 
-        writeResponseBody(exchange, user.getById(UUID.fromString(userId)));
+        }else{
+            String userId = getUserId(exchange);
+
+            writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
+        }
+
     }
 
     @Override

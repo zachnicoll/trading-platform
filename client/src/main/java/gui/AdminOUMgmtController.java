@@ -204,25 +204,32 @@ public class AdminOUMgmtController {
     @FXML
     private void handleDeleteAsset() throws IOException, InterruptedException {
 
-        Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
+        if (tblOM.getSelectionModel().getSelectedItem() != null) {
+            Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
 
-        HttpResponse<String> deleteResponse = Client.clientDelete("/assets/"+ currentOrg.getUnitId() + "/" + toDelete.getAssetTypeId());
+            HttpResponse<String> deleteResponse = Client.clientDelete("/assets/" + currentOrg.getUnitId() + "/" + toDelete.getAssetTypeId());
 
 
-        if (deleteResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
-            alert.showAndWait();
+            if (deleteResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
+                alert.showAndWait();
 
-            // Re-fetch AssetTypes and set table data
+                // Re-fetch AssetTypes and set table data
 
-        } else {
-            errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
-            alert.showAndWait();
-            // Re-fetch AssetTypes and set table data
+            } else {
+                errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
+                alert.showAndWait();
+                // Re-fetch AssetTypes and set table data
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
         }
-        softReset();
-        refreshTable(currentOrg.getUnitId());
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an asset before continuing.");
+            alert.showAndWait();
+        }
     }
 
     @FXML

@@ -107,15 +107,8 @@ public class AdminOUMgmtController {
         HttpResponse<String> orgResponse = Client.clientGet(Route.getRoute(Route.orgunit));
 
         if (orgResponse.statusCode() == 200) {
-            OrganisationalUnit[] tempOrgs = gson.fromJson(orgResponse.body(), OrganisationalUnit[].class);
-
             orgNames = FXCollections.observableArrayList();
-
-            for(OrganisationalUnit anOrg:tempOrgs)
-            {
-                orgNames.add(anOrg);
-            }
-
+            orgNames.addAll(gson.fromJson(orgResponse.body(), OrganisationalUnit[].class));
             comboOUSelect.setItems(orgNames);
 
         } else {
@@ -130,15 +123,9 @@ public class AdminOUMgmtController {
         gson.fromJson(assetTypesResponse.body(), AssetType[].class);
 
         if (assetTypesResponse.statusCode() == 200) {
-            AssetType[] tempAssets = gson.fromJson(assetTypesResponse.body(), AssetType[].class);
 
             assetNames = FXCollections.observableArrayList();
-
-            for(AssetType anAssetType:tempAssets)
-            {
-                assetNames.add(anAssetType);
-            }
-
+            assetNames.addAll(gson.fromJson(assetTypesResponse.body(), AssetType[].class));
             comboOMAssetAdd.setItems(assetNames);
 
         } else {

@@ -32,6 +32,9 @@ public class OrgUnitHandler extends AbstractRequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
 
+        //checks if user has admin privileges
+        checkIsAdmin(exchange);
+
         OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
         ArrayList<OrganisationalUnit>  orgUnits = null;

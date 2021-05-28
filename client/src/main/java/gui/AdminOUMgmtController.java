@@ -231,13 +231,11 @@ public class AdminOUMgmtController {
                 if (deleteResponse.statusCode() == 200) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
                     alert.showAndWait();
-                    // Re-fetch AssetTypes and set table data
 
                 } else {
                     errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation.\n" + errorResponse.getError());
                     alert.showAndWait();
-                    // Re-fetch AssetTypes and set table data
                 }
                 resetAll();
             }
@@ -263,7 +261,6 @@ public class AdminOUMgmtController {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
             alert.showAndWait();
 
-            // Re-fetch AssetTypes and set table data
 
         } else {
             errorResponse = gson.fromJson(putResponse.body(), JsonError.class);

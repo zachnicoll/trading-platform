@@ -61,7 +61,7 @@ public class UserDashboardController {
     private ObservableList<PartialReadableOpenTrade> tableData;
     private ClientInfo clientInfo;
     private Gson gson = new Gson();
-    private String userOrgUnitName;
+    private OrganisationalUnit userOrgUnit;
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -73,8 +73,8 @@ public class UserDashboardController {
         tblcolDateOpened.setCellValueFactory(new PropertyValueFactory<>("dateOpened"));
 
         clientInfo = ClientInfo.getInstance();
-        userOrgUnitName = getOrgUnitName().toLowerCase();
-        txtUnitBalance.setText(NumberFormat.getCurrencyInstance().format(getBalance()));
+        userOrgUnit = getOrgUnit();
+        txtUnitBalance.setText(NumberFormat.getCurrencyInstance().format(userOrgUnit.getCreditBalance()));
 
 
         refreshTable();
@@ -94,15 +94,9 @@ public class UserDashboardController {
         openTradesTable.setItems(tableData);
     }
 
-    private Float getBalance() throws IOException, InterruptedException {
+    private OrganisationalUnit getOrgUnit() throws IOException, InterruptedException {
         HttpResponse<String> orgUnitResponse = Client.clientGet(Route.getRoute(Route.orgunit) + clientInfo.getCurrentUser().getOrganisationalUnitId());
-        return gson.fromJson(orgUnitResponse.body(), OrganisationalUnit.class).getCreditBalance();
-    }
-
-
-    private String getOrgUnitName() throws IOException, InterruptedException {
-        HttpResponse<String> orgUnitResponse = Client.clientGet(Route.getRoute(Route.orgunit) + clientInfo.getCurrentUser().getOrganisationalUnitId());
-        return gson.fromJson(orgUnitResponse.body(), OrganisationalUnit.class).getUnitName();
+        return gson.fromJson(orgUnitResponse.body(), OrganisationalUnit.class);
     }
 
     /**
@@ -123,7 +117,7 @@ public class UserDashboardController {
 
 
         unitFilter.bind(Bindings.createObjectBinding(() ->
-                        trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnitName)),
+                        trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnit.getUnitName())),
                 btnMyUnit.selectedProperty()));
 
         FilteredList<PartialReadableOpenTrade> filteredItems = new FilteredList<>(tableData);

@@ -95,7 +95,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public void createNew(User newObject) throws SQLException {
-
+        //TODO FIGURE OUT WHAT THIS IS FOR
     }
 
     public void createNew(User newObject, String password) throws SQLException {
@@ -119,6 +119,7 @@ public class UserDataSource extends AbstractDataSource<User> {
             case "organisationalUnitId":
                 attrValue = value.getOrganisationalUnitId();
                 break;
+
             default:
                 throw new InvalidParameterException();
         }
@@ -151,5 +152,18 @@ public class UserDataSource extends AbstractDataSource<User> {
         deleteUser.setString(1, id.toString());
 
         deleteUser.execute();
+    }
+
+    public void changePassword(UUID id, String password) throws SQLException, InvalidParameterException {
+
+        PreparedStatement updatePassword = dbConnection.prepareStatement(
+                "UPDATE \"users\" SET \"password\" = ? WHERE \"userId\" = uuid(?);"
+        );
+
+
+        updatePassword.setString(1, password);
+        updatePassword.setString(2, id.toString());
+
+        updatePassword.execute();
     }
 }

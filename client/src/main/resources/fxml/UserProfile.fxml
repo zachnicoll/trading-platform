@@ -1,19 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.jfoenix.controls.JFXButton?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserProfileController">
+   <left>
+      <AnchorPane prefHeight="555.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+   </left>
+   <right>
+      <AnchorPane prefHeight="555.0" prefWidth="145.0" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <AnchorPane prefHeight="145.0" prefWidth="980.0" BorderPane.alignment="CENTER" />
+   </bottom>
    <top>
-      <Text fill="WHITE" strokeType="OUTSIDE" strokeWidth="0.0" text="Profile" BorderPane.alignment="CENTER_LEFT">
-         <font>
-            <Font size="64.0" />
-         </font>
-         <BorderPane.margin>
-            <Insets left="25.0" top="10.0" />
-         </BorderPane.margin>
-      </Text>
+      <AnchorPane prefHeight="145.0" prefWidth="980.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fill="WHITE" layoutX="14.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Profile">
+               <font>
+                  <Font size="64.0" />
+               </font>
+            </Text>
+         </children>
+      </AnchorPane>
    </top>
+   <center>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <children>
+            <ImageView fitHeight="205.0" fitWidth="265.0" layoutX="54.0" layoutY="132.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/profile_image.png" />
+               </image>
+            </ImageView>
+            <Text fx:id="lblUPName" fill="#ef8354" layoutX="293.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Name" wrappingWidth="375.09375">
+               <font>
+                  <Font size="36.0" />
+               </font>
+            </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4c4c4" height="40.0" layoutX="293.0" layoutY="221.0" stroke="#c4c4c4" strokeType="INSIDE" width="300.0" />
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="299.0" layoutY="228.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/password.png" />
+               </image>
+            </ImageView>
+            <PasswordField fx:id="txtUPPassword" layoutX="328.0" layoutY="222.0" prefHeight="38.0" prefWidth="263.0" promptText="New Password" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </PasswordField>
+            <JFXButton fx:id="btnUPSumbit" layoutX="293.0" layoutY="314.0" onAction="#submitPChange" prefHeight="26.0" prefWidth="300.0" stylesheets="@../css/Login.css" text="Submit" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </JFXButton>
+            <Text fill="#ef8354" layoutX="293.0" layoutY="210.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Change Password:" wrappingWidth="375.09375">
+               <font>
+                  <Font size="18.0" />
+               </font>
+            </Text>
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c4c4c4" height="40.0" layoutX="293.0" layoutY="268.0" stroke="#c4c4c4" strokeType="INSIDE" width="300.0" />
+            <ImageView fitHeight="26.0" fitWidth="26.0" layoutX="299.0" layoutY="275.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/password.png" />
+               </image>
+            </ImageView>
+            <PasswordField fx:id="txtUPPasswordConfirm" layoutX="328.0" layoutY="269.0" prefHeight="38.0" prefWidth="263.0" promptText="Confirm New Password" style="-fx-background-color: c4c4c4;">
+               <font>
+                  <Font size="18.0" />
+               </font>
+               <padding>
+                  <Insets left="15.0" />
+               </padding>
+            </PasswordField>
+         </children>
+      </AnchorPane>
+   </center>
 </BorderPane>

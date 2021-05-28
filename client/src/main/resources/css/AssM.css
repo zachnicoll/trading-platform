@@ -9,3 +9,27 @@
 #btnAssMNewAsset:hover {
     -fx-background-color: #475369;
 }
+
+
+.table-view.column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .cell{
+  -fx-background-color:  #4f5d75;
+  -fx-border-color:  #4f5d75;
+  -fx-alignment: CENTER_LEFT;
+  -fx-font-size: 13px;
+  -fx-font-weight: bold;
+
+}
+.table-row-cell:selected {
+   -fx-text-background-color:  #EF8354;
+}
+
+.button {
+    -fx-background-color: #e95d5d;
+}
+.button:hover {
+    -fx-background-color: #D15353;
+}

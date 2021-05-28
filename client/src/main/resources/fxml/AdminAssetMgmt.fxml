@@ -51,10 +51,10 @@
       </AnchorPane>
    </top>
    <center>
-      <TableView fx:id="assetTypeTable" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+      <TableView fx:id="assetTypeTable" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" stylesheets="@../css/AssM.css" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="tblcolAssMAsset" editable="false" prefWidth="273.0" text="Asset Type Name" />
-          <TableColumn fx:id="tblcolAssMUuid" editable="false" prefWidth="277.0" text="Asset Type Id" />
+          <TableColumn fx:id="tblcolAssMAsset" editable="false" prefWidth="300.0" text="Asset Type Name" />
+          <TableColumn fx:id="tblcolAssMUuid" editable="false" prefWidth="300.0" text="Asset Type Id" />
         </columns>
       </TableView>
    </center>

@@ -3,6 +3,8 @@ package models.partial;
 import models.TradeType;
 
 import java.sql.Timestamp;
+import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 /**
@@ -31,8 +33,8 @@ public class PartialReadableOpenTrade {
     }
 
 
-    public Float getPricePerAsset() {
-        return pricePerAsset;
+    public String getPricePerAsset() {
+        return NumberFormat.getCurrencyInstance().format(pricePerAsset);
     }
 
     public Integer getQuantity() {
@@ -47,12 +49,10 @@ public class PartialReadableOpenTrade {
         return organisationalUnitName;
     }
 
-    public Timestamp getDateOpened() {
-        return dateOpened;
-    }
+    public String getDateOpened() { return new SimpleDateFormat("dd/MM/yyyy HH:mm:ss").format(dateOpened); }
 
-    public TradeType getTradeType() {
-        return tradeType;
+    public String getTradeType() {
+        return tradeType.name();
     }
 
     public UUID getTradeId() {

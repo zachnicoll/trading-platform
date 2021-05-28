@@ -2,26 +2,30 @@ package gui;
 
 import com.google.gson.Gson;
 import helpers.Client;
+import helpers.ClientInfo;
 import helpers.Route;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Text;
-import models.OpenTrade;
+import javafx.util.Callback;
+import models.OrganisationalUnit;
+import models.TradeType;
 import models.partial.PartialReadableOpenTrade;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.util.Locale;
+import java.text.NumberFormat;
+import java.util.function.Predicate;
 
 public class UserDashboardController {
-
 
 
     @FXML
@@ -40,7 +44,10 @@ public class UserDashboardController {
     private TableColumn<?, ?> tblcolOrgUnit;
 
     @FXML
-    private TableColumn<?, ?> tblcolTradeType;
+    private TableColumn<PartialReadableOpenTrade, String> tblcolTradeType;
+
+    @FXML
+    private TableColumn<?, ?> tblcolDateOpened;
 
     @FXML
     private TextField txtFieldSearch;
@@ -48,9 +55,13 @@ public class UserDashboardController {
     @FXML
     private Text txtUnitBalance;
 
-    private ObservableList<PartialReadableOpenTrade> tableData;
+    @FXML
+    private RadioButton btnMyUnit;
 
+    private ObservableList<PartialReadableOpenTrade> tableData;
+    private ClientInfo clientInfo;
     private Gson gson = new Gson();
+    private String userOrgUnitName;
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
@@ -59,46 +70,17 @@ public class UserDashboardController {
         tblcolQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
         tblcolOrgUnit.setCellValueFactory(new PropertyValueFactory<>("organisationalUnitName"));
         tblcolTradeType.setCellValueFactory(new PropertyValueFactory<>("tradeType"));
+        tblcolDateOpened.setCellValueFactory(new PropertyValueFactory<>("dateOpened"));
+
+        clientInfo = ClientInfo.getInstance();
+        userOrgUnitName = getOrgUnitName().toLowerCase();
+        txtUnitBalance.setText(NumberFormat.getCurrencyInstance().format(getBalance()));
+
 
         refreshTable();
-
-        // Wrap the ObservableList in a FilteredList (initially display all data).
-        FilteredList<PartialReadableOpenTrade> filteredData = new FilteredList<>(tableData, b -> true);
-
-        // 2. Set the filter Predicate whenever the filter changes.
-        txtFieldSearch.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredData.setPredicate(trade -> {
-                // If filter text is empty, display all persons.
-
-                if (newValue == null || newValue.isEmpty()) {
-                    return true;
-                }
-
-                // Compare first name and last name of every person with filter text.
-                String lowerCaseFilter = newValue.toLowerCase();
-
-                if (trade.getAssetTypeName().toLowerCase().indexOf(lowerCaseFilter) != -1 ) {
-                    return true; // Filter matches first name.
-                } else if (trade.getOrganisationalUnitName().toLowerCase().indexOf(lowerCaseFilter) != -1) {
-                    return true; // Filter matches last name.
-                }
-                else if (trade.getTradeType().name().toLowerCase().indexOf(lowerCaseFilter)!=-1)
-                    return true;
-                else
-                    return false; // Does not match.
-            });
-        });
-
-        // 3. Wrap the FilteredList in a SortedList.
-        SortedList<PartialReadableOpenTrade> sortedData = new SortedList<>(filteredData);
-
-        // 4. Bind the SortedList comparator to the TableView comparator.
-        // 	  Otherwise, sorting the TableView would have no effect.
-        sortedData.comparatorProperty().bind(openTradesTable.comparatorProperty());
-
-        // 5. Add sorted (and filtered) data to the table.
-        openTradesTable.setItems(sortedData);
+        filterTables();
     }
+
 
     private PartialReadableOpenTrade[] getAllOpenTrades() throws IOException, InterruptedException {
         HttpResponse<String> openTradeResponse = Client.clientGet(Route.getRoute(Route.trades));
@@ -111,4 +93,49 @@ public class UserDashboardController {
         tableData.setAll(getAllOpenTrades());
         openTradesTable.setItems(tableData);
     }
+
+    private Float getBalance() throws IOException, InterruptedException {
+        HttpResponse<String> orgUnitResponse = Client.clientGet(Route.getRoute(Route.orgunit) + clientInfo.getCurrentUser().getOrganisationalUnitId());
+        return gson.fromJson(orgUnitResponse.body(), OrganisationalUnit.class).getCreditBalance();
+    }
+
+
+    private String getOrgUnitName() throws IOException, InterruptedException {
+        HttpResponse<String> orgUnitResponse = Client.clientGet(Route.getRoute(Route.orgunit) + clientInfo.getCurrentUser().getOrganisationalUnitId());
+        return gson.fromJson(orgUnitResponse.body(), OrganisationalUnit.class).getUnitName();
+    }
+
+    /**
+     * Filters trades based on search query AND checkbox (show only my organisational unit trades)
+     */
+    private void filterTables() {
+        ObjectProperty<Predicate<PartialReadableOpenTrade>> searchFilter = new SimpleObjectProperty<>();
+        ObjectProperty<Predicate<PartialReadableOpenTrade>> unitFilter = new SimpleObjectProperty<>();
+
+        searchFilter.bind(Bindings.createObjectBinding(() ->
+                        trade -> txtFieldSearch.getText().isEmpty()
+                                || txtFieldSearch.getText() == null
+                                || trade.getAssetTypeName().toLowerCase().contains(txtFieldSearch.getText().toLowerCase())
+                                || trade.getOrganisationalUnitName().toLowerCase().contains(txtFieldSearch.getText().toLowerCase())
+                                || trade.getTradeType().toLowerCase().contains(txtFieldSearch.getText().toLowerCase())
+                                || trade.getDateOpened().toLowerCase().contains(txtFieldSearch.getText().toLowerCase()),
+                txtFieldSearch.textProperty()));
+
+
+        unitFilter.bind(Bindings.createObjectBinding(() ->
+                        trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnitName)),
+                btnMyUnit.selectedProperty()));
+
+        FilteredList<PartialReadableOpenTrade> filteredItems = new FilteredList<>(tableData);
+        openTradesTable.setItems(filteredItems);
+
+
+        filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
+                () -> searchFilter.get().and(unitFilter.get()),
+                searchFilter, unitFilter));
+    }
+
+
+
 }
+

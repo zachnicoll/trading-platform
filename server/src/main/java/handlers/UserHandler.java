@@ -2,8 +2,10 @@ package handlers;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;
+import database.datasources.AssetTypeDataSource;
 import database.datasources.UserDataSource;
 
+import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.AuthenticationToken;
@@ -44,17 +46,22 @@ public class UserHandler extends AbstractRequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
         UserDataSource userDataSource = new UserDataSource();
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
 
-        if(getUserId(exchange) == null){
+        if (params.length == 3 && params[2].contains("all")) {
             //sends all users to the client
             ArrayList<User> users = userDataSource.getAll();
             writeResponseBody(exchange, users);
+        } else {
 
-        }else{
             String userId = getUserId(exchange);
-
             writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
         }
+
+
+
+
+
 
     }
 
@@ -78,5 +85,22 @@ public class UserHandler extends AbstractRequestHandler {
         userDataSource.createNew(fullUser, hashedPassword);
 
         writeResponseBody(exchange, fullUser);
+    }
+
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws SQLException, IOException {
+        checkIsAdmin(exchange);
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        if (params.length == 3) {
+            // User ID is present in the URL, use it to delete user
+            UserDataSource userDataSource = new UserDataSource();
+            UUID userId = UUID.fromString(params[2]);
+            userDataSource.deleteById(userId);
+            writeResponseBody(exchange, null);
+        } else {
+            JsonError jsonError = new JsonError("User not found");
+            writeResponseBody(exchange, jsonError,404);
+        }
     }
 }

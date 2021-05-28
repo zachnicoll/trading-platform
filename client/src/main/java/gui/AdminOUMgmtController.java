@@ -250,25 +250,29 @@ public class AdminOUMgmtController {
     @FXML
     private void addAsset() throws IOException, InterruptedException {
 
+        if (currentOrg != null) {
+            int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
 
-        int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
+            Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
 
-        Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
+            HttpResponse<String> putResponse = Client.clientPut("/assets/" + currentOrg.getUnitId(), asset);
 
-        HttpResponse<String> putResponse = Client.clientPut("/assets/"+ currentOrg.getUnitId(), asset);
-
-        if (putResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
-            alert.showAndWait();
+            if (putResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
+                alert.showAndWait();
 
 
-        } else {
-            errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.\n" + errorResponse.getError());
+            } else {
+                errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.\n" + errorResponse.getError());
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
         }
-        softReset();
-        refreshTable(currentOrg.getUnitId());
-
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation and asset.");
+            alert.showAndWait();
+        }
 
     }
 
@@ -276,29 +280,33 @@ public class AdminOUMgmtController {
     @FXML
     private void addOU() throws IOException, InterruptedException {
 
+        if((txtNewOUName.getText() != "")&&(txtNewOUBalance.getText() != "")) {
 
-        String newOrgName = txtNewOUName.getText();
-        Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
+            String newOrgName = txtNewOUName.getText();
 
-        PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
+            Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
 
-
-        HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
-
-
-        if (postResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
-            alert.showAndWait();
-
-            // Re-fetch AssetTypes and set table data
+            PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
 
 
-        } else {
-            errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation.\n" + errorResponse.getError());
+            HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
+
+
+            if (postResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
+                alert.showAndWait();
+            } else {
+                errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation.\n" + errorResponse.getError());
+                alert.showAndWait();
+            }
+            resetAll();
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter an acceptable organisation name and balance.");
             alert.showAndWait();
         }
-        resetAll();
 
     }
 }

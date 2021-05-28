@@ -111,7 +111,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
 
         //check if unit's credit balance is greater than zero
-        if(partialOrganisationalUnit.getCreditBalance() < 0){
+        if(partialOrganisationalUnit.creditBalance < 0){
             writeResponseBody(exchange, new JsonError("New credit balance is less than zero"),400);
             return;
         }
@@ -121,7 +121,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         }
         else
         {
-            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.getCreditBalance(), null);
+            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.creditBalance, null);
             organisationalUnitDataSource.updateByAttribute(orgUnitId, "creditBalance", tempOrg);
             // Respond
             writeResponseBody(exchange, null, 200);

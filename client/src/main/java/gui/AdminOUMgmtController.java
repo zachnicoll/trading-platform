@@ -113,7 +113,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(orgResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Organisations." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Organisations.\n" + errorResponse.getError());
             alert.showAndWait();
         }
     }
@@ -130,7 +130,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(assetTypesResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Asset Types." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Asset Types.\n" + errorResponse.getError());
             alert.showAndWait();
         }
     }
@@ -181,7 +181,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(changeBalResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not update the balance of selected Organisation." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not update the balance of selected Organisation.\n" + errorResponse.getError());
             alert.showAndWait();
             // Re-fetch AssetTypes and set table data
         }
@@ -205,7 +205,7 @@ public class AdminOUMgmtController {
 
             } else {
                 errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.\n" + errorResponse.getError());
                 alert.showAndWait();
                 // Re-fetch AssetTypes and set table data
             }
@@ -235,7 +235,7 @@ public class AdminOUMgmtController {
 
                 } else {
                     errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation." + errorResponse.getError());
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation.\n" + errorResponse.getError());
                     alert.showAndWait();
                     // Re-fetch AssetTypes and set table data
                 }
@@ -267,7 +267,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.\n" + errorResponse.getError());
         }
         softReset();
         refreshTable(currentOrg.getUnitId());
@@ -298,7 +298,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation.\n" + errorResponse.getError());
             alert.showAndWait();
         }
         resetAll();

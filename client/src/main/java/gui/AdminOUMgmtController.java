@@ -235,23 +235,30 @@ public class AdminOUMgmtController {
     @FXML
     private void handleDeleteOrg() throws IOException, InterruptedException {
 
-        Alert check = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the Organisation and all of its dependencies");
-        check .showAndWait();
-        if(check .getResult() == ButtonType.OK) {
-            HttpResponse<String> deleteResponse = Client.clientDelete("/orgunit/" + currentOrg.getUnitId());
+        if (currentOrg != null) {
+            Alert check = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the Organisation and all of its dependencies");
+            check.showAndWait();
+            if (check.getResult() == ButtonType.OK) {
+                HttpResponse<String> deleteResponse = Client.clientDelete("/orgunit/" + currentOrg.getUnitId());
 
-            if (deleteResponse.statusCode() == 200) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
-                alert.showAndWait();
-                // Re-fetch AssetTypes and set table data
+                if (deleteResponse.statusCode() == 200) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
+                    alert.showAndWait();
+                    // Re-fetch AssetTypes and set table data
 
-            } else {
-                errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation." + errorResponse.getError());
-                alert.showAndWait();
-                // Re-fetch AssetTypes and set table data
+                } else {
+                    errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation." + errorResponse.getError());
+                    alert.showAndWait();
+                    // Re-fetch AssetTypes and set table data
+                }
+                resetAll();
             }
-            resetAll();
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation before continuing.");
+            alert.showAndWait();
+
         }
     }
 

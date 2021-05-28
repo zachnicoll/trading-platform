@@ -29,23 +29,12 @@ public class TradesHandler extends AbstractRequestHandler {
 
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
-        /*
-         * Example of how to block route method if Admin AccountType is required.
-         * TODO: remove this when route is implemented correctly.
-         */
-//        checkIsAdmin(exchange);
-//
-//        OpenTrade trade = new OpenTrade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, Timestamp.from(Instant.now()));
-//        writeResponseBody(exchange, trade);
-
 
         OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
         ArrayList<PartialReadableOpenTrade>  readableOpenTrades;
 
         readableOpenTrades = openTradeDataSource.getAllReadable();
         writeResponseBody(exchange, readableOpenTrades);
-
-
     }
 
     @Override

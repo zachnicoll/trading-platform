@@ -181,14 +181,6 @@ public class UserDataSource extends AbstractDataSource<User> {
         return createQueryUser.executeQuery().next();
     }
 
-    public boolean checkExistByUsername(String username) throws SQLException {
-        PreparedStatement createQueryUser = dbConnection.prepareStatement(
-                "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE username::text = ?);"
-        );
-        createQueryUser.setString(1, username);
-
-        return createQueryUser.executeQuery().next();
-    }
 
     public void deleteById(UUID id) throws SQLException {
         PreparedStatement deleteUser = dbConnection.prepareStatement(

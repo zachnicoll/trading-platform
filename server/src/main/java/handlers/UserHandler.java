@@ -96,17 +96,10 @@ public class UserHandler extends AbstractRequestHandler {
                 );
                 UserDataSource userDataSource = new UserDataSource();
 
-                if (userDataSource.checkExistByUsername(fullUser.getUsername())) {
+                String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
+                userDataSource.createNew(fullUser, hashedPassword);
+                writeResponseBody(exchange, fullUser);
 
-                    JsonError jsonError = new JsonError("User with the same username already exists in the database");
-                    writeResponseBody(exchange, jsonError, 409);
-
-                } else {
-
-                    String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
-                    userDataSource.createNew(fullUser, hashedPassword);
-                    writeResponseBody(exchange, fullUser);
-                }
             }
         }
     }

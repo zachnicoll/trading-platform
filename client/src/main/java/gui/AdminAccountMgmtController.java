@@ -190,12 +190,10 @@ public class AdminAccountMgmtController {
                     alert.showAndWait();
                     refreshTable();
 
-                }
-                else if(newUserResponse.statusCode() == 409){
-                    Alert alert = new Alert(Alert.AlertType.ERROR, String.format("User with the username:'%s' already exists in database\n", newUser.username));
-                    alert.showAndWait();
+
                 }else {
-                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create new user.\n");
+                    String error = gson.fromJson(newUserResponse.body(), JsonError.class).getError();
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create new user.\n" + error);
                     alert.showAndWait();
                 }
                 clearUserInput();
@@ -204,7 +202,5 @@ public class AdminAccountMgmtController {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisational unit from the drop down");
             alert.showAndWait();
         }
-
-
     }
 }

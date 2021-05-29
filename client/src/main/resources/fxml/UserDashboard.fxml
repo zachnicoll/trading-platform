@@ -11,7 +11,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserDashboardController">
    <center>
-       <TableView fx:id="openTradesTable" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+       <TableView fx:id="openTradesTable" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER" stylesheets="@../css/Dashboard.css">
            <columns>
             <TableColumn fx:id="tblcolDateOpened" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="152.0" resizable="false" style="-fx-alignment: CENTER;" text="Date Opened" />
             <TableColumn fx:id="tblcolTradeType" editable="false" maxWidth="116.0" minWidth="46.0" prefWidth="97.0" resizable="false" style="-fx-alignment: CENTER;" text="Trade Type" />

@@ -152,7 +152,7 @@ public class UserDashboardController {
     private void addDeleteButtonsToTable() {
         TableColumn<PartialReadableOpenTrade, Void> colBtn = new TableColumn("");
 
-        colBtn.setMaxWidth(80);
+        colBtn.setMaxWidth(88);
         Callback<TableColumn<PartialReadableOpenTrade, Void>, TableCell<PartialReadableOpenTrade, Void>> cellFactory = new Callback<>() {
             @Override
             public TableCell<PartialReadableOpenTrade, Void> call(final TableColumn<PartialReadableOpenTrade, Void> param) {

@@ -47,7 +47,7 @@
                   <Font size="16.0" />
                </font>
             </PasswordField>
-            <JFXComboBox fx:id="comboAMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="120.0" prefHeight="45.0" prefWidth="275.0" onAction="#selectedOrgUnit" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+            <JFXComboBox fx:id="comboAMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="120.0" onAction="#selectedOrgUnit" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -78,8 +78,9 @@
    <center>
       <TableView fx:id="userTable" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="280.0" text="Employee Name" />
-            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="280.0" text="Organisational Unit" />
+          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="238.0" text="Employee Name" />
+           <TableColumn fx:id="tblcolAMType" editable="false" prefWidth="102.0" text="Account Type" style="-fx-alignment: CENTER;"/>
+            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="256.0" text="Organisational Unit" />
         </columns>
       </TableView>
    </center>

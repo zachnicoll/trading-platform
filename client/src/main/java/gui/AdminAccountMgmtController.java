@@ -47,6 +47,8 @@ public class AdminAccountMgmtController {
 
     @FXML
     private TableColumn<?, ?> tblcolAMName;
+    @FXML
+    private TableColumn<?, ?> tblcolAMType;
 
     @FXML
     private TableColumn<?, ?> tblcolAMOU;
@@ -61,7 +63,7 @@ public class AdminAccountMgmtController {
     public void initialize() throws IOException, InterruptedException {
         tblcolAMName.setCellValueFactory(new PropertyValueFactory<>("username"));
         tblcolAMOU.setCellValueFactory(new PropertyValueFactory<>("organisationalUnitName"));
-
+        tblcolAMType.setCellValueFactory(new PropertyValueFactory<>("accountType"));
         clientInfo = ClientInfo.getInstance();
         refreshComboBox();
         refreshTable();

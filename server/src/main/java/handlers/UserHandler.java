@@ -17,6 +17,7 @@ import models.partial.PartialUser;
 import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.UUID;
 
 import database.DBConnection;
@@ -49,41 +50,65 @@ public class UserHandler extends AbstractRequestHandler {
         UserDataSource userDataSource = new UserDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
-        if (params.length == 3) {
-            if(params[2].contains("all")){
+        if (params.length == 3 && params[2].contains("all")) {
 
-                //sends all users to the client in readable form
-                ArrayList<PartialReadableUser> users = userDataSource.getAllReadable();
-                writeResponseBody(exchange, users);
+            //sends all users to the client in readable form
+            ArrayList<PartialReadableUser> users = userDataSource.getAllReadable();
+            writeResponseBody(exchange, users);
 
-            }else {
+        } else {
 
-                String userId = getUserId(exchange);
-                writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
-            }
+            String userId = getUserId(exchange);
+            writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
         }
+
     }
 
     @Override
     protected void handlePost(HttpExchange exchange) throws IOException, SQLException {
         //only admin can create new users
         checkIsAdmin(exchange);
-
         PartialUser partialUser = (PartialUser) readRequestBody(exchange, PartialUser.class);
-        User fullUser = new User(
-                UUID.randomUUID(),
-                partialUser.username,
-                partialUser.accountType,
-                partialUser.organisationalUnitId
-        );
 
-        String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
+        if (Objects.nonNull(partialUser)) {
 
-        UserDataSource userDataSource = new UserDataSource();
+            if (partialUser.password.isBlank()) {
 
-        userDataSource.createNew(fullUser, hashedPassword);
+                JsonError jsonError = new JsonError("User does not contain a password");
+                writeResponseBody(exchange, jsonError, 400);
 
-        writeResponseBody(exchange, fullUser);
+            } else if (partialUser.username.isBlank()) {
+
+                JsonError jsonError = new JsonError("User does not contain a username");
+                writeResponseBody(exchange, jsonError, 400);
+
+            } else if (partialUser.organisationalUnitId.toString().isBlank()) {
+
+                JsonError jsonError = new JsonError("User does not contain an organisational unit Id");
+                writeResponseBody(exchange, jsonError, 400);
+
+            } else {
+                User fullUser = new User(
+                        UUID.randomUUID(),
+                        partialUser.username,
+                        partialUser.accountType,
+                        partialUser.organisationalUnitId
+                );
+                UserDataSource userDataSource = new UserDataSource();
+
+                if (userDataSource.checkExistByUsername(fullUser.getUsername())) {
+
+                    JsonError jsonError = new JsonError("User with the same username already exists in the database");
+                    writeResponseBody(exchange, jsonError, 409);
+
+                } else {
+
+                    String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
+                    userDataSource.createNew(fullUser, hashedPassword);
+                    writeResponseBody(exchange, fullUser);
+                }
+            }
+        }
     }
 
     @Override
@@ -99,7 +124,7 @@ public class UserHandler extends AbstractRequestHandler {
             writeResponseBody(exchange, null);
         } else {
             JsonError jsonError = new JsonError("User not found");
-            writeResponseBody(exchange, jsonError,404);
+            writeResponseBody(exchange, jsonError, 404);
         }
     }
 }

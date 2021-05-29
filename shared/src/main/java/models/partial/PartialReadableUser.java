@@ -10,15 +10,19 @@ import java.util.UUID;
  * display on the client in a GUI component.
  */
 public class PartialReadableUser {
+    private UUID userId;
     private String username;
     private AccountType accountType;
     private String organisationalUnitName;
 
-    public PartialReadableUser(String username, AccountType accountType, String organisationalUnitName){
-        this.username  = username;
+    public PartialReadableUser(UUID userId, String username, AccountType accountType, String organisationalUnitName) {
+        this.userId = userId;
+        this.username = username;
         this.accountType = accountType;
         this.organisationalUnitName = organisationalUnitName;
     }
+
+    public UUID getUserId() { return userId; }
 
     public String getOrganisationalUnitName() {
         return organisationalUnitName;

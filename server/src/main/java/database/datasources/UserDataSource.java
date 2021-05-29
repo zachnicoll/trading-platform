@@ -31,6 +31,7 @@ public class UserDataSource extends AbstractDataSource<User> {
 
     protected PartialReadableUser resultSetToReadableObject(ResultSet results) throws SQLException {
         return new PartialReadableUser(
+                UUID.fromString(results.getString("userId")),
                 results.getString("username"),
                 AccountType.valueOf(results.getString("userType")),
                 results.getString("organisationalUnitName")
@@ -108,6 +109,7 @@ public class UserDataSource extends AbstractDataSource<User> {
         PreparedStatement getAllUsersReadable = dbConnection.prepareStatement(
                 """
                         SELECT
+                               u."userId",
                                u.username,
                                u."userType",\s
                                ou."organisationalUnitName"\s
@@ -175,6 +177,15 @@ public class UserDataSource extends AbstractDataSource<User> {
                 "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE \"userId\" = uuid(?));"
         );
         createQueryUser.setString(1, id.toString());
+
+        return createQueryUser.executeQuery().next();
+    }
+
+    public boolean checkExistByUsername(String username) throws SQLException {
+        PreparedStatement createQueryUser = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE username::text = ?);"
+        );
+        createQueryUser.setString(1, username);
 
         return createQueryUser.executeQuery().next();
     }

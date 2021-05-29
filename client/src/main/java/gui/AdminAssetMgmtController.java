@@ -31,8 +31,6 @@ public class AdminAssetMgmtController {
     @FXML
     private TableColumn<?, ?> tblcolAssMUuid;
     @FXML
-    private TableColumn<?, ?> tblcolAssMDelete;
-    @FXML
     private TableView<AssetType> assetTypeTable;
     @FXML
     private TableColumn<?, ?> colBtn;

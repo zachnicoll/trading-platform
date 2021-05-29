@@ -5,6 +5,8 @@ import models.Credentials;
 import models.AccountType;
 import models.ResolvedTrade;
 import models.User;
+import models.partial.PartialReadableOpenTrade;
+import models.partial.PartialReadableUser;
 
 import java.security.InvalidParameterException;
 import java.sql.Connection;
@@ -24,6 +26,14 @@ public class UserDataSource extends AbstractDataSource<User> {
                 results.getString("username"),
                 AccountType.valueOf(results.getString("userType")),
                 UUID.fromString(results.getString("organisationalUnitId"))
+        );
+    }
+
+    protected PartialReadableUser resultSetToReadableObject(ResultSet results) throws SQLException {
+        return new PartialReadableUser(
+                results.getString("username"),
+                AccountType.valueOf(results.getString("userType")),
+                results.getString("organisationalUnitName")
         );
     }
 
@@ -93,6 +103,30 @@ public class UserDataSource extends AbstractDataSource<User> {
 
         return allUsers;
     }
+    public ArrayList<PartialReadableUser> getAllReadable() throws SQLException {
+
+        PreparedStatement getAllUsersReadable = dbConnection.prepareStatement(
+                """
+                        SELECT
+                               u.username,
+                               u."userType",\s
+                               ou."organisationalUnitName"\s
+                               FROM
+                               users u\s
+                               JOIN "organisationalUnits" ou ON ou."organisationalUnitId" = u."organisationalUnitId";""");
+
+        ResultSet results = getAllUsersReadable.executeQuery();
+
+        ArrayList<PartialReadableUser> allUsersReadable = new ArrayList<>();
+        while (results.next()) {
+            PartialReadableUser user = resultSetToReadableObject(results);
+            allUsersReadable.add(user);
+        }
+
+        return allUsersReadable;
+    }
+
+
 
     public void createNew(User newObject) throws SQLException {
         //TODO FIGURE OUT WHAT THIS IS FOR

@@ -77,7 +77,7 @@ public class AdminAccountMgmtController {
     }
 
     @FXML
-    private void selectedOrgUnit(ActionEvent event) throws IOException, InterruptedException {
+    private void selectedOrgUnit(ActionEvent event){
         selectedOrgUnit = comboAMOU.getValue();
     }
 
@@ -97,6 +97,7 @@ public class AdminAccountMgmtController {
         userTable.setItems(tableData);
     }
 
+
     private void handleDelete(UUID userId) throws IOException, InterruptedException {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete this user?!");
         Optional<ButtonType> result = confirmAlert.showAndWait();
@@ -107,9 +108,8 @@ public class AdminAccountMgmtController {
             if (deleteResponse.statusCode() == 200) {
                 Alert successAlert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted User.");
                 successAlert.showAndWait();
-
-                // Re-fetch Users and set table data
                 refreshTable();
+
             } else {
                 Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Could not delete User.");
                 errorAlert.showAndWait();

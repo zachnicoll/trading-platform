@@ -10,6 +10,7 @@ import handlers.AbstractRequestHandler;
 import models.AccountType;
 import models.AuthenticationToken;
 import models.User;
+import models.partial.PartialReadableUser;
 import models.partial.PartialUser;
 
 
@@ -48,21 +49,19 @@ public class UserHandler extends AbstractRequestHandler {
         UserDataSource userDataSource = new UserDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
-        if (params.length == 3 && params[2].contains("all")) {
-            //sends all users to the client
-            ArrayList<User> users = userDataSource.getAll();
-            writeResponseBody(exchange, users);
-        } else {
+        if (params.length == 3) {
+            if(params[2].contains("all")){
 
-            String userId = getUserId(exchange);
-            writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
+                //sends all users to the client in readable form
+                ArrayList<PartialReadableUser> users = userDataSource.getAllReadable();
+                writeResponseBody(exchange, users);
+
+            }else {
+
+                String userId = getUserId(exchange);
+                writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
+            }
         }
-
-
-
-
-
-
     }
 
     @Override

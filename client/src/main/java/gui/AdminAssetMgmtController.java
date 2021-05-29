@@ -2,6 +2,7 @@ package gui;
 
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
+import errors.JsonError;
 import helpers.Client;
 import helpers.ClientInfo;
 import helpers.Route;
@@ -70,7 +71,8 @@ public class AdminAssetMgmtController {
             // Re-fetch AssetTypes and set table data
             refreshTable();
         } else {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete AssetType.");
+            JsonError jsonError = gson.fromJson(deleteResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete AssetType.\n" + jsonError.getError());
             alert.showAndWait();
         }
     }

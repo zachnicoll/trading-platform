@@ -26,6 +26,7 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
         );
     }
 
+
     public OrganisationalUnit getById(UUID id) throws SQLException {
         PreparedStatement getById = dbConnection.prepareStatement(
                 "SELECT * FROM \"organisationalUnits\" WHERE \"organisationalUnitId\"::text = ?;"

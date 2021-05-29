@@ -34,25 +34,26 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
         OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
-        ArrayList<OrganisationalUnit>  orgUnits = null;
+
         if (params.length == 3) {
             // Organisational Unit Id is present in URL, use it to filter assets
             UUID orgUnitId = UUID.fromString(params[2]);
             if (orgUnitDataSource.checkExistById(orgUnitId)) {
-                orgUnits.add(orgUnitDataSource.getById(orgUnitId));
+
+                OrganisationalUnit organisationalUnit =  orgUnitDataSource.getById(orgUnitId);
+                writeResponseBody(exchange,organisationalUnit,200);
             }
             else
             {
                 writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
             }
         } else {
-            //checks if user has admin privileges
-            checkIsAdmin(exchange);
-            // Otherwise just get all
-            orgUnits = orgUnitDataSource.getAll();
-        }
 
-        writeResponseBody(exchange, orgUnits, 200);
+            // Otherwise just get all organisational units
+            ArrayList<OrganisationalUnit>  orgUnits = null;
+            orgUnits = orgUnitDataSource.getAll();
+            writeResponseBody(exchange, orgUnits, 200);
+        }
     }
 
     @Override

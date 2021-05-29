@@ -117,7 +117,7 @@ public class UserDashboardController {
 
 
         unitFilter.bind(Bindings.createObjectBinding(() ->
-                        trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnit.getUnitName())),
+                        trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnit.getUnitName().toLowerCase())),
                 btnMyUnit.selectedProperty()));
 
         FilteredList<PartialReadableOpenTrade> filteredItems = new FilteredList<>(tableData);

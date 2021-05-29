@@ -1,19 +1,18 @@
 package handlers;
 
 import com.sun.net.httpserver.HttpExchange;
-import database.datasources.AssetTypeDataSource;
-import database.datasources.OpenTradeDataSource;
-import database.datasources.OrganisationalUnitDataSource;
-import database.datasources.UserDataSource;
+import database.datasources.*;
 import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.*;
 import models.partial.PartialOpenTrade;
+import models.partial.PartialReadableOpenTrade;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -29,15 +28,13 @@ public class TradesHandler extends AbstractRequestHandler {
     }
 
     @Override
-    protected void handleGet(HttpExchange exchange) throws IOException {
-        /*
-         * Example of how to block route method if Admin AccountType is required.
-         * TODO: remove this when route is implemented correctly.
-         */
-        checkIsAdmin(exchange);
+    protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
 
-        OpenTrade trade = new OpenTrade(UUID.randomUUID(), TradeType.BUY, UUID.randomUUID(), UUID.randomUUID(), 100, 1.045f, Timestamp.from(Instant.now()));
-        writeResponseBody(exchange, trade);
+        OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
+        ArrayList<PartialReadableOpenTrade>  readableOpenTrades;
+
+        readableOpenTrades = openTradeDataSource.getAllReadable();
+        writeResponseBody(exchange, readableOpenTrades);
     }
 
     @Override

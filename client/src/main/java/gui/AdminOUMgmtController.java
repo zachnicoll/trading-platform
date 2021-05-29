@@ -107,20 +107,13 @@ public class AdminOUMgmtController {
         HttpResponse<String> orgResponse = Client.clientGet(Route.getRoute(Route.orgunit));
 
         if (orgResponse.statusCode() == 200) {
-            OrganisationalUnit[] tempOrgs = gson.fromJson(orgResponse.body(), OrganisationalUnit[].class);
-
             orgNames = FXCollections.observableArrayList();
-
-            for(OrganisationalUnit anOrg:tempOrgs)
-            {
-                orgNames.add(anOrg);
-            }
-
+            orgNames.addAll(gson.fromJson(orgResponse.body(), OrganisationalUnit[].class));
             comboOUSelect.setItems(orgNames);
 
         } else {
             errorResponse = gson.fromJson(orgResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Organisations." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Organisations.\n" + errorResponse.getError());
             alert.showAndWait();
         }
     }
@@ -130,20 +123,14 @@ public class AdminOUMgmtController {
         gson.fromJson(assetTypesResponse.body(), AssetType[].class);
 
         if (assetTypesResponse.statusCode() == 200) {
-            AssetType[] tempAssets = gson.fromJson(assetTypesResponse.body(), AssetType[].class);
 
             assetNames = FXCollections.observableArrayList();
-
-            for(AssetType anAssetType:tempAssets)
-            {
-                assetNames.add(anAssetType);
-            }
-
+            assetNames.addAll(gson.fromJson(assetTypesResponse.body(), AssetType[].class));
             comboOMAssetAdd.setItems(assetNames);
 
         } else {
             errorResponse = gson.fromJson(assetTypesResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Asset Types." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Asset Types.\n" + errorResponse.getError());
             alert.showAndWait();
         }
     }
@@ -194,7 +181,7 @@ public class AdminOUMgmtController {
 
         } else {
             errorResponse = gson.fromJson(changeBalResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not update the balance of selected Organisation." + errorResponse.getError());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not update the balance of selected Organisation.\n" + errorResponse.getError());
             alert.showAndWait();
             // Re-fetch AssetTypes and set table data
         }
@@ -204,73 +191,88 @@ public class AdminOUMgmtController {
     @FXML
     private void handleDeleteAsset() throws IOException, InterruptedException {
 
-        Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
+        if (tblOM.getSelectionModel().getSelectedItem() != null) {
+            Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
 
-        HttpResponse<String> deleteResponse = Client.clientDelete("/assets/"+ currentOrg.getUnitId() + "/" + toDelete.getAssetTypeId());
+            HttpResponse<String> deleteResponse = Client.clientDelete("/assets/" + currentOrg.getUnitId() + "/" + toDelete.getAssetTypeId());
 
 
-        if (deleteResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
-            alert.showAndWait();
+            if (deleteResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
+                alert.showAndWait();
 
-            // Re-fetch AssetTypes and set table data
+                // Re-fetch AssetTypes and set table data
 
-        } else {
-            errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation." + errorResponse.getError());
-            alert.showAndWait();
-            // Re-fetch AssetTypes and set table data
+            } else {
+                errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.\n" + errorResponse.getError());
+                alert.showAndWait();
+                // Re-fetch AssetTypes and set table data
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
         }
-        softReset();
-        refreshTable(currentOrg.getUnitId());
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an asset before continuing.");
+            alert.showAndWait();
+        }
     }
 
     @FXML
     private void handleDeleteOrg() throws IOException, InterruptedException {
 
-        Alert check = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the Organisation and all of its dependencies");
-        check .showAndWait();
-        if(check .getResult() == ButtonType.OK) {
-            HttpResponse<String> deleteResponse = Client.clientDelete("/orgunit/" + currentOrg.getUnitId());
+        if (currentOrg != null) {
+            Alert check = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the Organisation and all of its dependencies");
+            check.showAndWait();
+            if (check.getResult() == ButtonType.OK) {
+                HttpResponse<String> deleteResponse = Client.clientDelete("/orgunit/" + currentOrg.getUnitId());
 
-            if (deleteResponse.statusCode() == 200) {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
-                alert.showAndWait();
-                // Re-fetch AssetTypes and set table data
+                if (deleteResponse.statusCode() == 200) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
+                    alert.showAndWait();
 
-            } else {
-                errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation." + errorResponse.getError());
-                alert.showAndWait();
-                // Re-fetch AssetTypes and set table data
+                } else {
+                    errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation.\n" + errorResponse.getError());
+                    alert.showAndWait();
+                }
+                resetAll();
             }
-            resetAll();
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation before continuing.");
+            alert.showAndWait();
+
         }
     }
 
     @FXML
     private void addAsset() throws IOException, InterruptedException {
 
+        if (currentOrg != null) {
+            int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
 
-        int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
+            Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
 
-        Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
+            HttpResponse<String> putResponse = Client.clientPut("/assets/" + currentOrg.getUnitId(), asset);
 
-        HttpResponse<String> putResponse = Client.clientPut("/assets/"+ currentOrg.getUnitId(), asset);
+            if (putResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
+                alert.showAndWait();
 
-        if (putResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
-            alert.showAndWait();
 
-            // Re-fetch AssetTypes and set table data
-
-        } else {
-            errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation." + errorResponse.getError());
+            } else {
+                errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.\n" + errorResponse.getError());
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
         }
-        softReset();
-        refreshTable(currentOrg.getUnitId());
-
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation and asset.");
+            alert.showAndWait();
+        }
 
     }
 
@@ -278,29 +280,33 @@ public class AdminOUMgmtController {
     @FXML
     private void addOU() throws IOException, InterruptedException {
 
+        if((txtNewOUName.getText() != "")&&(txtNewOUBalance.getText() != "")) {
 
-        String newOrgName = txtNewOUName.getText();
-        Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
+            String newOrgName = txtNewOUName.getText();
 
-        PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
+            Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
 
-
-        HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
-
-
-        if (postResponse.statusCode() == 200) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
-            alert.showAndWait();
-
-            // Re-fetch AssetTypes and set table data
+            PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
 
 
-        } else {
-            errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation." + errorResponse.getError());
+            HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
+
+
+            if (postResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
+                alert.showAndWait();
+            } else {
+                errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation.\n" + errorResponse.getError());
+                alert.showAndWait();
+            }
+            resetAll();
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter an acceptable organisation name and balance.");
             alert.showAndWait();
         }
-        resetAll();
 
     }
 }

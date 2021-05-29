@@ -22,10 +22,6 @@ public class PartialOrganisationalUnit {
         unitName = null;
     }
 
-    public Float getCreditBalance()
-    {
-        return this.creditBalance;
-    }
 
 }
 

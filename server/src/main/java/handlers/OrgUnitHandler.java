@@ -46,6 +46,8 @@ public class OrgUnitHandler extends AbstractRequestHandler {
                 writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
             }
         } else {
+            //checks if user has admin privileges
+            checkIsAdmin(exchange);
             // Otherwise just get all
             orgUnits = orgUnitDataSource.getAll();
         }
@@ -108,7 +110,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
 
 
         //check if unit's credit balance is greater than zero
-        if(partialOrganisationalUnit.getCreditBalance() < 0){
+        if(partialOrganisationalUnit.creditBalance < 0){
             writeResponseBody(exchange, new JsonError("New credit balance is less than zero"),400);
             return;
         }
@@ -118,7 +120,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         }
         else
         {
-            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.getCreditBalance(), null);
+            OrganisationalUnit tempOrg = new OrganisationalUnit(null, null, partialOrganisationalUnit.creditBalance, null);
             organisationalUnitDataSource.updateByAttribute(orgUnitId, "creditBalance", tempOrg);
             // Respond
             writeResponseBody(exchange, null, 200);

@@ -54,7 +54,7 @@ public class AdminProfileController {
     }
 
     @FXML
-    void submitPChange(ActionEvent event) throws IOException, InterruptedException {
+    void submitAPChange(ActionEvent event) throws IOException, InterruptedException {
 
         //TODO IDK IF WE NEED TO REFRESH THE USER'S JWT?
 

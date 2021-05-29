@@ -122,4 +122,36 @@ public class TradesHandler extends AbstractRequestHandler {
         // Respond with created Object
         writeResponseBody(exchange, fullTrade);
     }
+
+    @Override
+    protected void handleDelete(HttpExchange exchange) throws SQLException, IOException {
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
+
+        if (params.length == 3) {
+            // AssetType ID is present in the URL, use it to delete AssetType
+            OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
+            UUID openTradeId = UUID.fromString(params[2]);
+
+            // Get organisational unit for the given open trade
+            OpenTrade openTrade = openTradeDataSource.getById(openTradeId);
+
+            OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
+            OrganisationalUnit organisationalUnit = organisationalUnitDataSource.getById(openTrade.getOrganisationalUnit());
+
+            // Check that the User making the request belongs to the Organisational Unit
+            UserDataSource userDataSource = new UserDataSource();
+            UUID userOrgUnitId = userDataSource.getById(UUID.fromString(getUserId(exchange))).getOrganisationalUnitId();
+
+            if (organisationalUnit.getUnitId().equals(userOrgUnitId)) {
+                openTradeDataSource.deleteById(openTradeId);
+                writeResponseBody(exchange, null);
+            } else {
+                JsonError jsonError = new JsonError("You do not belong to Organisational Unit that opened this trade.");
+                writeResponseBody(exchange, jsonError,400);
+            }
+        } else {
+            JsonError jsonError = new JsonError("OpenTrade not found");
+            writeResponseBody(exchange, jsonError,404);
+        }
+    }
 }

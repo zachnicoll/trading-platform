@@ -17,5 +17,11 @@ public class PartialOrganisationalUnit {
         this.unitName = unitName;
         this.creditBalance = creditBalance;
     }
+    public PartialOrganisationalUnit (Float creditBalance) {
+        this.creditBalance = creditBalance;
+        unitName = null;
+    }
+
+
 }
 

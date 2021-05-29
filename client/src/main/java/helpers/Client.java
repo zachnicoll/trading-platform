@@ -50,6 +50,16 @@ public class Client {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    public static HttpResponse<String> clientPut(String route, Object object) throws IOException, InterruptedException {
+        String requestUrl = makeUrl(route);
+        HttpRequest request = builderWithHeaders()
+                .uri(URI.create(requestUrl))
+                .PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(object)))
+                .build();
+
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     public static HttpResponse<String> clientDelete(String route) throws IOException, InterruptedException {
         String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
@@ -59,4 +69,6 @@ public class Client {
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
+
+
 }

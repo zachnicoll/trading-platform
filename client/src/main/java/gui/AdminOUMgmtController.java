@@ -1,37 +1,35 @@
 package gui;
 
+import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
-import com.sun.glass.ui.CommonDialogs;
+import errors.JsonError;
+import exceptions.InvalidTransactionException;
+import helpers.Client;
+import helpers.ClientInfo;
+import helpers.Route;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+import javafx.scene.control.cell.PropertyValueFactory;
 import com.jfoenix.controls.JFXComboBox;
 
 import javafx.event.ActionEvent;
+import javafx.scene.text.Text;
 import models.Asset;
 import models.AssetType;
 import models.OrganisationalUnit;
+import models.partial.PartialOrganisationalUnit;
 
-import java.io.File;
 import java.io.IOException;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.http.HttpResponse;
 import java.util.UUID;
 
 public class AdminOUMgmtController {
+
+    ObservableList<Asset> tableData;
 
     @FXML
     private TextField txtNewOUName;
@@ -55,13 +53,16 @@ public class AdminOUMgmtController {
     private JFXButton btnOMDeleteOU;
 
     @FXML
+    private Text lblOMOUBalance;
+
+    @FXML
     private JFXComboBox<AssetType> comboOMAssetAdd;
 
     @FXML
     private TextField txtOUNewAssetQuantity;
 
     @FXML
-    private TableView<?> tblOM;
+    private TableView<Asset> tblOM;
 
     @FXML
     private TableColumn<?, ?> tblcolOMAssets;
@@ -69,45 +70,243 @@ public class AdminOUMgmtController {
     @FXML
     private TableColumn<?, ?> tblcolOMQuantity;
 
-    @FXML
-    private TableColumn<?, ?> tblcolOMDelete;
+
+    private ClientInfo clientInfo;
+    private OrganisationalUnit currentOrg;
+    private Gson gson = new Gson();
+    JsonError errorResponse;
+    ObservableList<OrganisationalUnit> orgNames;
+    ObservableList<AssetType> assetNames;
 
     @FXML
-    public void initialize()
-    {
+    public void initialize() throws IOException, InterruptedException {
+        tblcolOMAssets.setCellValueFactory(new PropertyValueFactory<>("name"));
+        tblcolOMQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
 
-        //Initialize org combobox
-        ObservableList<OrganisationalUnit> orgNames = FXCollections.observableArrayList();
+        clientInfo = ClientInfo.getInstance();
 
-        //TODO GET ORG LIST FROM DATABASE
-        List<OrganisationalUnit> temp = new ArrayList<OrganisationalUnit>();
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit", 10000f, new ArrayList<Asset>()));
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit1234", 10000f, new ArrayList<Asset>()));
-        temp.add(new OrganisationalUnit(UUID. randomUUID(), "testunit5678", 10000f, new ArrayList<Asset>()));
+        getAllOrgsRefresh();
 
-        for(OrganisationalUnit anOrg:temp)
-        {
-            orgNames.add(anOrg);
-        }
-
-        comboOUSelect.setItems(orgNames);
-
-
-        //Initialize asset combobox
-        ObservableList<AssetType> assetNames = FXCollections.observableArrayList();
-
-        //TODO GET ASSETTYPE LIST FROM DATABASE
-        List<AssetType> temp2 = new ArrayList<AssetType>();
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset"));
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset1234"));
-        temp2.add(new AssetType(UUID. randomUUID(), "testasset5678"));
-
-        for(AssetType anAsset:temp2)
-        {
-            assetNames.add(anAsset);
-        }
-
-        comboOMAssetAdd.setItems(assetNames);
+        getAllAssetTypes();
     }
 
+    @FXML
+    void selectedOU(ActionEvent event) throws IOException, InterruptedException {
+        currentOrg = comboOUSelect.getValue();
+        lblOMOUBalance.setText("$ "+ comboOUSelect.getValue().getCreditBalance().toString());
+        refreshTable(currentOrg.getUnitId());
+
+    }
+
+    private Asset[] getAllAsset(UUID orgUnit) throws IOException, InterruptedException {
+        HttpResponse<String> assetResponse = Client.clientGet("/assets/"+ orgUnit);
+        return gson.fromJson(assetResponse.body(), Asset[].class);
+    }
+
+    private void getAllOrgsRefresh() throws IOException, InterruptedException {
+        HttpResponse<String> orgResponse = Client.clientGet(Route.getRoute(Route.orgunit));
+
+        if (orgResponse.statusCode() == 200) {
+            orgNames = FXCollections.observableArrayList();
+            orgNames.addAll(gson.fromJson(orgResponse.body(), OrganisationalUnit[].class));
+            comboOUSelect.setItems(orgNames);
+
+        } else {
+            errorResponse = gson.fromJson(orgResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Organisations.\n" + errorResponse.getError());
+            alert.showAndWait();
+        }
+    }
+
+    private void getAllAssetTypes() throws IOException, InterruptedException {
+        HttpResponse<String> assetTypesResponse = Client.clientGet(Route.getRoute(Route.assettype));
+        gson.fromJson(assetTypesResponse.body(), AssetType[].class);
+
+        if (assetTypesResponse.statusCode() == 200) {
+
+            assetNames = FXCollections.observableArrayList();
+            assetNames.addAll(gson.fromJson(assetTypesResponse.body(), AssetType[].class));
+            comboOMAssetAdd.setItems(assetNames);
+
+        } else {
+            errorResponse = gson.fromJson(assetTypesResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not load all Asset Types.\n" + errorResponse.getError());
+            alert.showAndWait();
+        }
+    }
+
+    private void refreshTable(UUID orgUnit) throws IOException, InterruptedException {
+        tblOM.getItems().clear();
+        tableData = FXCollections.observableArrayList();
+        tableData.setAll(getAllAsset(orgUnit));
+        tblOM.setItems(tableData);
+
+    }
+
+    private void resetAll() throws IOException, InterruptedException {
+        tblOM.getItems().clear();
+        comboOUSelect.getSelectionModel().clearSelection();
+        comboOMAssetAdd.getSelectionModel().clearSelection();
+        txtNewOUName.clear();
+        txtNewOUBalance.clear();
+        txtOUExistingBalance.clear();
+        txtOUNewAssetQuantity.clear();
+        lblOMOUBalance.setText("");
+        currentOrg = null;
+        getAllOrgsRefresh();
+        getAllAssetTypes();
+    }
+
+    private void softReset() throws IOException, InterruptedException {
+        txtNewOUName.clear();
+        txtNewOUBalance.clear();
+        txtOUExistingBalance.clear();
+        txtOUNewAssetQuantity.clear();
+    }
+
+    @FXML
+    private void handleChangeBal() throws IOException, InterruptedException, InvalidTransactionException {
+
+        Float newBal = Float.parseFloat(txtOUExistingBalance.getText());
+
+        PartialOrganisationalUnit tempOrg = new PartialOrganisationalUnit(newBal);
+        HttpResponse<String> changeBalResponse = Client.clientPut("/orgunit/"+ currentOrg.getUnitId(), tempOrg);
+
+
+        if (changeBalResponse.statusCode() == 200) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully updated the balance of selected Organisation.");
+            alert.showAndWait();
+
+            // Re-fetch AssetTypes and set table data
+
+        } else {
+            errorResponse = gson.fromJson(changeBalResponse.body(), JsonError.class);
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not update the balance of selected Organisation.\n" + errorResponse.getError());
+            alert.showAndWait();
+            // Re-fetch AssetTypes and set table data
+        }
+        resetAll();
+    }
+
+    @FXML
+    private void handleDeleteAsset() throws IOException, InterruptedException {
+
+        if (tblOM.getSelectionModel().getSelectedItem() != null) {
+            Asset toDelete = tblOM.getSelectionModel().getSelectedItem();
+
+            HttpResponse<String> deleteResponse = Client.clientDelete("/assets/" + currentOrg.getUnitId() + "/" + toDelete.getAssetTypeId());
+
+
+            if (deleteResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted Asset from the selected Organisation.");
+                alert.showAndWait();
+
+                // Re-fetch AssetTypes and set table data
+
+            } else {
+                errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete Asset from the Organisation.\n" + errorResponse.getError());
+                alert.showAndWait();
+                // Re-fetch AssetTypes and set table data
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an asset before continuing.");
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
+    private void handleDeleteOrg() throws IOException, InterruptedException {
+
+        if (currentOrg != null) {
+            Alert check = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure you want to delete the Organisation and all of its dependencies");
+            check.showAndWait();
+            if (check.getResult() == ButtonType.OK) {
+                HttpResponse<String> deleteResponse = Client.clientDelete("/orgunit/" + currentOrg.getUnitId());
+
+                if (deleteResponse.statusCode() == 200) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully deleted the Organisation.");
+                    alert.showAndWait();
+
+                } else {
+                    errorResponse = gson.fromJson(deleteResponse.body(), JsonError.class);
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Could not delete the Organisation.\n" + errorResponse.getError());
+                    alert.showAndWait();
+                }
+                resetAll();
+            }
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation before continuing.");
+            alert.showAndWait();
+
+        }
+    }
+
+    @FXML
+    private void addAsset() throws IOException, InterruptedException {
+
+        if (currentOrg != null) {
+            int quantity = Integer.valueOf(txtOUNewAssetQuantity.getText());
+
+            Asset asset = new Asset(comboOMAssetAdd.getValue().getAssetTypeId(), quantity);
+
+            HttpResponse<String> putResponse = Client.clientPut("/assets/" + currentOrg.getUnitId(), asset);
+
+            if (putResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added asset to the selected Organisation.");
+                alert.showAndWait();
+
+
+            } else {
+                errorResponse = gson.fromJson(putResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add Asset to the selected Organisation.\n" + errorResponse.getError());
+            }
+            softReset();
+            refreshTable(currentOrg.getUnitId());
+        }
+        else {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please select an organisation and asset.");
+            alert.showAndWait();
+        }
+
+    }
+
+
+    @FXML
+    private void addOU() throws IOException, InterruptedException {
+
+        if((txtNewOUName.getText() != "")&&(txtNewOUBalance.getText() != "")) {
+
+            String newOrgName = txtNewOUName.getText();
+
+            Float newOrgBalance = Float.valueOf(txtNewOUBalance.getText());
+
+            PartialOrganisationalUnit newOrg = new PartialOrganisationalUnit(newOrgName, newOrgBalance);
+
+
+            HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
+
+
+            if (postResponse.statusCode() == 200) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
+                alert.showAndWait();
+            } else {
+                errorResponse = gson.fromJson(postResponse.body(), JsonError.class);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Could not add new Organisation.\n" + errorResponse.getError());
+                alert.showAndWait();
+            }
+            resetAll();
+        }
+        else
+        {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Please enter an acceptable organisation name and balance.");
+            alert.showAndWait();
+        }
+
+    }
 }

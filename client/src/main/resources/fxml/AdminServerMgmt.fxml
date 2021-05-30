@@ -23,7 +23,7 @@
       </Text>
    </top>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <AnchorPane fx:id="anchorPane" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <ImageView fitHeight="307.0" fitWidth="329.0" layoutX="337.0" layoutY="37.0" pickOnBounds="true" preserveRatio="true">
                <image>

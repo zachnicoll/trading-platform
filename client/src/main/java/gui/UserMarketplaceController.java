@@ -4,12 +4,17 @@ import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXComboBox;
 import errors.JsonError;
+import helpers.Client;
 import helpers.ClientInfo;
 import helpers.Route;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.CategoryAxis;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
@@ -17,14 +22,16 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import models.Asset;
 import models.AssetType;
+import models.ResolvedTrade;
 import models.TradeType;
 import models.partial.PartialOpenTrade;
+import models.partial.PartialReadableOpenTrade;
+import models.partial.PartialReadableResolvedTrade;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import static helpers.Client.clientGet;
 import static helpers.Client.clientPost;
@@ -32,8 +39,6 @@ import static helpers.Client.clientPost;
 public class UserMarketplaceController {
 
 
-    private final Gson gson = new Gson();
-    private final ObservableList<Asset> assetNames = FXCollections.observableArrayList();
     @FXML
     private AnchorPane anchorboxMP;
     @FXML
@@ -49,12 +54,32 @@ public class UserMarketplaceController {
     @FXML
     private JFXButton btnMPBuyConfirmOrder;
     @FXML
+    private LineChart<String, Float> lnchrtPriceGraph;
+    @FXML
+    private CategoryAxis xAxis;
+    @FXML
+    private NumberAxis yAxis;
+    @FXML
     private Text lblUnitsAvailable;
     @FXML
     private Text unitsAvailable;
 
     private ClientInfo clientInfo;
     private TradeType tradeType = null;
+    private final Gson gson = new Gson();
+    private final ObservableList<Asset> assetNames = FXCollections.observableArrayList();
+    private XYChart.Series priceHistorySeries;
+
+
+    @FXML
+    public void initialize() throws IOException, InterruptedException {
+        clientInfo = ClientInfo.getInstance();
+        xAxis.setLabel("Date");
+        yAxis.setLabel("Price");
+        lnchrtPriceGraph.setTitle("Asset Trade History");
+        lnchrtPriceGraph.setAnimated(false);
+        priceHistorySeries = new XYChart.Series();
+    }
 
     private void handleOrderTypeChange(TradeType orderType) {
         // Clear combo box
@@ -79,11 +104,6 @@ public class UserMarketplaceController {
 
             lblUnitsAvailable.setVisible(true);
         }
-    }
-
-    @FXML
-    public void initialize() throws IOException, InterruptedException {
-        clientInfo = ClientInfo.getInstance();
     }
 
     public void buySelected(ActionEvent event) throws IOException, InterruptedException {
@@ -129,19 +149,73 @@ public class UserMarketplaceController {
         comboboxSelectAsset.setItems(assetNames);
     }
 
-    public void comboBoxSelected(ActionEvent event) {
+    public void comboBoxSelected(ActionEvent event) throws IOException, InterruptedException {
         Asset selectedAsset = comboboxSelectAsset.getValue();
 
         // Quantity of -1 means it's from the BUY assets, which should not display a quantity
         if (selectedAsset != null && selectedAsset.getQuantity() > -1) {
             unitsAvailable.setText(selectedAsset.getQuantity().toString());
         }
+        refreshGraph(selectedAsset);
+    }
+
+    private void refreshGraph(Asset selectedAsset) throws IOException, InterruptedException {
+        if (Objects.nonNull(selectedAsset)) {
+            clearChartData();
+            lnchrtPriceGraph.setTitle(String.format("%s Trade Price History", selectedAsset.getName()));
+            priceHistorySeries.setName(selectedAsset.getName());
+            PartialReadableResolvedTrade[] resolvedTrades = getAllTrades(selectedAsset.getAssetTypeId());
+
+            if(Objects.nonNull(resolvedTrades)){
+                for (int i = 0; i < resolvedTrades.length; i++) {
+                    priceHistorySeries.getData().add(new XYChart.Data(new SimpleDateFormat("dd/MM/yy").format(resolvedTrades[i].getDateResolved()), resolvedTrades[i].getPrice()));
+                }
+
+                lnchrtPriceGraph.getData().add(priceHistorySeries);
+            }
+        }
+    }
+
+
+    private PartialReadableResolvedTrade[] getAllTrades(UUID assetTypeId) throws IOException, InterruptedException {
+        HttpResponse<String> resolvedTradesResponse = Client.clientGet(Route.getRoute(Route.trades) + assetTypeId + "/history");
+
+        if (resolvedTradesResponse.statusCode() == 200) {
+            return gson.fromJson(resolvedTradesResponse.body(), PartialReadableResolvedTrade[].class);
+        } else if (resolvedTradesResponse.statusCode() == 400) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selected Asset type does not have any price history to show", ButtonType.OK);
+            alert.showAndWait();
+            return null;
+        }else{
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred while fetching price history data", ButtonType.OK);
+            alert.showAndWait();
+            return null;
+        }
+    }
+    private void clearChartData(){
+        lnchrtPriceGraph.getData().clear();
+        priceHistorySeries.getData().clear();
+    }
+
+    private void clearUserInput(){
+        txtMPPrice.clear();
+        txtMPQuantity.clear();
     }
 
     public void confirmOrder(ActionEvent event) throws IOException, InterruptedException {
         Asset selectedAsset = comboboxSelectAsset.getValue();
-        Integer quantity = Integer.valueOf(txtMPQuantity.getText());
-        Float price = Float.valueOf(txtMPPrice.getText());
+        Integer quantity;
+        Float price;
+        try{
+            quantity = Integer.valueOf(txtMPQuantity.getText());
+            price = Float.valueOf(txtMPPrice.getText());
+        }catch(NumberFormatException error){
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Quantity and Price must be numerical inputs", ButtonType.OK);
+            alert.showAndWait();
+            clearUserInput();
+            return;
+        }
+
 
         PartialOpenTrade newOpenTrade = new PartialOpenTrade(
                 tradeType,

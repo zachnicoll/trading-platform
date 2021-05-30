@@ -95,20 +95,20 @@
             </AnchorPane>
             <AnchorPane prefHeight="313.0" prefWidth="690.0">
                <children>
-                  <LineChart layoutX="238.0" layoutY="16.0" prefHeight="303.0" prefWidth="438.0" style="-fx-border-color: #2d3142;">
+                  <LineChart fx:id="lnchrtPriceGraph" layoutX="222.0" layoutY="16.0" prefHeight="303.0" prefWidth="468.0" style="-fx-border-color: #2d3142; -fx-background-color: #ffffff; -fx-background-radius: 10;">
                     <xAxis>
-                      <CategoryAxis side="BOTTOM" />
+                      <CategoryAxis side="BOTTOM" fx:id="xAxis" />
                     </xAxis>
                     <yAxis>
-                      <NumberAxis side="LEFT" />
+                      <NumberAxis fx:id="yAxis" side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-20.0" layoutY="138.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-68.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>
                   </Text>
-                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-21.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-70.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

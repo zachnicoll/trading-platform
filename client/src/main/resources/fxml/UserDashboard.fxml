@@ -16,7 +16,7 @@
             <TableColumn fx:id="tblcolDateOpened" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="152.0" resizable="false" style="-fx-alignment: CENTER;" text="Date Opened" />
             <TableColumn fx:id="tblcolTradeType" editable="false" maxWidth="116.0" minWidth="46.0" prefWidth="97.0" resizable="false" style="-fx-alignment: CENTER;" text="Trade Type" />
                <TableColumn fx:id="tblcolAsset" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="144.0" resizable="false" style="-fx-alignment: CENTER;" text="Asset" />
-               <TableColumn fx:id="tblcolOrgUnit" editable="false" maxWidth="300.0" minWidth="-Infinity" prefWidth="174.0" style="-fx-alignment: CENTER;" text="Organisational Unit" />
+               <TableColumn fx:id="tblcolOrgUnit" editable="false" maxWidth="300.0" minWidth="-Infinity" prefWidth="174.0" resizable="false" style="-fx-alignment: CENTER;" text="Organisational Unit" />
                <TableColumn fx:id="tblcolQuantity" editable="false" maxWidth="170.0" minWidth="-1.0" prefWidth="100.0" resizable="false" style="-fx-alignment: CENTER;" text="Quantity" />
                <TableColumn fx:id="tblcolPrice" editable="false" maxWidth="132.0" minWidth="-1.0" prefWidth="100.0" resizable="false" style="-fx-alignment: CENTER;" text="Price" />
            </columns>

@@ -63,7 +63,7 @@ public class AssetsHandler extends AbstractRequestHandler {
             JsonError jsonError = new JsonError("Organisational Unit does not own any of the given Asset Type");
             writeResponseBody(exchange, jsonError, 400);
         }
-        else if(orgUnitDataSource.checkExistById(orgUnitId)){
+        else{
             assetDataSource.deleteById(assetTypeId, orgUnitId);
             writeResponseBody(exchange, null, 200);
         }

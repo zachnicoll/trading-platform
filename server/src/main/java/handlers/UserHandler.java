@@ -51,7 +51,7 @@ public class UserHandler extends AbstractRequestHandler {
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
         if (params.length == 3 && params[2].contains("all")) {
-
+            checkIsAdmin(exchange);
             //sends all users to the client in readable form
             ArrayList<PartialReadableUser> users = userDataSource.getAllReadable();
             writeResponseBody(exchange, users);

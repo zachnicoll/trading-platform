@@ -34,7 +34,8 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
                 String.valueOf(results.getString("assetName")),
                 results.getInt("quantity"),
                 results.getFloat("price"),
-                results.getTimestamp("dateOpened")
+                results.getTimestamp("dateOpened"),
+                UUID.fromString(results.getString("organisationalUnitId"))
         );
     }
 
@@ -76,6 +77,7 @@ public class OpenTradeDataSource extends AbstractDataSource<OpenTrade> {
                                       ot."tradeId",
                                       ot."tradeType",
                                       ou."organisationalUnitName",
+                                      ou."organisationalUnitId",
                                       at2."assetName",
                                       ot.quantity,
                                       ot.price,

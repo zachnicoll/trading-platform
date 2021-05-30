@@ -1,0 +1,23 @@
+.table-view.column-header-background {
+    -fx-background-color: transparent;
+}
+
+.table-view .cell{
+  -fx-background-color:  #4f5d75;
+  -fx-border-color:  #4f5d75;
+  -fx-alignment: CENTER_RIGHT;
+  -fx-font-size: 12px;
+  -fx-font-weight: bold;
+}
+
+.table-row-cell:selected {
+   -fx-text-background-color:  #EF8354;
+}
+
+.button {
+    -fx-background-color: #e95d5d;
+    -fx-margin: 0px;
+}
+.button:hover {
+    -fx-background-color: #D15353;
+}

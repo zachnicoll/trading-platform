@@ -21,8 +21,9 @@ public class PartialReadableOpenTrade {
     private final Integer quantity;
     private final Float pricePerAsset;
     private final Timestamp dateOpened;
+    private final UUID organisationalUnitId;
 
-    public PartialReadableOpenTrade (UUID tradeId, TradeType tradeType, String organisationalUnitName, String assetTypeName, Integer quantity, Float pricePerAsset, Timestamp dateOpened) {
+    public PartialReadableOpenTrade (UUID tradeId, TradeType tradeType, String organisationalUnitName, String assetTypeName, Integer quantity, Float pricePerAsset, Timestamp dateOpened, UUID organisationalUnitId) {
         this.tradeId = tradeId;
         this.tradeType = tradeType;
         this.organisationalUnitName = organisationalUnitName;
@@ -30,6 +31,7 @@ public class PartialReadableOpenTrade {
         this.quantity = quantity;
         this.pricePerAsset = pricePerAsset;
         this.dateOpened = dateOpened;
+        this.organisationalUnitId = organisationalUnitId;
     }
 
 
@@ -59,5 +61,7 @@ public class PartialReadableOpenTrade {
         return tradeId;
     }
 
-
+    public UUID getOrganisationalUnitId() {
+        return organisationalUnitId;
+    }
 }

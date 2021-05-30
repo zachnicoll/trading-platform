@@ -7,6 +7,7 @@ import handlers.AbstractRequestHandler;
 import models.*;
 import models.partial.PartialOpenTrade;
 import models.partial.PartialReadableOpenTrade;
+import models.partial.PartialReadableResolvedTrade;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,11 +31,39 @@ public class TradesHandler extends AbstractRequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
 
-        OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
-        ArrayList<PartialReadableOpenTrade>  readableOpenTrades;
+        String[] params = exchange.getRequestURI().getRawPath().split("/");
 
-        readableOpenTrades = openTradeDataSource.getAllReadable();
-        writeResponseBody(exchange, readableOpenTrades);
+        if(params.length == 4 && params[3].equals("history")){
+            ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
+            UUID assetTypeId = UUID.fromString(params[2]);
+
+            if(resolvedTradeDataSource.checkExistById(assetTypeId)){
+                //get all resolved trades by assetTypeId
+                ArrayList<PartialReadableResolvedTrade>  readableResolvedTradesTrades;
+                readableResolvedTradesTrades = resolvedTradeDataSource.getAllByAssetReadable(assetTypeId);
+                if(readableResolvedTradesTrades.size() > 0) {
+                    writeResponseBody(exchange, readableResolvedTradesTrades);
+                }else{
+                    writeResponseBody(exchange, new JsonError("There are no resolved trades involving the selected assetType"), 400);
+                    return;
+                }
+            }else{
+                writeResponseBody(exchange, new JsonError("Selected assetTypeId does not exist"), 404);
+                return;
+            }
+        }else if (params.length == 3){
+            //get all current trades by assetTypeId (params[2] = assetTypeId) -- not sure if we need this
+            exchange.sendResponseHeaders(501, 0);
+            exchange.getResponseBody().close();
+        }else{
+            OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
+            ArrayList<PartialReadableOpenTrade>  readableOpenTrades;
+
+            readableOpenTrades = openTradeDataSource.getAllReadable();
+            writeResponseBody(exchange, readableOpenTrades);
+        }
+
+
     }
 
     @Override

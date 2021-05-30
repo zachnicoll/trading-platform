@@ -3,6 +3,7 @@ package database.datasources;
 import database.DBConnection;
 import models.Asset;
 import models.ResolvedTrade;
+import models.partial.PartialReadableResolvedTrade;
 
 import java.security.InvalidParameterException;
 import java.sql.Connection;
@@ -22,6 +23,16 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 UUID.fromString(results.getString("buyOrgUnitId")),
                 UUID.fromString(results.getString("sellOrgUnitId")),
                 UUID.fromString(results.getString("assetTypeId")),
+                results.getInt("quantity"),
+                results.getFloat("price"),
+                results.getTimestamp("dateResolved")
+        );
+    }
+    protected PartialReadableResolvedTrade resultSetToReadableObject(ResultSet results) throws SQLException {
+        return new PartialReadableResolvedTrade(
+                UUID.fromString(results.getString("buyTradeId")),
+                UUID.fromString(results.getString("sellTradeId")),
+                results.getString("assetName"),
                 results.getInt("quantity"),
                 results.getFloat("price"),
                 results.getTimestamp("dateResolved")
@@ -61,6 +72,50 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         ArrayList<ResolvedTrade> allResolvedTrades = new ArrayList<>();
         while (results.next()) {
             ResolvedTrade trade = resultSetToObject(results);
+            allResolvedTrades.add(trade);
+        }
+
+        return allResolvedTrades;
+    }
+    public ArrayList<PartialReadableResolvedTrade> getAllByAssetReadable(UUID assetTypeId) throws SQLException {
+        PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
+                """
+                    select\s
+                   	    rt."buyTradeId",
+                   	    rt."sellTradeId",
+                   	    sellOrg."sellorgname",
+                   	    buyOrg."buyorgname",
+                   	    rt.price,
+                   	    rt.quantity,
+                   	    rt."dateResolved",
+                   	    at2."assetName"
+                   from "resolvedTrades" rt
+                   join "assetTypes" at2 on
+                   	    rt."assetTypeId" = at2."assetTypeId"
+                        join (select\s
+                    	    rt."buyTradeId",
+                   	        rt."sellTradeId",
+                   	        rt."buyOrgUnitId",\s
+                   	        ou."organisationalUnitName" as buyOrgName
+                        from "resolvedTrades" rt
+                        join "organisationalUnits" ou on rt."buyOrgUnitId" = ou."organisationalUnitId") buyOrg
+                   on rt."sellTradeId" = buyOrg."sellTradeId" and rt."buyTradeId" = buyOrg."buyTradeId"\s
+                        join (select\s
+                   	        rt."buyTradeId",
+                   	        rt."sellTradeId",
+                        	rt."sellOrgUnitId",\s
+                   	        ou."organisationalUnitName" as sellOrgName
+                        from "resolvedTrades" rt
+                        join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
+                   on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"
+                   where at2."assetTypeId"::text = ? order by rt."dateResolved" asc;"""
+        );
+        getAllUnresolved.setString(1, assetTypeId.toString());
+        ResultSet results = getAllUnresolved.executeQuery();
+
+        ArrayList<PartialReadableResolvedTrade> allResolvedTrades = new ArrayList<>();
+        while (results.next()) {
+            PartialReadableResolvedTrade trade = resultSetToReadableObject(results);
             allResolvedTrades.add(trade);
         }
 
@@ -116,9 +171,13 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
 
     }
 
-    public boolean checkExistById(UUID id) throws SQLException {
-        //TODO: DELETE ONCE FIXED
-        return false;
+    public boolean checkExistById(UUID assetTypeId) throws SQLException {
+        PreparedStatement checkTradeExistByAsset = dbConnection.prepareStatement(
+                "SELECT EXISTS(SELECT 1 FROM \"resolvedTrades\" WHERE \"assetTypeId\" = uuid(?));"
+        );
+        checkTradeExistByAsset.setString(1, assetTypeId.toString());
+
+        return checkTradeExistByAsset.executeQuery().next();
     }
     public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {
         PreparedStatement createQueryTrade = dbConnection.prepareStatement(

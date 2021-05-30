@@ -184,7 +184,7 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
 
     public String getCreateNewQuery(Asset newObject, UUID organisationalUnitId) throws SQLException {
         PreparedStatement createStatement = dbConnection.prepareStatement(
-                "INSERT INTO \"organisationUnitAssets\" VALUES (uuid(?), uuid(?), ?);"
+                "INSERT INTO \"organisationalUnitAssets\" VALUES (uuid(?), uuid(?), ?);"
         );
 
         createStatement.setString(1, organisationalUnitId.toString());

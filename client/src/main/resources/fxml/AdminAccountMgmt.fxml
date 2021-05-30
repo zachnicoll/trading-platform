@@ -47,7 +47,7 @@
                   <Font size="16.0" />
                </font>
             </PasswordField>
-            <JFXComboBox fx:id="comboAMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="120.0" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
+            <JFXComboBox fx:id="comboAMOU" focusColor="#4f5d75" layoutX="468.0" layoutY="120.0" onAction="#selectedOrgUnit" prefHeight="45.0" prefWidth="275.0" promptText="Select Organisational Unit" style="-fx-background-color: c4c4c4;" unFocusColor="#4f5d75">
                <opaqueInsets>
                   <Insets />
                </opaqueInsets>
@@ -76,11 +76,11 @@
       </AnchorPane>
    </top>
    <center>
-      <TableView fx:id="tblAM" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER">
+      <TableView fx:id="userTable" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #4f5d75;" stylesheets="@../css/AM.css" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="280.0" text="Employee Name" />
-            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="280.0" text="Organisational Unit" />
-            <TableColumn fx:id="tblcolAMDelete" editable="false" prefWidth="130.0" text="Delete" />
+          <TableColumn fx:id="tblcolAMName" editable="false" prefWidth="250.0" text="Employee Name" />
+           <TableColumn fx:id="tblcolAMType" editable="false" prefWidth="100.0" style="-fx-alignment: CENTER;" text="Account Type" />
+            <TableColumn fx:id="tblcolAMOU" editable="false" prefWidth="250.0" text="Organisational Unit" />
         </columns>
       </TableView>
    </center>

@@ -12,12 +12,15 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 public class AdminServerMgmtController {
@@ -32,6 +35,9 @@ public class AdminServerMgmtController {
     private JFXButton btnSMExport;
 
     @FXML
+    private AnchorPane anchorPane;
+
+    @FXML
     void exportConfig(ActionEvent event) {
         try {
             //define variables
@@ -41,16 +47,29 @@ public class AdminServerMgmtController {
             mgmtIp = txtSMIp.getText();
             mgmtPort = txtSMPort.getText();
 
-            //write values to user.home
-            String userHomeFolder = System.getProperty("user.home");
-            File configFile = new File(userHomeFolder, "config.txt");
-            Writer out = new BufferedWriter(new FileWriter(configFile));
+            DirectoryChooser directoryChooser = new DirectoryChooser();
+            Stage currentStage = (Stage) anchorPane.getScene().getWindow();
+            File configFile = directoryChooser.showDialog(currentStage);
 
-            out.write(mgmtIp + "," + mgmtPort);
-            out.close();
+            configFile = new File(configFile.getAbsolutePath() + "/config.properties");
+
+            Properties props = new Properties();
+            props.setProperty("ip", mgmtIp);
+            props.setProperty("port", mgmtPort);
+            FileWriter writer = new FileWriter(configFile);
+            props.store(writer, "Trading Platform Connection Configuration File\n" +
+                    "THIS FILE HAS BEEN AUTOMATICALLY GENERATED, CHANGE VALUES AT YOUR OWN RISK.");
+            writer.close();
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Successfully exported server config file to " + configFile.getAbsolutePath());
+            alert.showAndWait();
+
+            txtSMIp.clear();
+            txtSMPort.clear();
         }
         catch (IOException e) {
-            System.out.println("An error occurred.");
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Could not save config file.");
+            alert.showAndWait();
             e.printStackTrace();
         }
     }

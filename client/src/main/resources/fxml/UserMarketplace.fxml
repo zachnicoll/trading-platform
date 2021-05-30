@@ -103,7 +103,7 @@
                       <NumberAxis fx:id="yAxis" side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <Text fx:id="txtCurrentPrice" boundsType="VISUAL" fill="#ef8354" layoutX="-61.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Latest Asset Trade Price:" textAlignment="RIGHT" wrappingWidth="113.7177734375">
+                  <Text fx:id="txtCurrentPrice" boundsType="VISUAL" fill="#ef8354" layoutX="-112.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" textAlignment="RIGHT" wrappingWidth="170.791015625">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

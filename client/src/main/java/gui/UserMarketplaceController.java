@@ -81,7 +81,7 @@ public class UserMarketplaceController {
         lnchrtPriceGraph.setTitle("Asset Trade History");
         lnchrtPriceGraph.setAnimated(false);
         priceHistorySeries = new XYChart.Series();
-        txtCurrentPrice.setText("");
+        txtCurrentPrice.setWrappingWidth(200);
     }
 
     private void handleOrderTypeChange(TradeType orderType) {
@@ -173,9 +173,11 @@ public class UserMarketplaceController {
                 for (int i = 0; i < resolvedTrades.length; i++) {
                     priceHistorySeries.getData().add(new XYChart.Data(new SimpleDateFormat("dd/MM/yy HH:mm").format(resolvedTrades[i].getDateResolved()), resolvedTrades[i].getPrice()));
                 }
-                if(Objects.nonNull(resolvedTrades[0].getPrice()))
+
+                int length = resolvedTrades.length;
+                if(Objects.nonNull(resolvedTrades[length - 1].getPrice()))
                 {
-                    txtCurrentPrice.setText(String.format("Latest %s trade price: $%s", selectedAsset.getName(), resolvedTrades[0].getPrice().toString()));
+                    txtCurrentPrice.setText(String.format("%s: $%s", selectedAsset.getName(), resolvedTrades[length - 1].getPrice().toString()));
                 }
                 else{
                     Alert alert = new Alert(Alert.AlertType.INFORMATION, String.format("Error displaying %s latest price", selectedAsset.getName()), ButtonType.OK);
@@ -195,7 +197,7 @@ public class UserMarketplaceController {
         } else if (resolvedTradesResponse.statusCode() == 400) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selected Asset type does not have any price history to show", ButtonType.OK);
             alert.showAndWait();
-            txtCurrentPrice.setText("Latest Asset Trade Price:");
+            txtCurrentPrice.setText("Price:");
             return null;
         }else{
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred while fetching price history data", ButtonType.OK);

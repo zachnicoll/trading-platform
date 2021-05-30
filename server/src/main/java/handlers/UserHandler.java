@@ -57,7 +57,6 @@ public class UserHandler extends AbstractRequestHandler {
             writeResponseBody(exchange, users);
 
         } else {
-
             String userId = getUserId(exchange);
             writeResponseBody(exchange, userDataSource.getById(UUID.fromString(userId)));
         }

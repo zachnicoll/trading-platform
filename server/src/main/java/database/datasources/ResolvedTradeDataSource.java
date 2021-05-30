@@ -108,7 +108,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                         from "resolvedTrades" rt
                         join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
                    on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"
-                   where at2."assetTypeId"::text = ?;"""
+                   where at2."assetTypeId"::text = ? order by rt."dateResolved" desc;"""
         );
         getAllUnresolved.setString(1, assetTypeId.toString());
         ResultSet results = getAllUnresolved.executeQuery();

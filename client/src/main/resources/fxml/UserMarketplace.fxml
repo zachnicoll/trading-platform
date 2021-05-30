@@ -103,12 +103,7 @@
                       <NumberAxis fx:id="yAxis" side="LEFT" />
                     </yAxis>
                   </LineChart>
-                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-68.0" layoutY="137.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Buy Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
-                     <font>
-                        <Font name="System Bold" size="18.0" />
-                     </font>
-                  </Text>
-                  <Text boundsType="VISUAL" fill="#ef8354" layoutX="-70.0" layoutY="181.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Current Sell Price:" textAlignment="RIGHT" wrappingWidth="219.8203125">
+                  <Text fx:id="txtCurrentPrice" boundsType="VISUAL" fill="#ef8354" layoutX="-61.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Latest Asset Trade Price:" textAlignment="RIGHT" wrappingWidth="113.7177734375">
                      <font>
                         <Font name="System Bold" size="18.0" />
                      </font>

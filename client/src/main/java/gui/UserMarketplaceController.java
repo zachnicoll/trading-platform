@@ -50,6 +50,8 @@ public class UserMarketplaceController {
     @FXML
     private TextField txtMPPrice;
     @FXML
+    private Text txtCurrentPrice;
+    @FXML
     private TextField txtMPQuantity;
     @FXML
     private JFXButton btnMPBuyConfirmOrder;
@@ -79,6 +81,7 @@ public class UserMarketplaceController {
         lnchrtPriceGraph.setTitle("Asset Trade History");
         lnchrtPriceGraph.setAnimated(false);
         priceHistorySeries = new XYChart.Series();
+        txtCurrentPrice.setText("");
     }
 
     private void handleOrderTypeChange(TradeType orderType) {
@@ -162,15 +165,22 @@ public class UserMarketplaceController {
     private void refreshGraph(Asset selectedAsset) throws IOException, InterruptedException {
         if (Objects.nonNull(selectedAsset)) {
             clearChartData();
-            lnchrtPriceGraph.setTitle(String.format("%s Trade Price History", selectedAsset.getName()));
+            lnchrtPriceGraph.setTitle(String.format("%s Price History", selectedAsset.getName()));
             priceHistorySeries.setName(selectedAsset.getName());
             PartialReadableResolvedTrade[] resolvedTrades = getAllTrades(selectedAsset.getAssetTypeId());
 
             if(Objects.nonNull(resolvedTrades)){
                 for (int i = 0; i < resolvedTrades.length; i++) {
-                    priceHistorySeries.getData().add(new XYChart.Data(new SimpleDateFormat("dd/MM/yy").format(resolvedTrades[i].getDateResolved()), resolvedTrades[i].getPrice()));
+                    priceHistorySeries.getData().add(new XYChart.Data(new SimpleDateFormat("dd/MM/yy HH:mm").format(resolvedTrades[i].getDateResolved()), resolvedTrades[i].getPrice()));
                 }
-
+                if(Objects.nonNull(resolvedTrades[0].getPrice()))
+                {
+                    txtCurrentPrice.setText(String.format("Latest %s trade price: $%s", selectedAsset.getName(), resolvedTrades[0].getPrice().toString()));
+                }
+                else{
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, String.format("Error displaying %s latest price", selectedAsset.getName()), ButtonType.OK);
+                    alert.showAndWait();
+                }
                 lnchrtPriceGraph.getData().add(priceHistorySeries);
             }
         }
@@ -185,6 +195,7 @@ public class UserMarketplaceController {
         } else if (resolvedTradesResponse.statusCode() == 400) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "Selected Asset type does not have any price history to show", ButtonType.OK);
             alert.showAndWait();
+            txtCurrentPrice.setText("Latest Asset Trade Price:");
             return null;
         }else{
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error occurred while fetching price history data", ButtonType.OK);

@@ -11,6 +11,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -23,8 +24,11 @@ import models.Credentials;
 import models.User;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.http.HttpResponse;
+import java.util.Properties;
 
 import static helpers.Client.clientGet;
 import static helpers.Client.clientPost;
@@ -64,10 +68,24 @@ public class LoginController {
     private void browseFile(ActionEvent event) {
         final FileChooser fileChooser = new FileChooser();
         Stage currentStage = (Stage) loginBorderId.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".properties", "*.properties"));
         File file = fileChooser.showOpenDialog(currentStage);
 
-        //TODO implement file read
+        try (InputStream serverConfigFile = new FileInputStream(file.getAbsolutePath())) {
+
+            Properties serverConfig = new Properties();
+
+            // load a properties file
+            serverConfig.load(serverConfigFile);
+
+            // get the property value and print it out
+            System.out.println(serverConfig.getProperty("port"));
+            System.out.println(serverConfig.getProperty("ip"));
+
+        } catch (IOException ex) {
+           Alert alert = new Alert(AlertType.ERROR, "Error occurred while importing server config file");
+           alert.showAndWait();
+        }
 
         if (file != null) {
             System.out.println(("Path: " + file.getAbsolutePath()));

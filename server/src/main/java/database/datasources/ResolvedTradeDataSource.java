@@ -1,7 +1,6 @@
 package database.datasources;
 
 import database.DBConnection;
-import models.Asset;
 import models.ResolvedTrade;
 import models.partial.PartialReadableResolvedTrade;
 
@@ -28,6 +27,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 results.getTimestamp("dateResolved")
         );
     }
+
     protected PartialReadableResolvedTrade resultSetToReadableObject(ResultSet results) throws SQLException {
         return new PartialReadableResolvedTrade(
                 UUID.fromString(results.getString("buyTradeId")),
@@ -35,11 +35,13 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 results.getString("assetName"),
                 results.getInt("quantity"),
                 results.getFloat("price"),
-                results.getTimestamp("dateResolved")
+                results.getTimestamp("dateResolved"),
+                results.getString("buyOrgName"),
+                results.getString("sellOrgName")
         );
     }
-    public ResolvedTrade getById(UUID buyId)
-    {
+
+    public ResolvedTrade getById(UUID buyId) {
         //TODO: DELETE ONCE FIXED
         return null;
     }
@@ -77,38 +79,83 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
 
         return allResolvedTrades;
     }
+
+    public ArrayList<PartialReadableResolvedTrade> getAllReadable() throws SQLException {
+        PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
+                """
+                         select\s
+                        	    rt."buyTradeId",
+                        	    rt."sellTradeId",
+                        	    sellOrg."sellorgname",
+                        	    buyOrg."buyorgname",
+                        	    rt.price,
+                        	    rt.quantity,
+                        	    rt."dateResolved",
+                        	    at2."assetName"
+                        from "resolvedTrades" rt
+                        join "assetTypes" at2 on
+                        	    rt."assetTypeId" = at2."assetTypeId"
+                             join (select\s
+                         	    rt."buyTradeId",
+                        	        rt."sellTradeId",
+                        	        rt."buyOrgUnitId",\s
+                        	        ou."organisationalUnitName" as buyOrgName
+                             from "resolvedTrades" rt
+                             join "organisationalUnits" ou on rt."buyOrgUnitId" = ou."organisationalUnitId") buyOrg
+                        on rt."sellTradeId" = buyOrg."sellTradeId" and rt."buyTradeId" = buyOrg."buyTradeId"\s
+                             join (select\s
+                        	        rt."buyTradeId",
+                        	        rt."sellTradeId",
+                             	rt."sellOrgUnitId",\s
+                        	        ou."organisationalUnitName" as sellOrgName
+                             from "resolvedTrades" rt
+                             join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
+                        on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"
+                        order by rt."dateResolved" asc;"""
+        );
+        ResultSet results = getAllUnresolved.executeQuery();
+
+        ArrayList<PartialReadableResolvedTrade> allResolvedTrades = new ArrayList<>();
+        while (results.next()) {
+            PartialReadableResolvedTrade trade = resultSetToReadableObject(results);
+            allResolvedTrades.add(trade);
+        }
+
+        return allResolvedTrades;
+    }
+
     public ArrayList<PartialReadableResolvedTrade> getAllByAssetReadable(UUID assetTypeId) throws SQLException {
         PreparedStatement getAllUnresolved = dbConnection.prepareStatement(
                 """
-                    select\s
-                   	    rt."buyTradeId",
-                   	    rt."sellTradeId",
-                   	    sellOrg."sellorgname",
-                   	    buyOrg."buyorgname",
-                   	    rt.price,
-                   	    rt.quantity,
-                   	    rt."dateResolved",
-                   	    at2."assetName"
-                   from "resolvedTrades" rt
-                   join "assetTypes" at2 on
-                   	    rt."assetTypeId" = at2."assetTypeId"
-                        join (select\s
-                    	    rt."buyTradeId",
-                   	        rt."sellTradeId",
-                   	        rt."buyOrgUnitId",\s
-                   	        ou."organisationalUnitName" as buyOrgName
+                         select\s
+                        	    rt."buyTradeId",
+                        	    rt."sellTradeId",
+                        	    sellOrg."sellorgname",
+                        	    buyOrg."buyorgname",
+                        	    rt.price,
+                        	    rt.quantity,
+                        	    rt."dateResolved",
+                        	    at2."assetName"
                         from "resolvedTrades" rt
-                        join "organisationalUnits" ou on rt."buyOrgUnitId" = ou."organisationalUnitId") buyOrg
-                   on rt."sellTradeId" = buyOrg."sellTradeId" and rt."buyTradeId" = buyOrg."buyTradeId"\s
-                        join (select\s
-                   	        rt."buyTradeId",
-                   	        rt."sellTradeId",
-                        	rt."sellOrgUnitId",\s
-                   	        ou."organisationalUnitName" as sellOrgName
-                        from "resolvedTrades" rt
-                        join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
-                   on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"
-                   where at2."assetTypeId"::text = ? order by rt."dateResolved" asc;"""
+                        join "assetTypes" at2 on
+                        	    rt."assetTypeId" = at2."assetTypeId"
+                             join (select\s
+                         	    rt."buyTradeId",
+                        	        rt."sellTradeId",
+                        	        rt."buyOrgUnitId",\s
+                        	        ou."organisationalUnitName" as buyOrgName
+                             from "resolvedTrades" rt
+                             join "organisationalUnits" ou on rt."buyOrgUnitId" = ou."organisationalUnitId") buyOrg
+                        on rt."sellTradeId" = buyOrg."sellTradeId" and rt."buyTradeId" = buyOrg."buyTradeId"\s
+                             join (select\s
+                        	        rt."buyTradeId",
+                        	        rt."sellTradeId",
+                             	rt."sellOrgUnitId",\s
+                        	        ou."organisationalUnitName" as sellOrgName
+                             from "resolvedTrades" rt
+                             join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
+                        on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"
+                        where at2."assetTypeId"::text = ? order by rt."dateResolved" asc;"""
         );
         getAllUnresolved.setString(1, assetTypeId.toString());
         ResultSet results = getAllUnresolved.executeQuery();
@@ -142,7 +189,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         //TODO: DELETE ONCE FIXED
     }
 
-    public void updateByAttribute(UUID buyId, UUID sellId, String attribute, ResolvedTrade value) throws SQLException, InvalidParameterException  {
+    public void updateByAttribute(UUID buyId, UUID sellId, String attribute, ResolvedTrade value) throws SQLException, InvalidParameterException {
 
         Object attrValue;
 
@@ -158,8 +205,8 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         }
 
         PreparedStatement updateByAttribute = dbConnection.prepareStatement(
-                    "UPDATE \"resolvedTrades\" SET \"?\" = ? WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
-            );
+                "UPDATE \"resolvedTrades\" SET \"?\" = ? WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"
+        );
 
 
         updateByAttribute.setString(1, attribute);
@@ -179,6 +226,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
 
         return checkTradeExistByAsset.executeQuery().next();
     }
+
     public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {
         PreparedStatement createQueryTrade = dbConnection.prepareStatement(
                 "SELECT * FROM \"resolvedTrades\" WHERE \"buyTradeId\" = uuid(?) AND \"sellTradeId\" = uuid(?);"

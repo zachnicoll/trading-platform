@@ -74,7 +74,7 @@ public class UserMarketplaceController {
 
 
     @FXML
-    public void initialize() throws IOException, InterruptedException {
+    public void initialize() {
         clientInfo = ClientInfo.getInstance();
         xAxis.setLabel("Date");
         yAxis.setLabel("Price");

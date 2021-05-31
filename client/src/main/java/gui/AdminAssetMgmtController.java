@@ -33,17 +33,13 @@ public class AdminAssetMgmtController {
     private TableColumn<?, ?> tblcolAssMUuid;
     @FXML
     private TableView<AssetType> assetTypeTable;
-    @FXML
-    private TableColumn<?, ?> colBtn;
-    private ClientInfo clientInfo;
-    private Gson gson = new Gson();
+
+    private final Gson gson = new Gson();
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
         tblcolAssMUuid.setCellValueFactory(new PropertyValueFactory<>("assetTypeId"));
         tblcolAssMAsset.setCellValueFactory(new PropertyValueFactory<>("assetName"));
-
-        clientInfo = ClientInfo.getInstance();
 
         refreshTable();
         addDeleteButtonsToTable();

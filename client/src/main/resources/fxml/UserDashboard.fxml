@@ -11,10 +11,10 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="980.0" style="-fx-background-color: #2d3142;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.UserDashboardController">
    <center>
-       <TableView fx:id="openTradesTable" style="-fx-background-color: #4f5d75;" BorderPane.alignment="CENTER" stylesheets="@../css/Dashboard.css">
+       <TableView fx:id="openTradesTable" style="-fx-background-color: #4f5d75;" stylesheets="@../css/Dashboard.css" BorderPane.alignment="CENTER">
            <columns>
             <TableColumn fx:id="tblcolDateOpened" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="152.0" resizable="false" style="-fx-alignment: CENTER;" text="Date Opened" />
-            <TableColumn fx:id="tblcolTradeType" editable="false" maxWidth="116.0" minWidth="46.0" prefWidth="97.0" resizable="false" style="-fx-alignment: CENTER;" text="Trade Type" />
+            <TableColumn fx:id="tblcolTradeType" editable="false" maxWidth="116.0" minWidth="-Infinity" resizable="false" style="-fx-alignment: CENTER;" text="Trade Type" />
                <TableColumn fx:id="tblcolAsset" editable="false" maxWidth="300.0" minWidth="-1.0" prefWidth="144.0" resizable="false" style="-fx-alignment: CENTER;" text="Asset" />
                <TableColumn fx:id="tblcolOrgUnit" editable="false" maxWidth="300.0" minWidth="-Infinity" prefWidth="174.0" resizable="false" style="-fx-alignment: CENTER;" text="Organisational Unit" />
                <TableColumn fx:id="tblcolQuantity" editable="false" maxWidth="170.0" minWidth="-1.0" prefWidth="100.0" resizable="false" style="-fx-alignment: CENTER;" text="Quantity" />

@@ -67,4 +67,11 @@ public class ClientInfo {
     public AuthenticationToken getAuthToken() {
         return authToken;
     }
+
+    /**
+     * Update current auth token for user
+     */
+    public void saveAuthToken(AuthenticationToken newToken) {
+        this.authToken = newToken;
+    }
 }

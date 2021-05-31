@@ -1,10 +1,6 @@
 package models.partial;
 
-import models.TradeType;
-
 import java.sql.Timestamp;
-import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.UUID;
 
 /**
@@ -16,18 +12,22 @@ import java.util.UUID;
 public class PartialReadableResolvedTrade {
     private final UUID buyTradeId;
     private final UUID sellTradeId;
+    private final String boughtFrom;
+    private final String soldTo;
     private final String assetTypeName;
     private final Integer quantity;
     private final Float price;
     private final Timestamp dateResolved;
 
-    public PartialReadableResolvedTrade (UUID buyTradeId, UUID sellTradeId, String assetTypeName, Integer quantity, Float price, Timestamp dateResolved) {
+    public PartialReadableResolvedTrade (UUID buyTradeId, UUID sellTradeId, String assetTypeName, Integer quantity, Float price, Timestamp dateResolved, String boughtFrom, String soldTo) {
         this.assetTypeName = assetTypeName;
         this.quantity = quantity;
         this.price = price;
         this.dateResolved = dateResolved;
         this.buyTradeId = buyTradeId;
         this.sellTradeId = sellTradeId;
+        this.boughtFrom = boughtFrom;
+        this.soldTo = soldTo;
     }
 
 
@@ -49,4 +49,7 @@ public class PartialReadableResolvedTrade {
 
     public UUID getSellTradeId() { return sellTradeId; }
 
+    public String getBoughtFrom() { return boughtFrom; }
+
+    public String getSoldTo() { return soldTo; }
 }

@@ -82,6 +82,8 @@ public class LoginController {
             // extract the port and ip values out
             String portNumber = serverConfig.getProperty("port");
             String ipAddress = serverConfig.getProperty("ip");
+
+            // set client static baseUrl to config file ipAddress and portNumber
             Client.setBaseUrl(String.format("http://%s:%s", ipAddress, portNumber));
 
         } catch (IOException e) {

@@ -30,7 +30,7 @@ public class Client {
     }
 
     public static void setBaseUrl(String url){
-        baseUrl = baseUrl;
+        baseUrl = url;
     }
 
     public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {

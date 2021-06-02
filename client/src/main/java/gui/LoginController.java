@@ -68,7 +68,7 @@ public class LoginController {
     private void browseFile(ActionEvent event) {
         final FileChooser fileChooser = new FileChooser();
         Stage currentStage = (Stage) loginBorderId.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(".properties", "*.properties"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("config file (.props)", "*.properties"));
         File file = fileChooser.showOpenDialog(currentStage);
 
         try (InputStream serverConfigFile = new FileInputStream(file.getAbsolutePath())) {

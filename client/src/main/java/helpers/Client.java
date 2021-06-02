@@ -14,8 +14,7 @@ import java.util.UUID;
  * Static class containing methods for performing HTTP requests and returning the response.
  */
 public class Client {
-    // TODO: Retrieve this from config file
-    private static final String baseUrl = "http://localhost:8000";
+    private static String baseUrl = "http://localhost:8000";
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Gson gson = new Gson();
 
@@ -28,6 +27,10 @@ public class Client {
 
     private static String makeUrl(String route) {
         return baseUrl + route;
+    }
+
+    public static void setBaseUrl(String url){
+        baseUrl = baseUrl;
     }
 
     public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {

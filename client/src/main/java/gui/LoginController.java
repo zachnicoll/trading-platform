@@ -3,6 +3,7 @@ package gui;
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import errors.JsonError;
+import helpers.Client;
 import helpers.ClientInfo;
 import helpers.PasswordHasher;
 import javafx.event.ActionEvent;
@@ -75,14 +76,15 @@ public class LoginController {
 
             Properties serverConfig = new Properties();
 
-            // load a properties file
+            // load a server config file
             serverConfig.load(serverConfigFile);
 
-            // get the property value and print it out
-            System.out.println(serverConfig.getProperty("port"));
-            System.out.println(serverConfig.getProperty("ip"));
+            // extract the port and ip values out
+            String portNumber = serverConfig.getProperty("port");
+            String ipAddress = serverConfig.getProperty("ip");
+            Client.setBaseUrl(String.format("http://%s:%s", ipAddress, portNumber));
 
-        } catch (IOException ex) {
+        } catch (IOException e) {
            Alert alert = new Alert(AlertType.ERROR, "Error occurred while importing server config file");
            alert.showAndWait();
         }

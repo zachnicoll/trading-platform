@@ -3,6 +3,7 @@ package gui;
 import com.google.gson.Gson;
 import com.jfoenix.controls.JFXButton;
 import errors.JsonError;
+import helpers.Client;
 import helpers.ClientInfo;
 import helpers.PasswordHasher;
 import javafx.event.ActionEvent;
@@ -11,6 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -23,8 +25,11 @@ import models.Credentials;
 import models.User;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.http.HttpResponse;
+import java.util.Properties;
 
 import static helpers.Client.clientGet;
 import static helpers.Client.clientPost;
@@ -64,10 +69,27 @@ public class LoginController {
     private void browseFile(ActionEvent event) {
         final FileChooser fileChooser = new FileChooser();
         Stage currentStage = (Stage) loginBorderId.getScene().getWindow();
-        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("TXT Files", "*.txt"));
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("config file (.props)", "*.properties"));
         File file = fileChooser.showOpenDialog(currentStage);
 
-        //TODO implement file read
+        try (InputStream serverConfigFile = new FileInputStream(file.getAbsolutePath())) {
+
+            Properties serverConfig = new Properties();
+
+            // load a server config file
+            serverConfig.load(serverConfigFile);
+
+            // extract the port and ip values out
+            String portNumber = serverConfig.getProperty("port");
+            String ipAddress = serverConfig.getProperty("ip");
+
+            // set client static baseUrl to config file ipAddress and portNumber
+            Client.setBaseUrl(String.format("http://%s:%s", ipAddress, portNumber));
+
+        } catch (IOException e) {
+           Alert alert = new Alert(AlertType.ERROR, "Error occurred while importing server config file");
+           alert.showAndWait();
+        }
 
         if (file != null) {
             System.out.println(("Path: " + file.getAbsolutePath()));

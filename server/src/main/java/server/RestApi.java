@@ -10,8 +10,12 @@ import handlers.ResetPasswordHandler;
 import handlers.TradesHandler;
 import handlers.UserHandler;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
+import java.util.Properties;
 
 /**
  * Wrapper class for a HttpServer object to ensure that correct routes are constructed
@@ -26,10 +30,8 @@ public class RestApi {
      * @throws IOException
      */
     public RestApi() throws IOException {
-        /**
-         * TODO: Import socket address from config/environment file
-         */
-        httpServer = HttpServer.create(new InetSocketAddress(8000), 0);
+
+        httpServer = HttpServer.create(new InetSocketAddress(getPortNumber()), 0);
 
         // Add all the handlers for each route
         httpServer.createContext("/login/", new LoginHandler(false));
@@ -57,5 +59,33 @@ public class RestApi {
      */
     public void stop() {
         httpServer.stop(0);
+    }
+
+    /**
+     * Gets port number from server config file
+     * @return port number retrieved from config file
+     */
+    private int getPortNumber() throws IOException {
+        File file = new File("../../resources/config.properties");
+        int portNumber = 8000;
+
+        try (InputStream serverConfigFile = new FileInputStream(file.getAbsolutePath())) {
+
+            Properties serverConfig = new Properties();
+
+            // load a server config file
+            serverConfig.load(serverConfigFile);
+
+            // extract the port and ip values out
+            portNumber = Integer.parseInt(serverConfig.getProperty("port"));
+
+        } catch (IOException IOexception) {
+            throw IOexception;
+        }catch (NumberFormatException formatException){
+            throw formatException;
+        }finally {
+            return portNumber;
+        }
+
     }
 }

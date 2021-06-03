@@ -12,11 +12,11 @@ public class PartialOpenTradeTests {
     /*
      * Test 0: Declaring PartialOpenTrade object
      */
-    public final TradeType tradeType = TradeType.BUY;
-    public final UUID organisationalUnitId = UUID.randomUUID();
-    public final UUID assetTypeId = UUID.randomUUID();
-    public final Integer quantity = 10;
-    public final Float pricePerAsset = 5f;
+    TradeType tradeType = TradeType.BUY;
+    UUID organisationalUnitId = UUID.randomUUID();
+    UUID assetTypeId = UUID.randomUUID();
+    Integer quantity = 10;
+    Float pricePerAsset = 5f;
 
     PartialOpenTrade partialOpenTrade;
 

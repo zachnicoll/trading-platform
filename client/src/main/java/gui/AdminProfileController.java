@@ -56,8 +56,6 @@ public class AdminProfileController {
     @FXML
     void submitAPChange(ActionEvent event) throws IOException, InterruptedException {
 
-        //TODO IDK IF WE NEED TO REFRESH THE USER'S JWT?
-
         NewPassword newPassword = new NewPassword(hashPassword(txtAPPassword.getText()), hashPassword(txtAPPasswordConfirm.getText()));
 
         if (newPassword.checkMatchingPasswords())

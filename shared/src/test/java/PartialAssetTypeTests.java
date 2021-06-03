@@ -24,7 +24,7 @@ public class PartialAssetTypeTests {
      */
     @Test
     public void getPartialAssetTypeName() {
-        assertEquals(partialAssetType.assetName, "test asset");
+        assertEquals("test asset",partialAssetType.assetName);
     }
 
 }

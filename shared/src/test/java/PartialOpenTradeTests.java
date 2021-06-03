@@ -33,33 +33,33 @@ public class PartialOpenTradeTests {
      */
     @Test
     public void getPartialOpenTradeTradeType() {
-        assertEquals(partialOpenTrade.tradeType, TradeType.BUY);
+        assertEquals(TradeType.BUY, partialOpenTrade.tradeType);
     }
 
     /* Test 3: Get PartialOpenTrade's TradeType
      */
     @Test
-    public void getPartialOpenTradeOrgId() { assertEquals(partialOpenTrade.organisationalUnitId, organisationalUnitId); }
+    public void getPartialOpenTradeOrgId() { assertEquals(organisationalUnitId, partialOpenTrade.organisationalUnitId); }
 
     /* Test 4: Get PartialOpenTrade's TradeType
      */
     @Test
     public void getPartialOpenTradeAssetId() {
-        assertEquals(partialOpenTrade.assetTypeId, assetTypeId);
+        assertEquals(assetTypeId, partialOpenTrade.assetTypeId);
     }
 
     /* Test 5: Get PartialOpenTrade's TradeType
      */
     @Test
     public void getPartialOpenTradeQuantity() {
-        assertEquals(partialOpenTrade.quantity, quantity);
+        assertEquals(10, partialOpenTrade.quantity);
     }
 
     /* Test 6: Get PartialOpenTrade's TradeType
      */
     @Test
     public void getPartialOpenTradePrice() {
-        assertEquals(partialOpenTrade.pricePerAsset, pricePerAsset);
+        assertEquals(5f, partialOpenTrade.pricePerAsset);
     }
 
 }

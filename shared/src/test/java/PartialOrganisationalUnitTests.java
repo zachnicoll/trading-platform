@@ -31,21 +31,21 @@ public class PartialOrganisationalUnitTests {
      */
     @Test
     public void getPartialOrganisationalUnitName() {
-        assertEquals(partialOrganisationalUnit1.unitName, "test unit");
+        assertEquals("test unit", partialOrganisationalUnit1.unitName);
     }
 
     /* Test 3: Get Partial#1 Balance
      */
     @Test
     public void getPartialOrganisationalUnitBalance() {
-        assertEquals(partialOrganisationalUnit1.creditBalance, 10000f);
+        assertEquals(10000f, partialOrganisationalUnit1.creditBalance);
     }
 
     /* Test 4: Get Partial#2 Balance
      */
     @Test
     public void getAlternatePartialOrganisationalUnitBalance() {
-        assertEquals(partialOrganisationalUnit2.creditBalance, 5000f);
+        assertEquals(5000f, partialOrganisationalUnit2.creditBalance);
     }
 
 }

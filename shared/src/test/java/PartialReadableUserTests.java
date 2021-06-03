@@ -19,7 +19,7 @@ public class PartialReadableUserTests {
 
     PartialReadableUser partialReadableUser;
 
-    /* Test 1: Constructing an PartialReadableUser object
+    /* Test 1: Constructing a PartialReadableUser object
      */
     @BeforeEach
     @Test

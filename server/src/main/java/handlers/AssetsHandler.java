@@ -79,25 +79,30 @@ public class AssetsHandler extends AbstractRequestHandler {
     protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
 
         AssetDataSource assetDataSource = new AssetDataSource();
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
         UUID orgUnitId = UUID.fromString(params[2]);
 
         Asset asset = (Asset) readRequestBody(exchange, Asset.class);
-
-        if (asset.getQuantity() < 1)
-        {
-            JsonError jsonError = new JsonError("Provided Quantity is less than 1");
-            writeResponseBody(exchange, jsonError, 400);
-        }
-        else {
-            if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
-                assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
-            } else {
-                assetDataSource.createNew(asset, orgUnitId);
+        if(organisationalUnitDataSource.checkExistById(orgUnitId)){
+            if (asset.getQuantity() < 1)
+            {
+                JsonError jsonError = new JsonError("Provided Quantity is less than 1");
+                writeResponseBody(exchange, jsonError, 400);
             }
-            writeResponseBody(exchange, null, 200);
+            else {
+                if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
+                    assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
+                } else {
+                    assetDataSource.createNew(asset, orgUnitId);
+                }
+                writeResponseBody(exchange, null, 200);
+            }
+        }else{
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
         }
+
     }
 
 }

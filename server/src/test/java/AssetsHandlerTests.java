@@ -60,7 +60,7 @@ public class AssetsHandlerTests {
      * Test 1 - Get All assets
      */
     @Test
-    public void getAllAvailableAssetsSuccess() throws IOException, InterruptedException, SQLException {
+    public void getAllAssetsSuccess() throws IOException, InterruptedException, SQLException {
 
         HttpRequest request = httpBuilder.build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -102,7 +102,7 @@ public class AssetsHandlerTests {
      * Test 3 - Get all assets belonging to a non-existent organisational Unit
      */
     @Test
-    public void getAllOrgAssetsFail() throws IOException, InterruptedException, SQLException {
+    public void getAllOrgAssetsInvalidOrgUnitNotExist() throws IOException, InterruptedException {
 
         HttpRequest request = httpBuilder.uri(URI.create(requestURL + UUID.randomUUID())).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -119,7 +119,7 @@ public class AssetsHandlerTests {
      * Test 4 - Delete asset from Organisational unit successfully
      */
     @Test
-    public void deleteAssetFromOrgUnitSuccess() throws IOException, InterruptedException, SQLException {
+    public void deleteAssetSuccess() throws IOException, InterruptedException, SQLException {
 
         // Test if asset is in database
         assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id,assetsHandlerDataGenerator.orgUnit1Id));
@@ -140,7 +140,7 @@ public class AssetsHandlerTests {
      * Test 5 - Delete asset type from non-existent Organisational unit
      */
     @Test
-    public void deleteAssetFromNonExistentOrgUnit() throws IOException, InterruptedException, SQLException {
+    public void deleteAssetInvalidOrgUnitNotExist() throws IOException, InterruptedException, SQLException {
 
         // Test if asset is in database
         assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id,assetsHandlerDataGenerator.orgUnit1Id));
@@ -159,10 +159,10 @@ public class AssetsHandlerTests {
     }
 
     /**
-     * Test 6 - Delete asset type from an Organisational unit which does not own any of the asset type
+     * Test 6 - Delete asset type from Organisational unit that does not own any of the asset type
      */
     @Test
-    public void deleteAssetOrgUnitOwnZero() throws IOException, InterruptedException, SQLException {
+    public void deleteAssetInvalidOrgUnitDoesNotOwn() throws IOException, InterruptedException, SQLException {
 
         AssetsHandlerDataGenerator additionalData = new AssetsHandlerDataGenerator();
         // Test if asset is in database
@@ -182,20 +182,74 @@ public class AssetsHandlerTests {
     }
 
     /**
-     * Test 7 - Update quantity of asset in Organisational unit to 0
+     * Test 7 - Update quantity of asset in Organisational unit to < 1
      */
+    @Test
+    public void updateQuantityInvalidToZero() throws IOException, InterruptedException, SQLException {
+
+        // Test if asset quantity is 10 in database before updating
+        assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id));
+        assertEquals(10, assetDataSource.getById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id).getQuantity());
+
+        Asset asset = new Asset(assetsHandlerDataGenerator.assetType1Id, 0);
+
+        HttpRequest request = httpBuilder.PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(asset))).uri(URI.create(requestURL + assetsHandlerDataGenerator.orgUnit1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed
+        assertEquals(400, response.statusCode());
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(new JsonError("Provided Quantity is less than 1").getError(), responseError.getError());
+
+    }
 
     /**
-     * Test 8 - Update quantity of asset in Organisational unit to 10
+     * Test 8 - Update quantity of asset in Organisational unit to 5
      */
+    @Test
+    public void updateQuantitySuccessToFive() throws IOException, InterruptedException, SQLException {
+
+        // Test if asset quantity is 10 in database before updating
+        assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id));
+        assertEquals(10, assetDataSource.getById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id).getQuantity());
+
+        Asset asset = new Asset(assetsHandlerDataGenerator.assetType1Id, 5);
+
+        HttpRequest request = httpBuilder.PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(asset))).uri(URI.create(requestURL + assetsHandlerDataGenerator.orgUnit1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request was successful
+        assertEquals(200, response.statusCode());
+
+        // Test that returned asset information is correct/reflects what was sent in request
+        assertEquals(5, assetDataSource.getById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id).getQuantity());
+        assertEquals("null", response.body());
+
+    }
+
 
     /**
-     * Test 9 - Update quantity of asset in Organisational unit to < 0
+     * Test 9 - Update quantity of asset in Organisational unit that does not exist
      */
 
-    /**
-     * Test 10 - Update quantity of asset in Organisational unit which currently do not own any of the specified asset type
-     */
+    @Test
+    public void updateQuantityInvalidOrgUnitNotExist() throws IOException, InterruptedException, SQLException {
+
+        Asset asset = new Asset(assetsHandlerDataGenerator.assetType1Id, 5);
+
+        HttpRequest request = httpBuilder.PUT(HttpRequest.BodyPublishers.ofString(gson.toJson(asset))).uri(URI.create(requestURL + UUID.randomUUID())).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed
+        assertEquals(404, response.statusCode());
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(new JsonError("Organisational Unit does not exist").getError(), responseError.getError());
+
+    }
 
     @AfterEach
     @Test

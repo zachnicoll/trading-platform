@@ -144,9 +144,8 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
 
     public boolean checkExistById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
         PreparedStatement checkExistsById = dbConnection.prepareStatement(
-                "SELECT * FROM \"organisationalUnitAssets\" WHERE " +
-                        "\"organisationalUnitId\"= uuid(?) AND" +
-                        "\"assetTypeId\"= uuid(?);"
+                "SELECT EXISTS(SELECT 1 FROM \"organisationalUnitAssets\" WHERE " +
+                        "\"organisationalUnitId\"::text = ? AND \"assetTypeId\"::text = ?);"
         );
 
         checkExistsById.setString(1, orgUnitId.toString());

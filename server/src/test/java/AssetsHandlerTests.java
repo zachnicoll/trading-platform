@@ -60,7 +60,7 @@ public class AssetsHandlerTests {
      * Test 1 - Get All assets
      */
     @Test
-    public void getAllAvailableAssetsSucceed() throws IOException, InterruptedException, SQLException {
+    public void getAllAvailableAssetsSuccess() throws IOException, InterruptedException, SQLException {
 
         HttpRequest request = httpBuilder.build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -82,7 +82,7 @@ public class AssetsHandlerTests {
      * Test 2 - Get all assets belonging to an organisational unit
      */
     @Test
-    public void getAllOrgAssetsSucceed() throws IOException, InterruptedException, SQLException {
+    public void getAllOrgAssetsSuccess() throws IOException, InterruptedException, SQLException {
 
         HttpRequest request = httpBuilder.uri(URI.create(requestURL + assetsHandlerDataGenerator.orgUnit1Id)).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -118,14 +118,68 @@ public class AssetsHandlerTests {
     /**
      * Test 4 - Delete asset from Organisational unit successfully
      */
+    @Test
+    public void deleteAssetFromOrgUnitSuccess() throws IOException, InterruptedException, SQLException {
+
+        // Test if asset is in database
+        assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id,assetsHandlerDataGenerator.orgUnit1Id));
+
+        HttpRequest request = httpBuilder.DELETE().uri(URI.create(requestURL + assetsHandlerDataGenerator.orgUnit1Id +
+                "/" + assetsHandlerDataGenerator.assetType1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request was successful
+        assertEquals(200, response.statusCode());
+
+        // Test that returned asset information is correct/reflects what was sent in request
+        assertEquals("null", response.body());
+
+    }
 
     /**
      * Test 5 - Delete asset type from non-existent Organisational unit
      */
+    @Test
+    public void deleteAssetFromNonExistentOrgUnit() throws IOException, InterruptedException, SQLException {
+
+        // Test if asset is in database
+        assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id,assetsHandlerDataGenerator.orgUnit1Id));
+
+        HttpRequest request = httpBuilder.DELETE().uri(URI.create(requestURL + UUID.randomUUID() +
+                "/" + assetsHandlerDataGenerator.assetType1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed
+        assertEquals(404, response.statusCode());
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(new JsonError("Organisational Unit does not exist").getError(), responseError.getError());
+
+    }
 
     /**
      * Test 6 - Delete asset type from an Organisational unit which does not own any of the asset type
      */
+    @Test
+    public void deleteAssetOrgUnitOwnZero() throws IOException, InterruptedException, SQLException {
+
+        AssetsHandlerDataGenerator additionalData = new AssetsHandlerDataGenerator();
+        // Test if asset is in database
+        assertTrue(assetDataSource.checkExistById(assetsHandlerDataGenerator.assetType1Id, assetsHandlerDataGenerator.orgUnit1Id));
+
+        HttpRequest request = httpBuilder.DELETE().uri(URI.create(requestURL + additionalData.orgUnit1Id +
+                "/" + assetsHandlerDataGenerator.assetType1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed
+        assertEquals(400, response.statusCode());
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(new JsonError("Organisational Unit does not own any of the given Asset Type").getError(), responseError.getError());
+
+    }
 
     /**
      * Test 7 - Update quantity of asset in Organisational unit to 0

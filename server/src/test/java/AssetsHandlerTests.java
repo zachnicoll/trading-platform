@@ -1,0 +1,124 @@
+import com.google.gson.Gson;
+import data.AssetsHandlerDataGenerator;
+import data.TradesHandlerDataGenerator;
+import database.datasources.AssetDataSource;
+import models.Asset;
+import models.OpenTrade;
+import models.TradeType;
+import models.partial.PartialOpenTrade;
+import models.partial.PartialReadableOpenTrade;
+import org.junit.jupiter.api.*;
+import server.RestApi;
+
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.sql.SQLException;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class AssetsHandlerTests {
+
+    private final HttpClient client = HttpClient.newHttpClient();
+    private final Gson gson = new Gson();
+    private HttpRequest.Builder httpBuilder;
+    private AssetsHandlerDataGenerator assetsHandlerDataGenerator;
+    private AssetDataSource assetDataSource = new AssetDataSource();
+    private String requestURL;
+
+    @BeforeAll
+    @Test
+    static void startApi() throws IOException {
+        RestApi restApi = new RestApi();
+        restApi.start();
+    }
+
+    @BeforeEach
+    @Test
+    public void setupHttpClient() throws IOException, InterruptedException, SQLException {
+        assetsHandlerDataGenerator = new AssetsHandlerDataGenerator();
+
+        requestURL = "http://localhost:8000/assets/";
+        httpBuilder = HttpRequest.newBuilder()
+                .uri(URI.create(requestURL))
+                .timeout(Duration.ofSeconds(10))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + assetsHandlerDataGenerator.authenticationToken.toString());
+    }
+
+
+
+    /**
+     * Test 1 - Get All assets
+     */
+    @Test
+    public void getAllAvailableAssetsSucceed() throws IOException, InterruptedException, SQLException {
+
+        HttpRequest request = httpBuilder.build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request was successful
+        assertEquals(200, response.statusCode());
+
+        Asset[] assets = gson.fromJson(response.body(), Asset[].class);
+        Asset[] actualAssets = assetDataSource.getAll().toArray(new Asset[0]);
+
+        // Test that returned asset information is correct/reflects what was sent in request
+        assertTrue(() -> {
+            boolean match = false;
+            for (int i = 0; i < assets.length; i++) {
+                match = assets[i].getAssetTypeId().equals(actualAssets[i].getAssetTypeId()) ? true: false;
+                if(!match) break;
+            }
+            return match;
+        });
+    }
+
+    /**
+     * Test 2 - Get all assets belonging to an organisational unit
+     */
+
+    /**
+     * Test 3 - Get all assets belonging to a non-existent organisational unit
+     */
+
+    /**
+     * Test 4 - Delete asset from Organisational unit successfully
+     */
+
+    /**
+     * Test 5 - Delete asset type from non-existent Organisational unit
+     */
+
+    /**
+     * Test 6 - Delete asset type from an Organisational unit which does not own any of the asset type
+     */
+
+    /**
+     * Test 7 - Update quantity of asset in Organisational unit to 0
+     */
+
+    /**
+     * Test 8 - Update quantity of asset in Organisational unit to 10
+     */
+
+    /**
+     * Test 9 - Update quantity of asset in Organisational unit to < 0
+     */
+
+    /**
+     * Test 10 - Update quantity of asset in Organisational unit which currently do not own any of the specified asset type
+     */
+
+    @AfterEach
+    @Test
+    public void destroyTestData() throws SQLException {
+        assetsHandlerDataGenerator.destroyTestData();
+    }
+
+}

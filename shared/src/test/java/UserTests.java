@@ -66,7 +66,7 @@ public class UserTests {
      */
     @Test
     public void changePasswordIncorrect() {
-        assertThrows(AuthenticationException.class, () -> user.changePassword("password1", "password2"));
+        assertThrows(AuthenticationException.class, () -> user.changePassword("password1", "password2")); //TODO: Update this
     }
 
     /* Test 7: Update User information

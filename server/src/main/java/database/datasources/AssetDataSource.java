@@ -144,15 +144,19 @@ public class AssetDataSource extends AbstractDataSource<Asset> {
 
     public boolean checkExistById(UUID assetTypeId, UUID orgUnitId) throws SQLException {
         PreparedStatement checkExistsById = dbConnection.prepareStatement(
-                "SELECT * FROM \"organisationalUnitAssets\" WHERE " +
-                        "\"organisationalUnitId\"= uuid(?) AND" +
-                        "\"assetTypeId\"= uuid(?);"
+                "SELECT EXISTS(SELECT 1 FROM \"organisationalUnitAssets\" WHERE " +
+                        "\"organisationalUnitId\"::text = ? AND \"assetTypeId\"::text = ?);"
         );
 
         checkExistsById.setString(1, orgUnitId.toString());
         checkExistsById.setString(2, assetTypeId.toString());
 
-        return checkExistsById.executeQuery().next();
+        //checks if first element is either 't' or 'f' indicating if the row exists in the database
+        ResultSet check = checkExistsById.executeQuery();
+        check.next(); // moves cursor to the next row
+        String confirm = check.getString("exists");
+
+        return confirm.equals("t") ? true : false;
     }
 
     public void deleteById(UUID assetTypeId, UUID orgUnitId) throws SQLException {

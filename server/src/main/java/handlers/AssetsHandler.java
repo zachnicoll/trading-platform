@@ -32,18 +32,24 @@ public class AssetsHandler extends AbstractRequestHandler {
     @Override
     protected void handleGet(HttpExchange exchange) throws IOException, SQLException {
         AssetDataSource assetDataSource = new AssetDataSource();
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
         ArrayList<Asset>  assets;
         if (params.length == 3) {
             // Organisational Unit Id is present in URL, use it to filter assets
             UUID orgUnitId = UUID.fromString(params[2]);
-            assets = assetDataSource.getByOrgUnitId(orgUnitId);
+            if(organisationalUnitDataSource.checkExistById(orgUnitId)){
+                assets = assetDataSource.getByOrgUnitId(orgUnitId);
+                writeResponseBody(exchange, assets);
+            }else{
+                writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
+            }
+
         } else {
             // Otherwise just get all
             assets = assetDataSource.getAll();
+            writeResponseBody(exchange, assets);
         }
-
-        writeResponseBody(exchange, assets);
     }
     @Override
     protected void handleDelete(HttpExchange exchange) throws IOException, SQLException {
@@ -73,25 +79,30 @@ public class AssetsHandler extends AbstractRequestHandler {
     protected void handlePut(HttpExchange exchange) throws IOException, SQLException {
 
         AssetDataSource assetDataSource = new AssetDataSource();
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
         UUID orgUnitId = UUID.fromString(params[2]);
 
         Asset asset = (Asset) readRequestBody(exchange, Asset.class);
-
-        if (asset.getQuantity() < 1)
-        {
-            JsonError jsonError = new JsonError("Provided Quantity is less than 1");
-            writeResponseBody(exchange, jsonError, 400);
-        }
-        else {
-            if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
-                assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
-            } else {
-                assetDataSource.createNew(asset, orgUnitId);
+        if(organisationalUnitDataSource.checkExistById(orgUnitId)){
+            if (asset.getQuantity() < 1)
+            {
+                JsonError jsonError = new JsonError("Provided Quantity is less than 1");
+                writeResponseBody(exchange, jsonError, 400);
             }
-            writeResponseBody(exchange, null, 200);
+            else {
+                if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
+                    assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
+                } else {
+                    assetDataSource.createNew(asset, orgUnitId);
+                }
+                writeResponseBody(exchange, null, 200);
+            }
+        }else{
+            writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
         }
+
     }
 
 }

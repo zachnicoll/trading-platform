@@ -173,12 +173,17 @@ public class UserDataSource extends AbstractDataSource<User> {
     }
 
     public boolean checkExistById(UUID id) throws SQLException {
-        PreparedStatement createQueryUser = dbConnection.prepareStatement(
+        PreparedStatement checkExistById = dbConnection.prepareStatement(
                 "SELECT EXISTS(SELECT 1 FROM \"users\" WHERE \"userId\" = uuid(?));"
         );
-        createQueryUser.setString(1, id.toString());
+        checkExistById.setString(1, id.toString());
 
-        return createQueryUser.executeQuery().next();
+        //checks if first element is either 't' or 'f' indicating if the row exists in the database
+        ResultSet check = checkExistById.executeQuery();
+        check.next(); // moves cursor to the next row
+        String confirm = check.getString("exists");
+
+        return confirm.equals("t") ? true : false;
     }
 
 

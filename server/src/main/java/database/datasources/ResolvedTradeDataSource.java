@@ -224,7 +224,12 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         );
         checkTradeExistByAsset.setString(1, assetTypeId.toString());
 
-        return checkTradeExistByAsset.executeQuery().next();
+        //checks if first element is either 't' or 'f' indicating if the row exists in the database
+        ResultSet check = checkTradeExistByAsset.executeQuery();
+        check.next(); // moves cursor to the next row
+        String confirm = check.getString("exists");
+
+        return confirm.equals("t") ? true : false;
     }
 
     public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {

@@ -2,6 +2,7 @@ import com.google.gson.Gson;
 import data.AssetsHandlerDataGenerator;
 import data.TradesHandlerDataGenerator;
 import database.datasources.AssetDataSource;
+import errors.JsonError;
 import models.Asset;
 import models.OpenTrade;
 import models.TradeType;
@@ -19,6 +20,8 @@ import java.sql.SQLException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,23 +72,48 @@ public class AssetsHandlerTests {
         Asset[] actualAssets = assetDataSource.getAll().toArray(new Asset[0]);
 
         // Test that returned asset information is correct/reflects what was sent in request
-        assertTrue(() -> {
-            boolean match = false;
-            for (int i = 0; i < assets.length; i++) {
-                match = assets[i].getAssetTypeId().equals(actualAssets[i].getAssetTypeId()) ? true: false;
-                if(!match) break;
-            }
-            return match;
-        });
+        // Converts from arrays of Asset objects to UUID[] of assetTypeId
+        assertArrayEquals(Stream.of(actualAssets).map(Asset::getAssetTypeId).toArray(UUID[]::new),
+                Stream.of(assets).map(Asset::getAssetTypeId).toArray(UUID[]::new));
+
     }
 
     /**
      * Test 2 - Get all assets belonging to an organisational unit
      */
+    @Test
+    public void getAllOrgAssetsSucceed() throws IOException, InterruptedException, SQLException {
+
+        HttpRequest request = httpBuilder.uri(URI.create(requestURL + assetsHandlerDataGenerator.orgUnit1Id)).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request was successful
+        assertEquals(200, response.statusCode());
+
+        Asset[] assets = gson.fromJson(response.body(), Asset[].class);
+        Asset[] actualAssets = assetDataSource.getByOrgUnitId(assetsHandlerDataGenerator.orgUnit1Id).toArray(new Asset[0]);
+
+        // Test that returned asset information is correct/reflects what was sent in request
+        assertArrayEquals(Stream.of(actualAssets).map(Asset::getAssetTypeId).toArray(UUID[]::new),
+                Stream.of(assets).map(Asset::getAssetTypeId).toArray(UUID[]::new));
+    }
 
     /**
      * Test 3 - Get all assets belonging to a non-existent organisational unit
      */
+    @Test
+    public void getAllOrgAssetsFail() throws IOException, InterruptedException, SQLException {
+
+        HttpRequest request = httpBuilder.uri(URI.create(requestURL + UUID.randomUUID())).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed
+        assertEquals(404, response.statusCode());
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(new JsonError("Organisational Unit does not exist").getError(), responseError.getError());
+    }
 
     /**
      * Test 4 - Delete asset from Organisational unit successfully

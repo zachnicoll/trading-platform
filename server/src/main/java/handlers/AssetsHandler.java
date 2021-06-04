@@ -42,7 +42,7 @@ public class AssetsHandler extends AbstractRequestHandler {
                 assets = assetDataSource.getByOrgUnitId(orgUnitId);
                 writeResponseBody(exchange, assets);
             }else{
-                writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"));
+                writeResponseBody(exchange, new JsonError("Organisational Unit does not exist"), 404);
             }
 
         } else {

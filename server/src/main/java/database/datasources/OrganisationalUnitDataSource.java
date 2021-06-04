@@ -97,8 +97,12 @@ public class OrganisationalUnitDataSource extends AbstractDataSource<Organisatio
 
         checkIfExist.setString(1, id.toString());
 
-        //checks if query returns a result set with at least one element, indicating a row exists with the given id
-        return checkIfExist.executeQuery().next();
+        //checks if first element is either 't' or 'f' indicating if the row exists in the database
+        ResultSet check = checkIfExist.executeQuery();
+        check.next(); // moves cursor to the next row
+        String confirm = check.getString("exists");
+
+        return confirm.equals("t") ? true : false;
     }
 
     public void deleteById(UUID id) throws SQLException {

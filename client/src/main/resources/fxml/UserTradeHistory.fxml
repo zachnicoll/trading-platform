@@ -32,7 +32,7 @@
          <children>
             <TableView fx:id="tradeHistoryTable" layoutY="19.0" prefHeight="554.0" prefWidth="888.0" stylesheets="@../css/Dashboard.css">
                <columns>
-                  <TableColumn fx:id="dateColumn" prefWidth="173.0" style="-fx-alignment: CENTER;" text="Date" />
+                  <TableColumn fx:id="dateColumn" prefWidth="172.0" style="-fx-alignment: CENTER;" text="Date" />
                   <TableColumn fx:id="assetTypeColumn" prefWidth="148.0" style="-fx-alignment: CENTER;" text="Asset Type" />
                   <TableColumn fx:id="priceColumn" minWidth="0.0" prefWidth="107.0" style="-fx-alignment: CENTER;" text="Price" />
                   <TableColumn fx:id="quantityColumn" prefWidth="93.0" style="-fx-alignment: CENTER;" text="Quantity" />
@@ -46,7 +46,7 @@
    <bottom>
       <AnchorPane prefHeight="60.0" prefWidth="980.0" BorderPane.alignment="CENTER">
          <children>
-            <JFXButton fx:id="refreshButton" alignment="CENTER" buttonType="RAISED" layoutX="874.0" layoutY="18.0" onAction="#onRefresh" ripplerFill="#05ff31" text="Refresh" textFill="WHITE" />
+            <JFXButton fx:id="refreshButton" alignment="CENTER" buttonType="RAISED" layoutX="874.0" layoutY="18.0" onAction="#onRefresh" ripplerFill="BLACK" stylesheets="@../css/Dashboard.css" text="Refresh" textFill="WHITE" />
          </children>
       </AnchorPane>
    </bottom>

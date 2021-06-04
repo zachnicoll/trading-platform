@@ -61,13 +61,6 @@ public class UserTests {
         assertEquals(user.getUsername(), username);
     }
 
-    /* Test 6: Change a User's password with mis-matching password and
-     * confirmPassword
-     */
-    @Test
-    public void changePasswordIncorrect() {
-        assertThrows(AuthenticationException.class, () -> user.changePassword("password1", "password2"));
-    }
 
     /* Test 7: Update User information
      */

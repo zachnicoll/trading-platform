@@ -59,8 +59,6 @@ public class UserProfileController {
     @FXML
     void submitPChange(ActionEvent event) throws IOException, InterruptedException {
 
-        //TODO IDK IF WE NEED TO REFRESH THE USER'S JWT?
-
         NewPassword newPassword = new NewPassword(hashPassword(txtUPPassword.getText()), hashPassword(txtUPPasswordConfirm.getText()));
 
         if (newPassword.checkMatchingPasswords())

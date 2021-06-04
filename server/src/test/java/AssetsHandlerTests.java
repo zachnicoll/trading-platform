@@ -99,7 +99,7 @@ public class AssetsHandlerTests {
     }
 
     /**
-     * Test 3 - Get all assets belonging to a non-existent organisational unit
+     * Test 3 - Get all assets belonging to a non-existent organisational Unit
      */
     @Test
     public void getAllOrgAssetsFail() throws IOException, InterruptedException, SQLException {

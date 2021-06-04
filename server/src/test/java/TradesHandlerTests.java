@@ -17,6 +17,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -108,7 +109,7 @@ public class TradesHandlerTests {
                 tradesHandlerDataGenerator.orgUnit1Id,
                 tradesHandlerDataGenerator.assetType1Id,
                 10,
-                -1f
+                -1.0f
         );
 
         HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(partialTrade))).build();
@@ -134,24 +135,72 @@ public class TradesHandlerTests {
      * Test 5 - User does not belong to the OrgUnit they are creating the Trade for
      */
     @Test
-    public void createTradeInvalidOrgUnit() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
+    public void createTradeInvalidOrgUnit() throws IOException, InterruptedException {
+        PartialOpenTrade partialTrade = new PartialOpenTrade(
+                TradeType.BUY,
+                UUID.randomUUID(),
+                tradesHandlerDataGenerator.assetType1Id,
+                10,
+                1.0f
+        );
+
+        HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(partialTrade))).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed with correct response status code
+        assertEquals(response.statusCode(), 400);
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(responseError.getError(), new JsonError("You must belong to the Organisational Unit you are placing the Trade for").getError());
     }
 
     /**
      * Test 6 - OrgUnit does not have enough CreditBalance to place BUY order
      */
     @Test
-    public void createTradeInvalidOrgUnitBalance() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
+    public void createTradeInvalidOrgUnitBalance() throws IOException, InterruptedException {
+        PartialOpenTrade partialTrade = new PartialOpenTrade(
+                TradeType.BUY,
+                tradesHandlerDataGenerator.orgUnit1Id,
+                tradesHandlerDataGenerator.assetType1Id,
+                1,
+                1001.0f // test org unit balance = 1000
+        );
+
+        HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(partialTrade))).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed with correct response status code
+        assertEquals(response.statusCode(), 400);
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(responseError.getError(), new JsonError("Organisational Unit does not have enough credits to place this order").getError());
     }
 
     /**
      * Test 7 - OrgUnit does not have enough quantity of AssetType to place SELL order
      */
     @Test
-    public void createTradeInvalidOrgUnitQuantity() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
+    public void createTradeInvalidOrgUnitQuantity() throws IOException, InterruptedException {
+        PartialOpenTrade partialTrade = new PartialOpenTrade(
+                TradeType.SELL,
+                tradesHandlerDataGenerator.orgUnit1Id,
+                tradesHandlerDataGenerator.assetType1Id, // test org unit does not have any assets
+                10,
+                1.0f
+        );
+
+        HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(partialTrade))).build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        // Test that request failed with correct response status code
+        assertEquals(response.statusCode(), 400);
+
+        // Test that returned error information is correct/reflects what was sent in request
+        JsonError responseError = gson.fromJson(response.body(), JsonError.class);
+        assertEquals(responseError.getError(),  new JsonError("Organisational Unit does not have enough of the given Asset Type to place this order").getError());
     }
 
     @AfterEach

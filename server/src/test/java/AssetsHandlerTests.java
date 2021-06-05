@@ -18,8 +18,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -33,16 +31,19 @@ public class AssetsHandlerTests {
     private AssetsHandlerDataGenerator assetsHandlerDataGenerator;
     private AssetDataSource assetDataSource = new AssetDataSource();
     private String requestURL;
+    private static RestApi restApi;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
         assetsHandlerDataGenerator = new AssetsHandlerDataGenerator();
 
@@ -178,7 +179,7 @@ public class AssetsHandlerTests {
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
         assertEquals(new JsonError("Organisational Unit does not own any of the given Asset Type").getError(), responseError.getError());
-
+        additionalData.destroyTestData();
     }
 
     /**
@@ -233,7 +234,6 @@ public class AssetsHandlerTests {
     /**
      * Test 9 - Update quantity of asset in Organisational unit that does not exist
      */
-
     @Test
     public void updateQuantityInvalidOrgUnitNotExist() throws IOException, InterruptedException, SQLException {
 
@@ -252,7 +252,6 @@ public class AssetsHandlerTests {
     }
 
     @AfterEach
-    @Test
     public void destroyTestData() throws SQLException {
         assetsHandlerDataGenerator.destroyTestData();
     }

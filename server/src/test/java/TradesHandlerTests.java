@@ -4,10 +4,7 @@ import errors.JsonError;
 import jdk.jshell.spi.ExecutionControl;
 import models.*;
 import models.partial.PartialOpenTrade;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -27,16 +24,19 @@ public class TradesHandlerTests {
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
     TradesHandlerDataGenerator tradesHandlerDataGenerator;
+    private static RestApi restApi;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
         tradesHandlerDataGenerator = new TradesHandlerDataGenerator();
 
@@ -65,14 +65,14 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request was successful
-        assertEquals(response.statusCode(), 200);
+        assertEquals(200, response.statusCode());
 
         // Test that returned trade information is correct/reflects what was sent in request
         OpenTrade responseTrade = gson.fromJson(response.body(), OpenTrade.class);
-        assertEquals(responseTrade.getAssetType(), partialTrade.assetTypeId);
-        assertEquals(responseTrade.getOrganisationalUnit(), partialTrade.organisationalUnitId);
-        assertEquals(responseTrade.getQuantity(), partialTrade.quantity);
-        assertEquals(responseTrade.getPricePerAsset(), partialTrade.pricePerAsset);
+        assertEquals(partialTrade.assetTypeId, responseTrade.getAssetType());
+        assertEquals(partialTrade.organisationalUnitId, responseTrade.getOrganisationalUnit());
+        assertEquals(partialTrade.quantity, responseTrade.getQuantity());
+        assertEquals( partialTrade.pricePerAsset, responseTrade.getPricePerAsset());
     }
 
     /**
@@ -92,11 +92,11 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request failed with correct response status code
-        assertEquals(response.statusCode(), 400);
+        assertEquals(400, response.statusCode());
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(responseError.getError(), new JsonError("Quantity is less than or equal to 0").getError());
+        assertEquals( new JsonError("Quantity is less than or equal to 0").getError(), responseError.getError());
     }
 
     /**
@@ -116,19 +116,11 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request failed with correct response status code
-        assertEquals(response.statusCode(), 400);
+        assertEquals(400, response.statusCode());
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(responseError.getError(), new JsonError("PricePerAsset is less than or equal to 0").getError());
-    }
-
-    /**
-     * Test 4 - UserId is not present in the JWT token
-     */
-    @Test
-    public void createTradeInvalidUserId() throws ExecutionControl.NotImplementedException {
-        throw new ExecutionControl.NotImplementedException("THIS TEST NEEDS TO BE WRITTEN");
+        assertEquals(new JsonError("PricePerAsset is less than or equal to 0").getError(), responseError.getError());
     }
 
     /**
@@ -148,11 +140,11 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request failed with correct response status code
-        assertEquals(response.statusCode(), 400);
+        assertEquals(400, response.statusCode());
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(responseError.getError(), new JsonError("You must belong to the Organisational Unit you are placing the Trade for").getError());
+        assertEquals(new JsonError("You must belong to the Organisational Unit you are placing the Trade for").getError(), responseError.getError());
     }
 
     /**
@@ -172,11 +164,11 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request failed with correct response status code
-        assertEquals(response.statusCode(), 400);
+        assertEquals(400, response.statusCode());
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(responseError.getError(), new JsonError("Organisational Unit does not have enough credits to place this order").getError());
+        assertEquals(new JsonError("Organisational Unit does not have enough credits to place this order").getError(), responseError.getError());
     }
 
     /**
@@ -196,15 +188,14 @@ public class TradesHandlerTests {
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
         // Test that request failed with correct response status code
-        assertEquals(response.statusCode(), 400);
+        assertEquals(400,response.statusCode());
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(responseError.getError(),  new JsonError("Organisational Unit does not have enough of the given Asset Type to place this order").getError());
+        assertEquals( new JsonError("Organisational Unit does not have enough of the given Asset Type to place this order").getError(), responseError.getError());
     }
 
     @AfterEach
-    @Test
     public void destroyTestData() throws SQLException {
         tradesHandlerDataGenerator.destroyTestData();
     }

@@ -28,7 +28,6 @@ public class TradeResolverTests {
      * Test 0: Setup TradeResolver and create data needed for tests
      */
     @BeforeEach
-    @Test
     public void setupTradeResolver() throws SQLException {
         // Generates test data in constructor
         tradeResolverDataGenerator = new TradeResolverDataGenerator();

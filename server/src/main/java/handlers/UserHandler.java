@@ -71,17 +71,17 @@ public class UserHandler extends AbstractRequestHandler {
 
         if (Objects.nonNull(partialUser)) {
 
-            if (partialUser.password.isBlank()) {
+            if (Objects.isNull(partialUser.password) || partialUser.password.isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain a password");
                 writeResponseBody(exchange, jsonError, 400);
 
-            } else if (partialUser.username.isBlank()) {
+            } else if (Objects.isNull(partialUser.username) ||partialUser.username.isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain a username");
                 writeResponseBody(exchange, jsonError, 400);
 
-            } else if (partialUser.organisationalUnitId.toString().isBlank()) {
+            } else if (Objects.isNull(partialUser.organisationalUnitId) ||partialUser.organisationalUnitId.toString().isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain an organisational unit Id");
                 writeResponseBody(exchange, jsonError, 400);

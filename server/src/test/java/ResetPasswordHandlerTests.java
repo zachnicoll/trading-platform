@@ -78,6 +78,6 @@ public class ResetPasswordHandlerTests {
         assertEquals(404, response.statusCode());
 
         JsonError jsonError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals("Password and Confirm Password do not match", jsonError.getError());
+        assertEquals("Password and ConfirmPassword do not match", jsonError.getError());
     }
 }

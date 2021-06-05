@@ -51,7 +51,6 @@ public class AssetTypeHandler extends AbstractRequestHandler {
         }else{
             writeResponseBody(exchange, new JsonError("AssetType does not contain asset name"),400);
         }
-
     }
 
     @Override

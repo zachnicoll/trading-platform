@@ -57,8 +57,6 @@ public class AssetTypeHandlerTests {
                 .header("Authorization", "Bearer " + assetTypeDataGenerator.authenticationToken.toString());
     }
 
-
-
     /**
      * Test 1 - Create assetType
      */

@@ -10,6 +10,7 @@ import models.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 
@@ -50,6 +51,7 @@ public class AssetTypeHandlerDataGenerator extends AbstractDataGenerator {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         organisationalUnitDataSource.deleteById(orgUnit1Id);
+        if(Objects.nonNull(assetType)) assetTypeDataSource.deleteById(assetType.getAssetTypeId());
         assetTypeDataSource.deleteById(assetType1Id);
         userDataSource.deleteById(user1Id);
     }

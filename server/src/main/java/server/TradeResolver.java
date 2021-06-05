@@ -251,9 +251,6 @@ public class TradeResolver extends TimerTask {
                             updateOrgUnits(assetTypeId, buyTrade, sellTrade, resolvedQuantity, batchedQuery);
 
                             batchedQuery.executeBatch();
-
-                            // Exit for-loop of SELL trades as a resolving SELL trade has been found
-                            break;
                         } catch (SQLException | InvalidTransactionException throwable) {
                             throwable.printStackTrace();
                         }

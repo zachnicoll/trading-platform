@@ -44,4 +44,12 @@ public class AssetTypeTests {
     public void getAssetTypeId(){
         assertEquals(assetType.getAssetTypeId(), assetTypeId);
     }
+
+    /*
+     * Test 4: toString method to fetch name
+     */
+    @Test
+    public void toStringTest(){
+        assertEquals("test_asset", assetType.toString());
+    }
 }

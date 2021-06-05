@@ -17,7 +17,7 @@ jobs:
       postgres:
         image: postgres:latest
         env:
-          POSTGRES_DB: postgres
+          POSTGRES_DB: cab302
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
         ports:
@@ -31,6 +31,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run Migration Script
+        run: psql postgres -h 127.0.0.1 -d cab302 -f ./migrations/v1/v1_setup_tables_and_enums.sql
       - name: Set up JDK 15
         uses: actions/setup-java@v2
         with:

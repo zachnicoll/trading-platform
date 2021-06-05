@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import data.LoginHandlerDataGenerator;
 import errors.JsonError;
+import helpers.PasswordHasher;
 import models.AuthenticationToken;
 import models.Credentials;
 import org.junit.jupiter.api.*;
@@ -27,6 +28,10 @@ public class LoginHandlerTests {
     static void startApi() throws IOException {
         restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach
@@ -110,10 +115,5 @@ public class LoginHandlerTests {
     @AfterEach
     public void destroyTestData() throws SQLException {
         loginHandlerDataGenerator.destroyTestData();
-    }
-
-    @AfterAll
-    public static void stopRestApi() {
-        restApi.stop();
     }
 }

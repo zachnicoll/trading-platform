@@ -92,7 +92,7 @@ public class UserDataSource extends AbstractDataSource<User> {
     public ArrayList<User> getAll() throws SQLException {
 
         PreparedStatement getAllUsers = dbConnection.prepareStatement(
-                "SELECT * FROM \"users\" ORDER BY \"userType\", \"username\" ASC;"
+                "SELECT * FROM \"users\";"
         );
         ResultSet results = getAllUsers.executeQuery();
 

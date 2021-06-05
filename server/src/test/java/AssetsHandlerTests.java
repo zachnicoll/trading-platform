@@ -231,7 +231,6 @@ public class AssetsHandlerTests {
     /**
      * Test 9 - Update quantity of asset in Organisational unit that does not exist
      */
-
     @Test
     public void updateQuantityInvalidOrgUnitNotExist() throws IOException, InterruptedException, SQLException {
 

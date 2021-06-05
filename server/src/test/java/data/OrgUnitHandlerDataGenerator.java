@@ -8,6 +8,7 @@ import models.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -20,6 +21,7 @@ public class OrgUnitHandlerDataGenerator extends AbstractDataGenerator {
      */
     public final UUID orgUnit1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
+    public OrganisationalUnit fullOrgUnit;
 
     public OrgUnitHandlerDataGenerator() throws SQLException, IOException, InterruptedException {
         // Create data in DB
@@ -41,6 +43,7 @@ public class OrgUnitHandlerDataGenerator extends AbstractDataGenerator {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         organisationalUnitDataSource.deleteById(orgUnit1Id);
+        if(Objects.nonNull(fullOrgUnit)) organisationalUnitDataSource.deleteById(fullOrgUnit.getUnitId());
         userDataSource.deleteById(user1Id);
     }
 

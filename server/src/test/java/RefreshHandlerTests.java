@@ -2,10 +2,7 @@ import com.google.gson.Gson;
 import data.RefreshHandlerDataGenerator;
 import errors.JsonError;
 import models.AuthenticationToken;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -81,5 +78,10 @@ public class RefreshHandlerTests {
 
         JsonError jsonError = gson.fromJson(response.body(), JsonError.class);
         assertEquals("You are not authenticated", jsonError.getError());
+    }
+
+    @AfterEach
+    public void destroyTestData() throws SQLException {
+        refreshHandlerDataGenerator.destroyTestData();
     }
 }

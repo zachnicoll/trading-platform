@@ -44,7 +44,7 @@ public class RefreshHandlerDataGenerator extends AbstractDataGenerator {
         );
     }
 
-    void destroyTestData() throws SQLException {
+    public void destroyTestData() throws SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         organisationalUnitDataSource.deleteById(orgUnitId);
     }

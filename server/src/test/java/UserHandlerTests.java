@@ -176,7 +176,7 @@ public class UserHandlerTests {
     @Test
     public void deleteUser() throws IOException, InterruptedException, SQLException {
 
-        // Test if orgUnit is in database
+        // Test if user is in database
         assertTrue(userDataSource.checkExistById(userDataGenerator.user1Id));
 
         HttpRequest request = httpBuilder.DELETE().uri(URI.create(requestURL + userDataGenerator.user1Id)).build();
@@ -195,7 +195,7 @@ public class UserHandlerTests {
     @Test
     public void deleteUserInvalidIdNonExistent() throws IOException, InterruptedException, SQLException {
 
-        // Test if orgUnit is in database
+        // Test if user is in database
         assertTrue(userDataSource.checkExistById(userDataGenerator.user1Id));
 
         HttpRequest request = httpBuilder.DELETE().uri(URI.create(requestURL)).build();

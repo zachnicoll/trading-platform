@@ -3,10 +3,7 @@ import data.LoginHandlerDataGenerator;
 import errors.JsonError;
 import models.AuthenticationToken;
 import models.Credentials;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -24,11 +21,12 @@ public class LoginHandlerTests {
     private final Gson gson = new Gson();
     LoginHandlerDataGenerator loginHandlerDataGenerator;
     private HttpRequest.Builder httpBuilder;
+    private static RestApi restApi;
 
     @BeforeAll
     @Test
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
     }
 
@@ -115,5 +113,11 @@ public class LoginHandlerTests {
     @Test
     public void destroyTestData() throws SQLException {
         loginHandlerDataGenerator.destroyTestData();
+    }
+
+    @AfterAll
+    @Test
+    public void stopRestApi() {
+        restApi.stop();
     }
 }

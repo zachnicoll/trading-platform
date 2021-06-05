@@ -24,14 +24,12 @@ public class LoginHandlerTests {
     private static RestApi restApi;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
         restApi = new RestApi();
         restApi.start();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws SQLException {
         loginHandlerDataGenerator = new LoginHandlerDataGenerator();
 
@@ -110,14 +108,12 @@ public class LoginHandlerTests {
 
 
     @AfterEach
-    @Test
     public void destroyTestData() throws SQLException {
         loginHandlerDataGenerator.destroyTestData();
     }
 
     @AfterAll
-    @Test
-    public void stopRestApi() {
+    public static void stopRestApi() {
         restApi.stop();
     }
 }

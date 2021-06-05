@@ -115,7 +115,7 @@ public class UserHandler extends AbstractRequestHandler {
             userDataSource.deleteById(userId);
             writeResponseBody(exchange, null);
         } else {
-            JsonError jsonError = new JsonError("User not found");
+            JsonError jsonError = new JsonError("User does not exist");
             writeResponseBody(exchange, jsonError, 404);
         }
     }

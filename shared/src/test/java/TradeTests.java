@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,7 +18,7 @@ public class TradeTests {
      * Test 0: Declaring Trade objects
      */
 
-    UUID assetTypeId;
+    UUID assetTypeId = UUID.randomUUID();
 
     OpenTrade trade;
     UUID tradeId = UUID.randomUUID();
@@ -100,6 +102,54 @@ public class TradeTests {
     @Test
     public void getTradesOrganisationalUnit() {
         assertEquals(trade.getOrganisationalUnit(), organisationalUnitId);
+    }
+
+    /* Test 9: Set the quantity of assets in the trade
+     */
+    @Test
+    public void setTradeQuantity() {
+        trade.setQuantity(50);
+        assertEquals(50, trade.getQuantity());
+    }
+
+    /* Test 10: Trade Comparator to sort trade by date in ascending order
+     */
+    @Test
+    public void tradeComparator() {
+
+        UUID assetTypeId2 = UUID.randomUUID();
+        OpenTrade trade2;
+        UUID tradeId2 = UUID.randomUUID();
+        UUID organisationalUnitId2 = UUID.randomUUID();
+        TradeType tradeType2 = TradeType.BUY;
+        Integer quantity2 = 20;
+        Float pricePerAsset2 = 15f;
+        Timestamp date2 = Timestamp.valueOf("2021-05-27 13:49:43");
+
+        trade2 = new OpenTrade(tradeId2, tradeType2, organisationalUnitId2, assetTypeId2, quantity2, pricePerAsset2, date2);
+
+        List<OpenTrade> tempList = new ArrayList<OpenTrade>();
+        tempList.add(trade);
+        tempList.add(trade2);
+
+        tempList.sort(OpenTrade.tradeDateComparator);
+
+        assertEquals(tradeId2, tempList.get(0).getTradeId());
+    }
+
+    /* Test 11: OpenTrade toString method
+     */
+    @Test
+    public void toStringTest() {
+        String temp = "TradeID: " + tradeId + "\n" +
+                "TradeType: " + tradeType + "\n" +
+                "OrgUnitId: " + organisationalUnitId + "\n" +
+                "AssetTypeId: " + assetTypeId + "\n" +
+                "Quantity: " + quantity + "\n" +
+                "PricePerAsset: " + pricePerAsset + "\n" +
+                "DateOpened: " + date + "\n";
+
+        assertEquals(temp, trade.toString());
     }
 
 }

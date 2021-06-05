@@ -10,15 +10,16 @@ import models.*;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 
 /**
- * Class for generating fake data for AssetHandlerTests. Contains publicly
+ * Class for generating fake data for AssetTypeHandlerTests. Contains publicly
  * accessible fields that can be referenced in Tests (like IDs) to make valid API calls.
  */
 
-public class AssetsHandlerDataGenerator extends AbstractDataGenerator {
+public class AssetTypeHandlerDataGenerator extends AbstractDataGenerator {
 
     /*
      * Publicly accessible fields to reference in tests
@@ -26,8 +27,9 @@ public class AssetsHandlerDataGenerator extends AbstractDataGenerator {
     public final UUID orgUnit1Id = UUID.randomUUID();
     public final UUID assetType1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
+    public AssetType assetType;
 
-    public AssetsHandlerDataGenerator() throws SQLException, IOException, InterruptedException {
+    public AssetTypeHandlerDataGenerator() throws SQLException, IOException, InterruptedException {
         // Create data in DB
         generateData();
 
@@ -37,23 +39,22 @@ public class AssetsHandlerDataGenerator extends AbstractDataGenerator {
 
     @Override
     protected void generateData() throws SQLException {
-        createTestOrgUnits();
         createTestAssetTypes();
+        createTestOrgUnits();
         createTestUser();
-        createTestAssets();
     }
 
     @Override
     public void destroyTestData() throws SQLException {
         UserDataSource userDataSource = new UserDataSource();
-        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
+        OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         organisationalUnitDataSource.deleteById(orgUnit1Id);
+        if(Objects.nonNull(assetType)) assetTypeDataSource.deleteById(assetType.getAssetTypeId());
         assetTypeDataSource.deleteById(assetType1Id);
         userDataSource.deleteById(user1Id);
     }
-
 
     private void createTestOrgUnits() throws SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
@@ -75,14 +76,6 @@ public class AssetsHandlerDataGenerator extends AbstractDataGenerator {
         assetTypeDataSource.createNew(assetType);
     }
 
-    private void createTestAssets() throws SQLException {
-        AssetDataSource assetDataSource = new AssetDataSource();
-        Asset asset = new Asset(
-                assetType1Id,
-                10
-        );
-        assetDataSource.createNew(asset, orgUnit1Id);
-    }
 
     private void createTestUser() throws SQLException {
         UserDataSource userDataSource = new UserDataSource();

@@ -10,6 +10,7 @@ import models.partial.PartialAssetType;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -35,15 +36,21 @@ public class AssetTypeHandler extends AbstractRequestHandler {
         checkIsAdmin(exchange);
 
         PartialAssetType partialAssetType = (PartialAssetType) readRequestBody(exchange, PartialAssetType.class);
-        AssetType newAssetType = new AssetType(
-                UUID.randomUUID(),
-                partialAssetType.assetName
-        );
 
-        AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
-        assetTypeDataSource.createNew(newAssetType);
+        if(Objects.nonNull(partialAssetType) && Objects.nonNull(partialAssetType.assetName)){
+            AssetType newAssetType = new AssetType(
+                    UUID.randomUUID(),
+                    partialAssetType.assetName
+            );
 
-        writeResponseBody(exchange, newAssetType);
+            AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
+            assetTypeDataSource.createNew(newAssetType);
+
+            writeResponseBody(exchange, newAssetType);
+
+        }else{
+            writeResponseBody(exchange, new JsonError("AssetType does not contain asset name"),400);
+        }
     }
 
     @Override
@@ -55,11 +62,16 @@ public class AssetTypeHandler extends AbstractRequestHandler {
             // AssetType ID is present in the URL, use it to delete AssetType
             AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
             UUID assetTypeId = UUID.fromString(params[2]);
-            assetTypeDataSource.deleteById(assetTypeId);
-            writeResponseBody(exchange, null);
+            if(assetTypeDataSource.checkExistById(assetTypeId)){
+                assetTypeDataSource.deleteById(assetTypeId);
+                writeResponseBody(exchange, null);
+            }else{
+                writeResponseBody(exchange, new JsonError("AssetType not found"), 404);
+            }
+
         } else {
-            JsonError jsonError = new JsonError("AssetType not found");
-            writeResponseBody(exchange, jsonError,404);
+            JsonError jsonError = new JsonError("AssetType Id not present");
+            writeResponseBody(exchange, jsonError,400);
         }
     }
 }

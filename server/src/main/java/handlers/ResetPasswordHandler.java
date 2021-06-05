@@ -4,6 +4,8 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.UserDataSource;
 import errors.JsonError;
+import handlers.AbstractRequestHandler;
+
 import models.NewPassword;
 
 import java.io.IOException;
@@ -32,9 +34,10 @@ public class ResetPasswordHandler extends AbstractRequestHandler {
             String hashedPassword = BCrypt.withDefaults().hashToString(12, capturedPassword.confirmPassword.toCharArray());
             userDataSource.changePassword(userId, hashedPassword);
             writeResponseBody(exchange, null, 200);
-        } else {
-            JsonError jsonError = new JsonError("Password and Confirm Password do not match");
-            writeResponseBody(exchange, jsonError, 404);
         }
+        else
+        {
+            writeResponseBody(exchange, new JsonError("Password and ConfirmPassword do not match"), 404);
+        } 
     }
 }

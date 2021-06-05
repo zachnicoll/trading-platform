@@ -56,7 +56,6 @@ public class Asset {
         }
         this.quantity -= quantity;
     }
-
     /**
      * Directly set the quantity of the AssetType to a given amount. Used in conjunction
      * with OrganisationalUnit.updateAssetQuantity() Admin operation.
@@ -66,11 +65,9 @@ public class Asset {
      */
     public void setQuantity(Integer quantity) throws ArithmeticException {
         if (quantity < 0) {
-            throw new ArithmeticException();
-        }
+            throw new ArithmeticException(); }
         this.quantity = quantity;
     }
-
     /**
      * Get the current quantity of the AssetType.
      * @return quantity of AssetType
@@ -80,11 +77,8 @@ public class Asset {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public String toString()
-    {
         return this.name;
     }
+
+    public String toString() { return this.name; }
 }

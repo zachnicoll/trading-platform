@@ -129,7 +129,7 @@ public abstract class AbstractRequestHandler implements HttpHandler {
         String token = getTokenFromHeader(exchange);
 
         // Construct verifier, expect our issuer 'cab302-group10' to be present
-        Algorithm algorithm = Algorithm.HMAC256("secret"); // TODO: get secret from config file
+        Algorithm algorithm = Algorithm.HMAC256("secret");
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer("cab302-group10")
                 .build();

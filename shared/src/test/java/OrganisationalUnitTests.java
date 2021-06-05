@@ -110,7 +110,18 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 9: Update the Organisational Unit's quantity of a given AssetType : Owned
+     * Test 9: Update OU Credit Balance : Fail
+     */
+    @Test
+    public void updateCreditBalanceFail() throws InvalidTransactionException
+    {
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.updateCreditBalance(-10f);
+        });
+    }
+
+    /*
+     * Test 10: Update the Organisational Unit's quantity of a given AssetType : Owned
      */
     @Test
     public void updateAssetQuantityOwned() throws ApiException
@@ -122,7 +133,7 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 10: Update the Organisational Unit's quantity of a given AssetType : Not Owned
+     * Test 11: Update the Organisational Unit's quantity of a given AssetType : Not Owned
      */
     @Test
     public void updateAssetQuantityNotOwned() throws ApiException
@@ -136,7 +147,7 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 11: Purchase an OU's Asset : Succeed Existing
+     * Test 12: Purchase an OU's Asset : Succeed Existing
      */
     @Test
     public void purchaseAssetSucceedExisting() throws ApiException, InvalidTransactionException
@@ -150,7 +161,21 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 12: Purchase an OU's Asset : Succeed New
+     * Test 13: Purchase an OU's Asset : Fail Existing
+     */
+    @Test
+    public void purchaseAssetFailExisting() throws ApiException, InvalidTransactionException
+    {
+        Float PRICE_PER = 1000f;
+        int quantity = 100;
+
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.purchaseAsset(PRICE_PER, assetTypeId, quantity);
+        });
+    }
+
+    /*
+     * Test 14: Purchase an OU's Asset : Succeed New
      */
     @Test
     public void purchaseAssetSucceedNew() throws ApiException, InvalidTransactionException
@@ -167,7 +192,7 @@ public class OrganisationalUnitTests {
 
 
     /*
-     * Test 13: Sell an OU's Asset : Succeed
+     * Test 15: Sell an OU's Asset : Succeed
      */
     @Test
     public void sellAssetSucceed() throws ApiException, InvalidTransactionException
@@ -181,6 +206,28 @@ public class OrganisationalUnitTests {
         assertEquals(5, organisationalUnit.findExistingAsset(assetTypeId).getQuantity());
     }
 
+    /*
+     * Test 16: Sell an OU's Asset : Fail
+     */
+    @Test
+    public void sellAssetFail() throws ApiException, InvalidTransactionException
+    {
+        Float PRICE_PER = 5f;
+        int quantity = 11;
+
+        assertThrows(InvalidTransactionException.class, () -> {
+            organisationalUnit.sellAsset(PRICE_PER, assetTypeId, quantity);
+        });
+    }
+
+    /*
+     * Test 17: Organisational Unit toString
+     */
+    @Test
+    public void toStringMethod()
+    {
+        assertEquals("test_Unit", organisationalUnit.toString());
+    }
 
 
 }

@@ -151,11 +151,6 @@ public class OrganisationalUnit {
             throw new InvalidTransactionException();
         }
 
-        /**
-         * Make API request to update OU asset quantity, and reduce creditBalance.
-         * Throw ApiException if request fails.
-         */
-
         creditBalance -= totalPrice;
         Asset existingAsset = findExistingAsset(assetTypeId);
         if (existingAsset != null) {

@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.sun.net.httpserver.HttpExchange;
 import database.datasources.AssetDataSource;
 import database.datasources.UserDataSource;
+import errors.JsonError;
 import handlers.AbstractRequestHandler;
 import models.NewPassword;
 
@@ -41,7 +42,7 @@ public class ResetPasswordHandler extends AbstractRequestHandler {
         }
         else
         {
-            writeResponseBody(exchange, null, 404);
+            writeResponseBody(exchange, new JsonError("Password and ConfirmPassword do not match"), 404);
         }
 
     }

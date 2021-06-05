@@ -17,10 +17,23 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+class SortByUUID implements Comparator<User>
+{
+    // Used for sorting in ascending order of
+    // roll number
+    public int compare(User a, User b)
+    {
+        return a.getUserId().compareTo(b.getUserId());
+    }
+}
 
 public class UserHandlerTests {
     private final HttpClient client = HttpClient.newHttpClient();
@@ -164,6 +177,9 @@ public class UserHandlerTests {
 
         User[] users = gson.fromJson(response.body(), User[].class);
         User[] actualUsers = userDataSource.getAll().toArray(new User[0]);
+
+        Arrays.sort(users, new SortByUUID());
+        Arrays.sort(actualUsers, new SortByUUID());
 
         // Test that returned user information is correct/reflects what was sent in request
         assertArrayEquals(Stream.of(actualUsers).map(User::getUserId).toArray(UUID[]::new),

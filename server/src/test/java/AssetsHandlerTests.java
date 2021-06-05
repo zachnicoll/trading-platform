@@ -18,8 +18,6 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 import java.util.stream.Stream;
 

@@ -74,7 +74,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
                 );
 
         //check if unit name is not null
-        if(fullOrganisationalUnit.getUnitName() == null){
+        if(fullOrganisationalUnit.getUnitName() == null || fullOrganisationalUnit.getUnitName().isBlank()){
             writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"),400);
             return;
         }

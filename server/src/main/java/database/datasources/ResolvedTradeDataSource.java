@@ -229,7 +229,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
         check.next(); // moves cursor to the next row
         String confirm = check.getString("exists");
 
-        return confirm.equals("t") ? true : false;
+        return confirm.equals("t");
     }
 
     public boolean checkExistById(UUID buyId, UUID sellId) throws SQLException {

@@ -12,15 +12,14 @@ import java.util.TimerTask;
 
 public class AuthRefresh extends TimerTask {
 
-    private ClientInfo clientInfo;
-    private Gson gson = new Gson();
-    private String errorResponse = "An error occurred while attempting to automatically refresh the Auth Token. Please log in again.\n";
+    private final Gson gson = new Gson();
 
     @Override
     public void run() {
-        clientInfo = clientInfo.getInstance();
+        ClientInfo clientInfo = ClientInfo.getInstance();
 
         if(clientInfo.getAuthToken() != null) {
+            String errorResponse = "An error occurred while attempting to automatically refresh the Auth Token. Please log in again.\n";
             try {
                 HttpResponse<String> refreshResponse = Client.clientGet(Route.getRoute(Route.refresh));
 
@@ -34,10 +33,7 @@ public class AuthRefresh extends TimerTask {
                     Alert alert = new Alert(Alert.AlertType.ERROR, errorResponse + jsonError.getError());
                     alert.showAndWait();
                 }
-            } catch (IOException e) {
-                Alert alert = new Alert(Alert.AlertType.ERROR, errorResponse + e.getMessage());
-                alert.showAndWait();
-            } catch (InterruptedException e) {
+            } catch (IOException | InterruptedException e) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, errorResponse + e.getMessage());
                 alert.showAndWait();
             }

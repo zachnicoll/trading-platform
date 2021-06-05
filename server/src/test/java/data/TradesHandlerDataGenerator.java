@@ -27,6 +27,7 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
     public final UUID orgUnit2Id = UUID.randomUUID();
     public final UUID assetType1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
+    public final UUID user2Id = UUID.randomUUID();
 
     public final UUID buyTrade1Id = UUID.randomUUID();
     public final UUID buyTrade2Id = UUID.randomUUID();
@@ -77,13 +78,20 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
 
     private void createTestUser() throws SQLException {
         UserDataSource userDataSource = new UserDataSource();
-        User user = new User(
+        User user1 = new User(
                 user1Id,
                 "Test User " + user1Id,
                 AccountType.USER,
                 orgUnit1Id
         );
-        userDataSource.createNew(user, BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
+        User user2 = new User(
+                user2Id,
+                "Test User " + user2Id,
+                AccountType.USER,
+                orgUnit2Id
+        );
+        userDataSource.createNew(user1, BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
+        userDataSource.createNew(user2, BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
     }
 
     private void createTestResolvedTrades() throws SQLException {
@@ -120,5 +128,9 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
         organisationalUnitDataSource.deleteById(orgUnit1Id);
         organisationalUnitDataSource.deleteById(orgUnit2Id);
         assetTypeDataSource.deleteById(assetType1Id);
+    }
+
+    public void loginAsUser2() throws IOException, InterruptedException {
+        login("Test User " + user2Id);
     }
 }

@@ -176,7 +176,6 @@ public class OrganisationalUnit {
         if (existingAsset == null || existingAsset.getQuantity() < quantity) {
             throw new InvalidTransactionException();
         }
-
         creditBalance += totalPrice;
         existingAsset.subtractQuantity(quantity);
         if (existingAsset.getQuantity() == 0) {

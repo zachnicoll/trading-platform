@@ -156,10 +156,8 @@ public class OrganisationalUnit {
         if (existingAsset != null) {
             existingAsset.addQuantity(quantity);
         } else {
-            assets.add(new Asset(assetTypeId, quantity));
-        }
+            assets.add(new Asset(assetTypeId, quantity)); }
     }
-
     /**
      * Method to be called after a SELL order has been resolved for this OU. The total
      * price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
@@ -178,18 +176,12 @@ public class OrganisationalUnit {
             throw new InvalidTransactionException();
         }
 
-        /**
-         * Make API request to update OU asset quantity, and reduce creditBalance.
-         * Throw ApiException if request fails.
-         */
-
         creditBalance += totalPrice;
         existingAsset.subtractQuantity(quantity);
         if (existingAsset.getQuantity() == 0) {
             assets.remove(existingAsset);
         }
     }
-
     public String toString()
     {
         return this.unitName;

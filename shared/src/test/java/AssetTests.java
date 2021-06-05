@@ -101,7 +101,23 @@ public class AssetTests {
         });
     }
 
+    /* Test 11: Get Asset Name
+     */
+    @Test
+    public void getAssetName(){
 
+        Asset asset2 = new Asset(assetTypeId, ASSET_QUANTITY, assetName);
+        assertEquals("test_asset", asset2.getName());
+    }
+
+    /* Test 11: toString method
+     */
+    @Test
+    public void toStringTest(){
+
+        Asset asset2 = new Asset(assetTypeId, ASSET_QUANTITY, assetName);
+        assertEquals("test_asset", asset2.toString());
+    }
 
 
 

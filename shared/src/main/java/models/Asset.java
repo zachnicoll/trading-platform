@@ -80,7 +80,7 @@ public class Asset {
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String toString() { return this.name; }

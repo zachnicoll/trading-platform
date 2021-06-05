@@ -90,7 +90,7 @@ public class OrganisationalUnit {
      * @param assetTypeId AssetType to match in the list of Assets
      * @return The matching Asset if it already exists, null if not
      */
-    public Asset findExistingAsset(UUID assetTypeId) {
+    public Asset    findExistingAsset(UUID assetTypeId) {
         for (Asset asset : assets) {
             if (asset.getAssetTypeId().equals(assetTypeId)) {
                 return asset;

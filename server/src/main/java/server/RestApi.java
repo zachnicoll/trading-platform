@@ -27,7 +27,6 @@ public class RestApi {
     /**
      * Create a new HttpServer object and assign internally. The HttpServer's contexts for various
      * routes are created also. Server port configuration is performed here.
-     * @throws IOException
      */
     public RestApi() throws IOException {
 
@@ -66,11 +65,10 @@ public class RestApi {
      * @return port number retrieved from config file
      */
     private int getPortNumber() throws IOException {
-        File file = new File("../../resources/config.properties");
+        File file = new File(getClass().getResource("../config.properties").getPath());
         int portNumber = 8000;
 
         try (InputStream serverConfigFile = new FileInputStream(file.getAbsolutePath())) {
-
             Properties serverConfig = new Properties();
 
             // load a server config file
@@ -79,13 +77,10 @@ public class RestApi {
             // extract the port and ip values out
             portNumber = Integer.parseInt(serverConfig.getProperty("port"));
 
-        } catch (IOException IOexception) {
-            throw IOexception;
-        }catch (NumberFormatException formatException){
-            throw formatException;
-        }finally {
-            return portNumber;
+        } catch (Exception e) {
+            System.out.println("Could not find config.properties, using default port 8080.");
         }
 
+        return portNumber;
     }
 }

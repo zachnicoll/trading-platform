@@ -3,14 +3,14 @@ package data;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import database.datasources.AssetTypeDataSource;
 import database.datasources.OrganisationalUnitDataSource;
+import database.datasources.ResolvedTradeDataSource;
 import database.datasources.UserDataSource;
-import models.AccountType;
-import models.AssetType;
-import models.OrganisationalUnit;
-import models.User;
+import models.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -24,8 +24,14 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
      * Publicly accessible fields to reference in tests
      */
     public final UUID orgUnit1Id = UUID.randomUUID();
+    public final UUID orgUnit2Id = UUID.randomUUID();
     public final UUID assetType1Id = UUID.randomUUID();
     public final UUID user1Id = UUID.randomUUID();
+
+    public final UUID buyTrade1Id = UUID.randomUUID();
+    public final UUID buyTrade2Id = UUID.randomUUID();
+    public final UUID sellTrade1Id = UUID.randomUUID();
+    public final UUID sellTrade2Id = UUID.randomUUID();
 
     public TradesHandlerDataGenerator() throws IOException, InterruptedException, SQLException {
         // Create data in DB
@@ -39,17 +45,25 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
         createTestOrgUnits();
         createTestAssetTypes();
         createTestUser();
+        createTestResolvedTrades();
     }
 
     private void createTestOrgUnits() throws SQLException {
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
-        OrganisationalUnit organisationalUnit = new OrganisationalUnit(
+        OrganisationalUnit organisationalUnit1 = new OrganisationalUnit(
                 orgUnit1Id,
                 "Test Org Unit " + orgUnit1Id,
                 1000.0f,
                 new ArrayList<>()
         );
-        organisationalUnitDataSource.createNew(organisationalUnit);
+        OrganisationalUnit organisationalUnit2 = new OrganisationalUnit(
+                orgUnit2Id,
+                "Test Org Unit " + orgUnit2Id,
+                1000.0f,
+                new ArrayList<>()
+        );
+        organisationalUnitDataSource.createNew(organisationalUnit1);
+        organisationalUnitDataSource.createNew(organisationalUnit2);
     }
 
     private void createTestAssetTypes() throws SQLException {
@@ -72,13 +86,39 @@ public class TradesHandlerDataGenerator extends AbstractDataGenerator {
         userDataSource.createNew(user, BCrypt.withDefaults().hashToString(12, "password".toCharArray()));
     }
 
+    private void createTestResolvedTrades() throws SQLException {
+        ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
+        ResolvedTrade resolvedTrade1 = new ResolvedTrade(
+                buyTrade1Id,
+                sellTrade1Id,
+                orgUnit1Id,
+                orgUnit2Id,
+                assetType1Id,
+                10,
+                10.0f,
+                Timestamp.from(Instant.now())
+        );
+        ResolvedTrade resolvedTrade2 = new ResolvedTrade(
+                buyTrade2Id,
+                sellTrade2Id,
+                orgUnit1Id,
+                orgUnit2Id,
+                assetType1Id,
+                10,
+                10.0f,
+                Timestamp.from(Instant.now())
+        );
+
+        resolvedTradeDataSource.createNew(resolvedTrade1);
+        resolvedTradeDataSource.createNew(resolvedTrade2);
+    }
+
     public void destroyTestData() throws SQLException {
-        UserDataSource userDataSource = new UserDataSource();
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
         AssetTypeDataSource assetTypeDataSource = new AssetTypeDataSource();
 
         organisationalUnitDataSource.deleteById(orgUnit1Id);
+        organisationalUnitDataSource.deleteById(orgUnit2Id);
         assetTypeDataSource.deleteById(assetType1Id);
-        userDataSource.deleteById(user1Id);
     }
 }

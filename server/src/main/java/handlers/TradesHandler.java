@@ -33,11 +33,13 @@ public class TradesHandler extends AbstractRequestHandler {
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
         if (params.length == 3 && params[2].equals("history")) {
+            // URL equals /trades/history
             ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
             ArrayList<PartialReadableResolvedTrade> readableResolvedTrades;
             readableResolvedTrades = resolvedTradeDataSource.getAllReadable();
             writeResponseBody(exchange, readableResolvedTrades);
         } else if (params.length == 4 && params[3].equals("history")) {
+            // URL equals /trades/<assetTypeId>/history
             ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
             UUID assetTypeId = UUID.fromString(params[2]);
 
@@ -49,11 +51,9 @@ public class TradesHandler extends AbstractRequestHandler {
                     writeResponseBody(exchange, readableResolvedTrades);
                 } else {
                     writeResponseBody(exchange, new JsonError("There are no resolved trades involving the selected assetType"), 400);
-                    return;
                 }
             } else {
                 writeResponseBody(exchange, new JsonError("Selected assetTypeId does not exist"), 404);
-                return;
             }
         } else if (params.length == 3) {
             //get all current trades by assetTypeId (params[2] = assetTypeId) -- not sure if we need this

@@ -14,9 +14,11 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.sql.SQLException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TradesHandlerTests {
 
@@ -25,6 +27,7 @@ public class TradesHandlerTests {
     private HttpRequest.Builder httpBuilder;
     TradesHandlerDataGenerator tradesHandlerDataGenerator;
     private static RestApi restApi;
+    private String requestURL = "http://localhost:8000/trades/";
 
     @BeforeAll
     static void startApi() throws IOException {
@@ -39,8 +42,6 @@ public class TradesHandlerTests {
     @BeforeEach
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
         tradesHandlerDataGenerator = new TradesHandlerDataGenerator();
-
-        String requestURL = "http://localhost:8000/trades/";
         httpBuilder = HttpRequest.newBuilder()
                 .uri(URI.create(requestURL))
                 .timeout(Duration.ofSeconds(10))
@@ -193,6 +194,48 @@ public class TradesHandlerTests {
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
         assertEquals( new JsonError("Organisational Unit does not have enough of the given Asset Type to place this order").getError(), responseError.getError());
+    }
+
+    /**
+     * Test 8 - Get all Trade history
+     */
+    @Test
+    public void getAllTradeHistory() throws IOException, InterruptedException {
+        HttpRequest request = httpBuilder.uri(URI.create(requestURL + "history/")).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+
+        ResolvedTrade[] resolvedTrades = gson.fromJson(response.body(), ResolvedTrade[].class);
+        Object[] buyUuidArr = Arrays.stream(resolvedTrades).map(ResolvedTrade::getBuyTradeId).toArray();
+        Object[] sellUuidArr = Arrays.stream(resolvedTrades).map(ResolvedTrade::getSellTradeId).toArray();
+
+        // History should contain the IDs of the resolved trades created by the data generator
+        assertTrue(Arrays.asList(buyUuidArr).contains(tradesHandlerDataGenerator.buyTrade1Id));
+        assertTrue(Arrays.asList(buyUuidArr).contains(tradesHandlerDataGenerator.buyTrade2Id));
+        assertTrue(Arrays.asList(sellUuidArr).contains(tradesHandlerDataGenerator.sellTrade1Id));
+        assertTrue(Arrays.asList(sellUuidArr).contains(tradesHandlerDataGenerator.sellTrade2Id));
+    }
+
+    /**
+     * Test 8 - Get all Trade history for a particular AssetType
+     */
+    @Test
+    public void getAllTradeHistoryForAssetType() throws IOException, InterruptedException {
+        HttpRequest request = httpBuilder.uri(URI.create(requestURL + "/" + tradesHandlerDataGenerator.assetType1Id + "/" + "/history/")).GET().build();
+        HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+        assertEquals(200, response.statusCode());
+
+        ResolvedTrade[] resolvedTrades = gson.fromJson(response.body(), ResolvedTrade[].class);
+        Object[] buyUuidArr = Arrays.stream(resolvedTrades).map(ResolvedTrade::getBuyTradeId).toArray();
+        Object[] sellUuidArr = Arrays.stream(resolvedTrades).map(ResolvedTrade::getSellTradeId).toArray();
+
+        // History should contain the IDs of the resolved trades created by the data generator
+        assertTrue(Arrays.asList(buyUuidArr).contains(tradesHandlerDataGenerator.buyTrade1Id));
+        assertTrue(Arrays.asList(buyUuidArr).contains(tradesHandlerDataGenerator.buyTrade2Id));
+        assertTrue(Arrays.asList(sellUuidArr).contains(tradesHandlerDataGenerator.sellTrade1Id));
+        assertTrue(Arrays.asList(sellUuidArr).contains(tradesHandlerDataGenerator.sellTrade2Id));
     }
 
     @AfterEach

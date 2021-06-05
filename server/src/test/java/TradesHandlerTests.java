@@ -4,10 +4,7 @@ import errors.JsonError;
 import jdk.jshell.spi.ExecutionControl;
 import models.*;
 import models.partial.PartialOpenTrade;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -27,11 +24,16 @@ public class TradesHandlerTests {
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
     TradesHandlerDataGenerator tradesHandlerDataGenerator;
+    private static RestApi restApi;
 
     @BeforeAll
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach

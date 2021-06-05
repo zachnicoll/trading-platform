@@ -31,11 +31,16 @@ public class AssetsHandlerTests {
     private AssetsHandlerDataGenerator assetsHandlerDataGenerator;
     private AssetDataSource assetDataSource = new AssetDataSource();
     private String requestURL;
+    private static RestApi restApi;
 
     @BeforeAll
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach

@@ -7,10 +7,7 @@ import models.AccountType;
 import models.OrganisationalUnit;
 import models.User;
 import models.partial.PartialUser;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -32,11 +29,16 @@ public class UserHandlerTests {
     private UserDataSource userDataSource = new UserDataSource();
     private UserHandlerDataGenerator userDataGenerator;
     private String requestURL;
+    private static RestApi restApi;
 
     @BeforeAll
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach

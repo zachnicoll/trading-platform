@@ -28,11 +28,16 @@ public class OrgUnitHandlerTests {
     private OrganisationalUnitDataSource orgUnitDataSource = new OrganisationalUnitDataSource();
     private OrgUnitHandlerDataGenerator dataGenerator;
     private String requestURL;
+    private static RestApi restApi;
 
     @BeforeAll
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach

@@ -4,10 +4,7 @@ import data.TradesHandlerDataGenerator;
 import helpers.PasswordHasher;
 import models.AuthenticationToken;
 import models.Credentials;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import server.RestApi;
 
 import java.io.IOException;
@@ -25,11 +22,16 @@ public class LoginHandlerTests {
     private final Gson gson = new Gson();
     private HttpRequest.Builder httpBuilder;
     LoginHandlerDataGenerator loginHandlerDataGenerator;
+    private static RestApi restApi;
 
     @BeforeAll
     static void startApi() throws IOException {
-        RestApi restApi = new RestApi();
+        restApi = new RestApi();
         restApi.start();
+    }
+    @AfterAll
+    static void stopApi() throws IOException {
+        restApi.stop();
     }
 
     @BeforeEach

@@ -56,7 +56,6 @@ public class Asset {
         }
         this.quantity -= quantity;
     }
-
     /**
      * Directly set the quantity of the AssetType to a given amount. Used in conjunction
      * with OrganisationalUnit.updateAssetQuantity() Admin operation.

@@ -207,7 +207,21 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 16: Sell an OU's Asset : Fail
+     * Test 16: Sell an OU's Asset : Succeed All
+     */
+    @Test
+    public void sellAssetSucceedAll() throws ApiException, InvalidTransactionException
+    {
+        Float PRICE_PER = 5f;
+        int quantity = 10;
+
+        organisationalUnit.sellAsset(PRICE_PER, assetTypeId, quantity);
+
+        assertEquals(1050.5f, organisationalUnit.getCreditBalance());
+    }
+
+    /*
+     * Test 17: Sell an OU's Asset : Fail
      */
     @Test
     public void sellAssetFail() throws ApiException, InvalidTransactionException
@@ -221,7 +235,7 @@ public class OrganisationalUnitTests {
     }
 
     /*
-     * Test 17: Organisational Unit toString
+     * Test 18: Organisational Unit toString
      */
     @Test
     public void toStringMethod()

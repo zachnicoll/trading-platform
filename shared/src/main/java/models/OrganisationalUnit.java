@@ -158,15 +158,16 @@ public class OrganisationalUnit {
         } else {
             assets.add(new Asset(assetTypeId, quantity)); }
     }
+
     /**
-     * Method to be called after a SELL order has been resolved for this OU. The total
-     * price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
-     * and that quantity of asset is subtracted from the OU.
-     * @param pricePerAsset Credit price for a single unit of the given AssetType
-     * @param assetTypeId AssetType to be sold
-     * @param quantity Quantity of asset to be sold
-     * @throws ApiException thrown if API request fails
-     * @throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
+     *Method to be called after a SELL order has been resolved for this OU. The total
+     *price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
+     *and that quantity of asset is subtracted from the OU.
+     *@param pricePerAsset Credit price for a single unit of the given AssetType
+     *@param assetTypeId AssetType to be sold
+     *@param quantity Quantity of asset to be sold
+     *@throws ApiException thrown if API request fails
+     *@throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
      */
     public void sellAsset(Float pricePerAsset, UUID assetTypeId, Integer quantity) throws ApiException, InvalidTransactionException {
         final Float totalPrice = pricePerAsset * quantity;

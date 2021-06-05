@@ -110,7 +110,7 @@ public class AssetTests {
         assertEquals("test_asset", asset2.getName());
     }
 
-    /* Test 11: toString method
+    /* Test 12: toString method
      */
     @Test
     public void toStringTest(){

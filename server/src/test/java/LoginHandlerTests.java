@@ -47,7 +47,7 @@ public class LoginHandlerTests {
 
     @Test
     public void loginWithCorrectCredentials() throws SQLException, IOException, InterruptedException {
-        Credentials credentials = new Credentials(loginHandlerDataGenerator.username, PasswordHasher.hashPassword(loginHandlerDataGenerator.password));
+        Credentials credentials = new Credentials(loginHandlerDataGenerator.username, loginHandlerDataGenerator.password);
 
         HttpRequest request = httpBuilder.POST(HttpRequest.BodyPublishers.ofString(gson.toJson(credentials))).build();
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());

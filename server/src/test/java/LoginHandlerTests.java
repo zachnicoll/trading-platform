@@ -27,14 +27,12 @@ public class LoginHandlerTests {
     LoginHandlerDataGenerator loginHandlerDataGenerator;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
         RestApi restApi = new RestApi();
         restApi.start();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws SQLException {
         loginHandlerDataGenerator = new LoginHandlerDataGenerator();
 

@@ -29,14 +29,12 @@ public class TradesHandlerTests {
     TradesHandlerDataGenerator tradesHandlerDataGenerator;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
         RestApi restApi = new RestApi();
         restApi.start();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
         tradesHandlerDataGenerator = new TradesHandlerDataGenerator();
 
@@ -196,7 +194,6 @@ public class TradesHandlerTests {
     }
 
     @AfterEach
-    @Test
     public void destroyTestData() throws SQLException {
         tradesHandlerDataGenerator.destroyTestData();
     }

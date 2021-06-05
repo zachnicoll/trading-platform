@@ -11,6 +11,7 @@ import models.User;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -39,15 +40,17 @@ public class UserHandlerDataGenerator extends AbstractDataGenerator{
     protected void generateData() throws SQLException {
         createTestOrgUnits();
         createTestUser();
+
     }
 
     @Override
-    void destroyTestData() throws SQLException {
+    public void destroyTestData() throws SQLException {
         UserDataSource userDataSource = new UserDataSource();
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         organisationalUnitDataSource.deleteById(orgUnit1Id);
         userDataSource.deleteById(user1Id);
+        if(Objects.nonNull(user)) userDataSource.deleteById(user.getUserId());
     }
 
     private void createTestOrgUnits() throws SQLException {
@@ -63,7 +66,7 @@ public class UserHandlerDataGenerator extends AbstractDataGenerator{
 
     private void createTestUser() throws SQLException {
         UserDataSource userDataSource = new UserDataSource();
-        user = new User(
+        User user = new User(
                 user1Id,
                 "Test User " + user1Id,
                 AccountType.ADMIN,

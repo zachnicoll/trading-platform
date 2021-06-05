@@ -33,14 +33,12 @@ public class AssetsHandlerTests {
     private String requestURL;
 
     @BeforeAll
-    @Test
     static void startApi() throws IOException {
         RestApi restApi = new RestApi();
         restApi.start();
     }
 
     @BeforeEach
-    @Test
     public void setupHttpClient() throws IOException, InterruptedException, SQLException {
         assetsHandlerDataGenerator = new AssetsHandlerDataGenerator();
 
@@ -176,7 +174,7 @@ public class AssetsHandlerTests {
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
         assertEquals(new JsonError("Organisational Unit does not own any of the given Asset Type").getError(), responseError.getError());
-
+        additionalData.destroyTestData();
     }
 
     /**
@@ -249,7 +247,6 @@ public class AssetsHandlerTests {
     }
 
     @AfterEach
-    @Test
     public void destroyTestData() throws SQLException {
         assetsHandlerDataGenerator.destroyTestData();
     }

@@ -12,9 +12,11 @@ import models.partial.PartialReadableResolvedTrade;
 
 import java.net.http.HttpResponse;
 import java.sql.Timestamp;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 class PopupWrapper {
     private final Popup popup;
@@ -50,10 +52,12 @@ class PopupWrapper {
         Label bodyLabel = new Label(body);
         bodyLabel.setAlignment(Pos.TOP_LEFT);
         bodyLabel.contentDisplayProperty().set(ContentDisplay.CENTER);
+        bodyLabel.setMaxWidth(200);
         bodyLabel.setMinWidth(200);
         bodyLabel.setMinHeight(43);
         bodyLabel.setLayoutX(10);
         bodyLabel.setLayoutY(29);
+        bodyLabel.wrapTextProperty().set(true);
 
         // Create close button
         JFXButton closeButton = new JFXButton();
@@ -73,7 +77,8 @@ class PopupWrapper {
     }
 
     public void show() {
-        popup.show(currentWindow.getScene().getWindow(), 10, 10 + index * 110);
+        // The index of the Popup determines how far down the screen it is placed. Some strange anchorY behaviour though.
+        popup.show(currentWindow.getScene().getWindow(), 10, index * (index > 1 ? 120 : 130));
     }
 
     public void hide() {
@@ -132,13 +137,14 @@ public class NotificationChecker {
                 Timestamp lastOldTimestamp = resolvedTrades.get(0).getDateResolved();
                 Object[] filtered = newResolvedTrades.stream().filter(x -> x.getDateResolved().compareTo(lastOldTimestamp) > 0).toArray();
                 if (filtered.length > 0) {
+                    // Close all old popup notifications
                     for (PopupWrapper popupWrapper : popupWrappers) {
                         popupWrapper.hide();
                     }
-
                     popupWrappers = new ArrayList<>();
 
                     PartialReadableResolvedTrade[] filteredResolvedTrades = Arrays.copyOf(filtered, filtered.length, PartialReadableResolvedTrade[].class);
+
                     // There are new resolved trades, create notifications for them
                     for (int i = 0; i < filteredResolvedTrades.length; i++) {
                         PartialReadableResolvedTrade newResolvedTrade = filteredResolvedTrades[i];
@@ -146,21 +152,31 @@ public class NotificationChecker {
                         if (newResolvedTrade.getBoughtFromId().equals(ClientInfo.getInstance().getCurrentUser().getOrganisationalUnitId())) {
                             // Notify that SELL trade went through
                             PopupWrapper popupWrapper = new PopupWrapper(
-                                    false, currentWindow.getScene().getWindow(), "SELL Trade Resolved!", String.format("Sold %d of %s to %s.", newResolvedTrade.getQuantity(), newResolvedTrade.getAssetTypeName(), newResolvedTrade.getSoldTo()), i
+                                    false, currentWindow.getScene().getWindow(), "SELL Trade Resolved!", String.format("Sold %d of %s to %s for %s each.",
+                                    newResolvedTrade.getQuantity(),
+                                    newResolvedTrade.getAssetTypeName(),
+                                    newResolvedTrade.getSoldTo(),
+                                    NumberFormat.getCurrencyInstance(Locale.US).format(newResolvedTrade.getPrice())),
+                                    i
                             );
 
                             popupWrappers.add(popupWrapper);
                         } else if (newResolvedTrade.getSoldToId().equals(ClientInfo.getInstance().getCurrentUser().getOrganisationalUnitId())) {
                             // Notify that BUY trade went through
-                            // Notify that SELL trade went through
                             PopupWrapper popupWrapper = new PopupWrapper(
-                                    true, currentWindow.getScene().getWindow(), "Buy Trade Resolved!", String.format("Bought %d of %s from %s.", newResolvedTrade.getQuantity(), newResolvedTrade.getAssetTypeName(), newResolvedTrade.getBoughtFrom()), i
+                                    true, currentWindow.getScene().getWindow(), "Buy Trade Resolved!", String.format("Bought %d of %s from %s for %s each.",
+                                    newResolvedTrade.getQuantity(),
+                                    newResolvedTrade.getAssetTypeName(),
+                                    newResolvedTrade.getBoughtFrom(),
+                                    NumberFormat.getCurrencyInstance(Locale.US).format(newResolvedTrade.getPrice())),
+                                    i
                             );
 
                             popupWrappers.add(popupWrapper);
                         }
                     }
 
+                    // Display each notification
                     for (PopupWrapper popupWrapper : popupWrappers) {
                         popupWrapper.show();
                     }

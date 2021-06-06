@@ -10,6 +10,11 @@ import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.util.TimerTask;
 
+/**
+ * AuthRefresh automatically renews the client's JWT token after a 12 hour period of being logged in.
+ * This is to enforce security and authenticity.
+ * Current refresh every 12 hours
+ */
 public class AuthRefresh extends TimerTask {
 
     private final Gson gson = new Gson();

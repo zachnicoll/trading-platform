@@ -14,6 +14,8 @@ public class PartialReadableResolvedTradeTests {
      */
     UUID buyTradeId = UUID.randomUUID();
     UUID sellTradeId = UUID.randomUUID();
+    UUID boughtFromId = UUID.randomUUID();
+    UUID soldToId = UUID.randomUUID();
     String boughtFrom = "unit seller";
     String soldTo = "unit buyer";
     String assetTypeName = "test asset";
@@ -28,7 +30,7 @@ public class PartialReadableResolvedTradeTests {
     @BeforeEach
     @Test
     public void setUpPartialReadableResolvedTrade() {
-        partialReadableResolvedTrade = new PartialReadableResolvedTrade(buyTradeId, sellTradeId, assetTypeName, quantity, price, dateResolved, boughtFrom, soldTo);
+        partialReadableResolvedTrade = new PartialReadableResolvedTrade(buyTradeId, sellTradeId, assetTypeName, quantity, price, dateResolved, boughtFrom, soldTo, boughtFromId, soldToId);
     }
 
     /* Test 2: Get PartialReadableResolvedTradeTests BuyTradeId
@@ -85,6 +87,20 @@ public class PartialReadableResolvedTradeTests {
     @Test
     public void getPartialReadableResolvedTradeSoldTo() {
         assertEquals("unit buyer", partialReadableResolvedTrade.getSoldTo());
+    }
+
+    /* Test 10: Get PartialReadableResolvedTradeTests Bought From Org Unit Id
+     */
+    @Test
+    public void getPartialReadableResolvedBoughtFromId() {
+        assertEquals(boughtFromId, partialReadableResolvedTrade.getBoughtFromId());
+    }
+
+    /* Test 11: Get PartialReadableResolvedTradeTests Sold To Org Unit Id
+     */
+    @Test
+    public void getPartialReadableResolvedSoldToId() {
+        assertEquals(soldToId, partialReadableResolvedTrade.getSoldToId());
     }
 
 }

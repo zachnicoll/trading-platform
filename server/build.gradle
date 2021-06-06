@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
 group 'group10'
@@ -18,8 +19,21 @@ dependencies {
     implementation 'com.auth0:java-jwt:3.15.0'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation project(':shared')
+
 }
 
 test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass = 'Main'
+}
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'Main'
+        )
+    }
 }

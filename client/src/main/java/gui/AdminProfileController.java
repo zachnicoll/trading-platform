@@ -56,7 +56,7 @@ public class AdminProfileController {
     void submitAPChange(ActionEvent event) throws IOException, InterruptedException {
 
         NewPassword newPassword = new NewPassword(hashPassword(txtAPPassword.getText()), hashPassword(txtAPPasswordConfirm.getText()));
-
+        // Checks if passwords match
         if (newPassword.checkMatchingPasswords())
         {
             changePassword(newPassword);

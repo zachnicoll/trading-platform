@@ -54,6 +54,7 @@ public class UserTradeHistoryController {
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
+        // Sets up table columns
         tableData = FXCollections.observableArrayList();
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("dateResolved"));
         assetTypeColumn.setCellValueFactory(new PropertyValueFactory<>("assetTypeName"));

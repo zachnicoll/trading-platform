@@ -58,7 +58,7 @@ public class UserProfileController {
 
     @FXML
     void submitPChange(ActionEvent event) throws IOException, InterruptedException {
-
+        // Handles changing user's password
         NewPassword newPassword = new NewPassword(hashPassword(txtUPPassword.getText()), hashPassword(txtUPPasswordConfirm.getText()));
 
         if (newPassword.checkMatchingPasswords())

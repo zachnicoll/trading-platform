@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
+/**
+ * Helper class to load FXML GUI pages
+ */
 public class FxmlLoader {
 
     private Pane view;

@@ -63,5 +63,5 @@ public abstract class AbstractDataGenerator {
      *
      * @throws SQLException
      */
-    abstract void destroyTestData() throws SQLException;
+    public abstract void destroyTestData() throws SQLException;
 }

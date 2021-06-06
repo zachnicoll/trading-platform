@@ -68,20 +68,20 @@ public class UserHandler extends AbstractRequestHandler {
         //only admin can create new users
         checkIsAdmin(exchange);
         PartialUser partialUser = (PartialUser) readRequestBody(exchange, PartialUser.class);
-
+        // Checks if cast to partial user successfull
         if (Objects.nonNull(partialUser)) {
-
-            if (partialUser.password.isBlank()) {
+            // Checks user fields are present and not blank or null
+            if (Objects.isNull(partialUser.password) || partialUser.password.isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain a password");
                 writeResponseBody(exchange, jsonError, 400);
 
-            } else if (partialUser.username.isBlank()) {
+            } else if (Objects.isNull(partialUser.username) ||partialUser.username.isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain a username");
                 writeResponseBody(exchange, jsonError, 400);
 
-            } else if (partialUser.organisationalUnitId.toString().isBlank()) {
+            } else if (Objects.isNull(partialUser.organisationalUnitId) ||partialUser.organisationalUnitId.toString().isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain an organisational unit Id");
                 writeResponseBody(exchange, jsonError, 400);
@@ -94,7 +94,7 @@ public class UserHandler extends AbstractRequestHandler {
                         partialUser.organisationalUnitId
                 );
                 UserDataSource userDataSource = new UserDataSource();
-
+                // Creates new user
                 String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
                 userDataSource.createNew(fullUser, hashedPassword);
                 writeResponseBody(exchange, fullUser);
@@ -115,7 +115,7 @@ public class UserHandler extends AbstractRequestHandler {
             userDataSource.deleteById(userId);
             writeResponseBody(exchange, null);
         } else {
-            JsonError jsonError = new JsonError("User not found");
+            JsonError jsonError = new JsonError("User does not exist");
             writeResponseBody(exchange, jsonError, 404);
         }
     }

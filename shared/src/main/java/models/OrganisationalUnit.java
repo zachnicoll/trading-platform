@@ -1,6 +1,7 @@
 package models;
 
-import exceptions.*;
+import exceptions.ApiException;
+import exceptions.InvalidTransactionException;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,16 +32,18 @@ public class OrganisationalUnit {
 
     /**
      * List of Assets the Organisational Unit owns.
+     *
      * @see Asset
      */
     private List<Asset> assets;
 
     /**
      * Construct a new OrganisationalUnit with given information, most likely provided by the API.
-     * @param unitId Unique identifier for Organisational Unit
-     * @param unitName Displayed name of the Organisational Unit
+     *
+     * @param unitId        Unique identifier for Organisational Unit
+     * @param unitName      Displayed name of the Organisational Unit
      * @param creditBalance Current balance of the Organisational Unit
-     * @param assets List of Assets the Organisational Unit owns
+     * @param assets        List of Assets the Organisational Unit owns
      */
     public OrganisationalUnit(UUID unitId, String unitName, Float creditBalance, List<Asset> assets) {
         this.unitId = unitId;
@@ -51,42 +54,43 @@ public class OrganisationalUnit {
 
     /**
      * Get the UnitID of the OU
+     *
      * @return the OU's UnitID
      */
-    public UUID getUnitId()
-    {
+    public UUID getUnitId() {
         return unitId;
     }
 
     /**
      * Get the UnitName of the OU
+     *
      * @return the OU's UnitName
      */
-    public String getUnitName()
-    {
+    public String getUnitName() {
         return unitName;
     }
 
     /**
      * Get the CreditBalance of the OU
+     *
      * @return the OU's CreditBalance
      */
-    public Float getCreditBalance()
-    {
+    public Float getCreditBalance() {
         return creditBalance;
     }
 
     /**
      * Get the Assets of the OU
+     *
      * @return the OU's Assets
      */
-    public List<Asset> getAssets()
-    {
+    public List<Asset> getAssets() {
         return assets;
     }
 
     /**
      * Determine if this OU already owns an AssetType that matches the given AssetType ID.
+     *
      * @param assetTypeId AssetType to match in the list of Assets
      * @return The matching Asset if it already exists, null if not
      */
@@ -102,6 +106,7 @@ public class OrganisationalUnit {
     /**
      * Update the Organisational Unit's current balance. Operation can only be
      * performed by an Admin. Calls the /org-unit/[ord-id]/balance PUT endpoint.
+     *
      * @param newBalance New credit balance to set
      */
     public void updateCreditBalance(Float newBalance) throws InvalidTransactionException {
@@ -116,6 +121,7 @@ public class OrganisationalUnit {
      * only be performed by an Admin. If the AssetType specified is not currently owned
      * by the OU, the AssetType is added to the OU's list of assets.
      * Calls the /org-unit/[orgId]/quantity/ PUT endpoint.
+     *
      * @param assetTypeId AssetType to be updated
      * @param newQuantity New quantity of the given asset to be set
      * @throws ApiException
@@ -139,10 +145,11 @@ public class OrganisationalUnit {
      * Method to be called after a BUY order has been resolved for this OU. The total
      * price of the trade (pricePerAsset * quantity) is deducted from the OU's credit balance,
      * and that quantity of asset is added to OU.
+     *
      * @param pricePerAsset Credit price for a single unit of the given AssetType
-     * @param assetTypeId AssetType to be purchased
-     * @param quantity Quantity of asset to be purchased
-     * @throws ApiException thrown if API request fails
+     * @param assetTypeId   AssetType to be purchased
+     * @param quantity      Quantity of asset to be purchased
+     * @throws ApiException                thrown if API request fails
      * @throws InvalidTransactionException thrown if the total price of the purchase exceeds the OU's credit balance
      */
     public void purchaseAsset(Float pricePerAsset, UUID assetTypeId, Integer quantity) throws ApiException, InvalidTransactionException {
@@ -151,29 +158,23 @@ public class OrganisationalUnit {
             throw new InvalidTransactionException();
         }
 
-        /**
-         * Make API request to update OU asset quantity, and reduce creditBalance.
-         * Throw ApiException if request fails.
-         */
-
         creditBalance -= totalPrice;
         Asset existingAsset = findExistingAsset(assetTypeId);
         if (existingAsset != null) {
             existingAsset.addQuantity(quantity);
         } else {
-            assets.add(new Asset(assetTypeId, quantity));
-        }
+            assets.add(new Asset(assetTypeId, quantity)); }
     }
 
     /**
-     * Method to be called after a SELL order has been resolved for this OU. The total
-     * price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
-     * and that quantity of asset is subtracted from the OU.
-     * @param pricePerAsset Credit price for a single unit of the given AssetType
-     * @param assetTypeId AssetType to be sold
-     * @param quantity Quantity of asset to be sold
-     * @throws ApiException thrown if API request fails
-     * @throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
+     *Method to be called after a SELL order has been resolved for this OU. The total
+     *price of the trade (pricePerAsset * quantity) is added from the OU's credit balance,
+     *and that quantity of asset is subtracted from the OU.
+     *@param pricePerAsset Credit price for a single unit of the given AssetType
+     *@param assetTypeId AssetType to be sold
+     *@param quantity Quantity of asset to be sold
+     *@throws ApiException thrown if API request fails
+     *@throws InvalidTransactionException thrown if the quantity of asset to be sold exceeds the OU's quantity of the asset
      */
     public void sellAsset(Float pricePerAsset, UUID assetTypeId, Integer quantity) throws ApiException, InvalidTransactionException {
         final Float totalPrice = pricePerAsset * quantity;
@@ -182,12 +183,6 @@ public class OrganisationalUnit {
         if (existingAsset == null || existingAsset.getQuantity() < quantity) {
             throw new InvalidTransactionException();
         }
-
-        /**
-         * Make API request to update OU asset quantity, and reduce creditBalance.
-         * Throw ApiException if request fails.
-         */
-
         creditBalance += totalPrice;
         existingAsset.subtractQuantity(quantity);
         if (existingAsset.getQuantity() == 0) {
@@ -195,8 +190,8 @@ public class OrganisationalUnit {
         }
     }
 
-    public String toString()
-    {
+
+    public String toString() {
         return this.unitName;
     }
 }

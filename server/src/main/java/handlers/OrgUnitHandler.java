@@ -49,7 +49,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
             }
         } else {
 
-            // Otherwise just get all organisational units
+            // Else get all organisational units
             checkIsAdmin(exchange);
             ArrayList<OrganisationalUnit>  orgUnits = null;
             orgUnits = orgUnitDataSource.getAll();
@@ -73,8 +73,8 @@ public class OrgUnitHandler extends AbstractRequestHandler {
                         new ArrayList<Asset>()
                 );
 
-        //check if unit name is not null
-        if(fullOrganisationalUnit.getUnitName() == null){
+        //check if unit name is not null or blank
+        if(fullOrganisationalUnit.getUnitName() == null || fullOrganisationalUnit.getUnitName().isBlank()){
             writeResponseBody(exchange, new JsonError("Organisational Unit does not have name"),400);
             return;
         }
@@ -100,7 +100,6 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         //checks if user has admin privileges
         checkIsAdmin(exchange);
 
-        // Create new OrganisationalUnit in DB
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         String[] params = exchange.getRequestURI().getRawPath().split("/");
@@ -136,7 +135,6 @@ public class OrgUnitHandler extends AbstractRequestHandler {
         //checks if user has admin privileges
         checkIsAdmin(exchange);
 
-        // Create new OrganisationalUnit in DB
         OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
 
         String[] params = exchange.getRequestURI().getRawPath().split("/");

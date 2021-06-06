@@ -84,7 +84,7 @@ public class AdminAssetMgmtController {
 
                     private final JFXButton btn = new JFXButton("Delete");
 
-                    {
+                    {//  Handles when delete button is pressed
                         btn.setOnAction((ActionEvent event) -> {
                             AssetType selectedAssetType = getTableView().getItems().get(getIndex());
                             try {
@@ -94,7 +94,7 @@ public class AdminAssetMgmtController {
                             }
                         });
                     }
-
+                    // Adds delete buttons to table
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);

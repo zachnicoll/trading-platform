@@ -49,7 +49,7 @@ public class OrgUnitHandler extends AbstractRequestHandler {
             }
         } else {
 
-            // Otherwise just get all organisational units
+            // Else get all organisational units
             checkIsAdmin(exchange);
             ArrayList<OrganisationalUnit>  orgUnits = null;
             orgUnits = orgUnitDataSource.getAll();

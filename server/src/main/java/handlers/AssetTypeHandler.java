@@ -36,7 +36,7 @@ public class AssetTypeHandler extends AbstractRequestHandler {
         checkIsAdmin(exchange);
 
         PartialAssetType partialAssetType = (PartialAssetType) readRequestBody(exchange, PartialAssetType.class);
-
+        // If asset name valid, create new assetType
         if(Objects.nonNull(partialAssetType) && Objects.nonNull(partialAssetType.assetName)){
             AssetType newAssetType = new AssetType(
                     UUID.randomUUID(),

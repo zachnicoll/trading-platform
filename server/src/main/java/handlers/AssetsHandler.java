@@ -60,7 +60,7 @@ public class AssetsHandler extends AbstractRequestHandler {
 
         UUID orgUnitId = UUID.fromString(params[2]);
         UUID assetTypeId = UUID.fromString(params[3]);
-
+        // Check if org unit does not exists
         if (!orgUnitDataSource.checkExistById(orgUnitId)) {
             JsonError jsonError = new JsonError("Organisational Unit does not exist");
             writeResponseBody(exchange, jsonError, 404);
@@ -69,7 +69,7 @@ public class AssetsHandler extends AbstractRequestHandler {
             JsonError jsonError = new JsonError("Organisational Unit does not own any of the given Asset Type");
             writeResponseBody(exchange, jsonError, 400);
         }
-        else{
+        else{ // Else org unit and assetType exists - delete
             assetDataSource.deleteById(assetTypeId, orgUnitId);
             writeResponseBody(exchange, null, 200);
         }
@@ -85,16 +85,17 @@ public class AssetsHandler extends AbstractRequestHandler {
         UUID orgUnitId = UUID.fromString(params[2]);
 
         Asset asset = (Asset) readRequestBody(exchange, Asset.class);
+        // Check if org unit exists in database
         if(organisationalUnitDataSource.checkExistById(orgUnitId)){
-            if (asset.getQuantity() < 1)
+            if (asset.getQuantity() < 1) // Check quantity
             {
                 JsonError jsonError = new JsonError("Provided Quantity is less than 1");
                 writeResponseBody(exchange, jsonError, 400);
             }
-            else {
+            else { // If org unit already has the asset type, update quantity..
                 if (assetDataSource.checkExistById(asset.getAssetTypeId(), orgUnitId)) {
                     assetDataSource.updateAssetQuantity(orgUnitId, asset.getAssetTypeId(), asset.getQuantity());
-                } else {
+                } else { // Else add asset type to org unit assets
                     assetDataSource.createNew(asset, orgUnitId);
                 }
                 writeResponseBody(exchange, null, 200);

@@ -29,7 +29,7 @@ public class ResetPasswordHandler extends AbstractRequestHandler {
         UserDataSource userDataSource = new UserDataSource();
         UUID userId = UUID.fromString(getUserId(exchange));
         NewPassword capturedPassword = (NewPassword) readRequestBody(exchange, NewPassword.class);
-
+        // If passwords match, change user's password
         if (capturedPassword.checkMatchingPasswords()) {
             String hashedPassword = BCrypt.withDefaults().hashToString(12, capturedPassword.confirmPassword.toCharArray());
             userDataSource.changePassword(userId, hashedPassword);

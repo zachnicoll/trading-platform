@@ -52,6 +52,9 @@ public class UserMainMenuController {
 
     }
 
+    /* Sets up each page of the user GUI
+     */
+
     public void sceneDashboard(ActionEvent event) throws IOException {
         Pane view = pageLoader.getPage("UserDashboard");
         UserMainPane.getChildren().setAll(view);

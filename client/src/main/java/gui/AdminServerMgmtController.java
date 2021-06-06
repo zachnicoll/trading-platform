@@ -53,6 +53,7 @@ public class AdminServerMgmtController {
 
             configFile = new File(configFile.getAbsolutePath() + "/config.properties");
 
+            // Sets server properties; port number and IP address
             Properties props = new Properties();
             props.setProperty("ip", mgmtIp);
             props.setProperty("port", mgmtPort);

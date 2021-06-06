@@ -280,6 +280,7 @@ public class AdminOUMgmtController {
     @FXML
     private void addOU() throws IOException, InterruptedException {
 
+        // Ensures input is not empty
         if((txtNewOUName.getText() != "")&&(txtNewOUBalance.getText() != "")) {
 
             String newOrgName = txtNewOUName.getText();
@@ -291,7 +292,7 @@ public class AdminOUMgmtController {
 
             HttpResponse<String> postResponse = Client.clientPost(Route.getRoute(Route.orgunit), newOrg);
 
-
+            // Check if request was successful
             if (postResponse.statusCode() == 200) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Successfully added new Organisation.");
                 alert.showAndWait();

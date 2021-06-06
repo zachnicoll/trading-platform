@@ -169,6 +169,7 @@ public class UserMarketplaceController {
             priceHistorySeries.setName(selectedAsset.getName());
             PartialReadableResolvedTrade[] resolvedTrades = getAllTrades(selectedAsset.getAssetTypeId());
 
+            // Sets price history data for the selected asset
             if(Objects.nonNull(resolvedTrades)){
                 for (int i = 0; i < resolvedTrades.length; i++) {
                     priceHistorySeries.getData().add(new XYChart.Data(new SimpleDateFormat("dd/MM/yy HH:mm").format(resolvedTrades[i].getDateResolved()), resolvedTrades[i].getPrice()));
@@ -219,6 +220,8 @@ public class UserMarketplaceController {
         Asset selectedAsset = comboboxSelectAsset.getValue();
         Integer quantity;
         Float price;
+
+        // Makes sure inputs are correctly entered
         try{
             quantity = Integer.valueOf(txtMPQuantity.getText());
             price = Float.valueOf(txtMPPrice.getText());

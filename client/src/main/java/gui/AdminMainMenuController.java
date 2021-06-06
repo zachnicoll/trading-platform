@@ -73,7 +73,7 @@ public class AdminMainMenuController{
 
         if (alert.getResult() == ButtonType.YES) {
 
-            //do stuff
+            // Resets client info when AMIN user logs out
             ClientInfo clientInfo = ClientInfo.getInstance();
             clientInfo.resetClientInfo();
 

@@ -72,7 +72,7 @@ public class TradesHandlerTests {
         assertEquals(partialTrade.assetTypeId, responseTrade.getAssetType());
         assertEquals(partialTrade.organisationalUnitId, responseTrade.getOrganisationalUnit());
         assertEquals(partialTrade.quantity, responseTrade.getQuantity());
-        assertEquals( partialTrade.pricePerAsset, responseTrade.getPricePerAsset());
+        assertEquals(partialTrade.pricePerAsset, responseTrade.getPricePerAsset());
     }
 
     /**

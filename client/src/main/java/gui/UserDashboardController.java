@@ -67,6 +67,7 @@ public class UserDashboardController {
 
     @FXML
     public void initialize() throws IOException, InterruptedException {
+        // Sets up the table columns with trade information
         tblcolAsset.setCellValueFactory(new PropertyValueFactory<>("assetTypeName"));
         tblcolPrice.setCellValueFactory(new PropertyValueFactory<>("pricePerAsset"));
         tblcolQuantity.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -74,8 +75,11 @@ public class UserDashboardController {
         tblcolTradeType.setCellValueFactory(new PropertyValueFactory<>("tradeType"));
         tblcolDateOpened.setCellValueFactory(new PropertyValueFactory<>("dateOpened"));
 
+        // Sets current user info
         clientInfo = ClientInfo.getInstance();
         userOrgUnit = getOrgUnit();
+
+        // Displays the current user's org unit balance
         txtUnitBalance.setText(NumberFormat.getCurrencyInstance().format(userOrgUnit.getCreditBalance()));
 
 
@@ -85,6 +89,7 @@ public class UserDashboardController {
 
 
     private PartialReadableOpenTrade[] getAllOpenTrades() throws IOException, InterruptedException {
+        // Requests all open trades
         HttpResponse<String> openTradeResponse = Client.clientGet(Route.getRoute(Route.trades));
         return gson.fromJson(openTradeResponse.body(), PartialReadableOpenTrade[].class);
     }
@@ -107,9 +112,11 @@ public class UserDashboardController {
      * Filters trades based on search query AND checkbox (show only my organisational unit trades)
      */
     private void filterTables() {
+        // Sets up predicates for filtering based on search query and the current users org unit trades
         ObjectProperty<Predicate<PartialReadableOpenTrade>> searchFilter = new SimpleObjectProperty<>();
         ObjectProperty<Predicate<PartialReadableOpenTrade>> unitFilter = new SimpleObjectProperty<>();
 
+        // Search query filters trades over columns (AssetType, Org Unit, TradeType, and DateOpened
         searchFilter.bind(Bindings.createObjectBinding(() ->
                         trade -> txtFieldSearch.getText().isEmpty()
                                 || txtFieldSearch.getText() == null
@@ -119,7 +126,7 @@ public class UserDashboardController {
                                 || trade.getDateOpened().toLowerCase().contains(txtFieldSearch.getText().toLowerCase()),
                 txtFieldSearch.textProperty()));
 
-
+        // My org unit check box filters only the current user's organisational unit's current open trades
         unitFilter.bind(Bindings.createObjectBinding(() ->
                         trade -> !btnMyUnit.selectedProperty().get() || (btnMyUnit.selectedProperty().get() && trade.getOrganisationalUnitName().toLowerCase().equals(userOrgUnit.getUnitName().toLowerCase())),
                 btnMyUnit.selectedProperty()));
@@ -127,13 +134,14 @@ public class UserDashboardController {
         FilteredList<PartialReadableOpenTrade> filteredItems = new FilteredList<>(tableData);
         openTradesTable.setItems(filteredItems);
 
-
+        // Combines the predicates so the search query and 'my unit' check box filter the trades together
         filteredItems.predicateProperty().bind(Bindings.createObjectBinding(
                 () -> searchFilter.get().and(unitFilter.get()),
                 searchFilter, unitFilter));
     }
 
     private void handleDelete(UUID openTradeId) throws IOException, InterruptedException {
+        // Requests for selected user's org unit trade to be deleted
         HttpResponse<String> deleteTradeResponse = Client.clientDelete(Route.getRoute(Route.trades) + openTradeId);
 
         if (deleteTradeResponse.statusCode() == 200) {
@@ -161,7 +169,7 @@ public class UserDashboardController {
                     private final JFXButton btn = new JFXButton("Delete");
 
 
-                    {
+                    { // Handles deleting user's org unit trades
                         btn.setOnAction((ActionEvent event) -> {
                             try {
                                 PartialReadableOpenTrade selectedOpenTrade = getTableView().getItems().get(getIndex());
@@ -171,7 +179,7 @@ public class UserDashboardController {
                             }
                         });
                     }
-
+                    // Updates the cells in the 'delete' column of the table with delete buttons for current user's org unit trades
                     @Override
                     public void updateItem(Void item, boolean empty) {
                         super.updateItem(item, empty);

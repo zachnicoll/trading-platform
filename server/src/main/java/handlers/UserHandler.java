@@ -68,9 +68,9 @@ public class UserHandler extends AbstractRequestHandler {
         //only admin can create new users
         checkIsAdmin(exchange);
         PartialUser partialUser = (PartialUser) readRequestBody(exchange, PartialUser.class);
-
+        // Checks if cast to partial user successfull
         if (Objects.nonNull(partialUser)) {
-
+            // Checks user fields are present and not blank or null
             if (Objects.isNull(partialUser.password) || partialUser.password.isBlank()) {
 
                 JsonError jsonError = new JsonError("User does not contain a password");
@@ -94,7 +94,7 @@ public class UserHandler extends AbstractRequestHandler {
                         partialUser.organisationalUnitId
                 );
                 UserDataSource userDataSource = new UserDataSource();
-
+                // Creates new user
                 String hashedPassword = BCrypt.withDefaults().hashToString(12, partialUser.password.toCharArray());
                 userDataSource.createNew(fullUser, hashedPassword);
                 writeResponseBody(exchange, fullUser);

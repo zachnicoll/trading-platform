@@ -50,7 +50,6 @@ public class AdminProfileController {
     public void initialize() {
         ClientInfo clientInfo = ClientInfo.getInstance();
         lblAPName.setText(clientInfo.getCurrentUser().getUsername());
-
     }
 
     @FXML

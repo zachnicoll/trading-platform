@@ -6,6 +6,7 @@ import errors.JsonError;
 import helpers.Client;
 import helpers.ClientInfo;
 import helpers.PasswordHasher;
+import helpers.Route;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -110,7 +111,7 @@ public class LoginController {
 
         Credentials loginInfo = new Credentials(loginUsername, loginPassword);
 
-        HttpResponse<String> loginResponse = clientPost("/login/", loginInfo);
+        HttpResponse<String> loginResponse = clientPost(Route.getRoute(Route.login), loginInfo);
 
         if (loginResponse.statusCode() == 200) {
             ClientInfo clientInfo = ClientInfo.getInstance();

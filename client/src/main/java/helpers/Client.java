@@ -18,6 +18,7 @@ public class Client {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Gson gson = new Gson();
 
+    // Build header with client JWT token
     private static HttpRequest.Builder builderWithHeaders() {
         ClientInfo clientInfo = ClientInfo.getInstance();
         return HttpRequest.newBuilder()
@@ -33,6 +34,8 @@ public class Client {
         baseUrl = url;
     }
 
+
+    // POST Request to REST API - accepts endpoint and body object
     public static HttpResponse<String> clientPost(String route, Object object) throws IOException, InterruptedException {
         String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
@@ -42,7 +45,7 @@ public class Client {
 
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
-
+    // GET Request to REST API - accepts endpoint
     public static HttpResponse<String> clientGet(String route) throws IOException, InterruptedException {
         String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
@@ -53,6 +56,7 @@ public class Client {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    // PUT Request to REST API - accepts endpoint and body object
     public static HttpResponse<String> clientPut(String route, Object object) throws IOException, InterruptedException {
         String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()
@@ -63,6 +67,7 @@ public class Client {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    // DELETE Request to REST API - accepts endpoint
     public static HttpResponse<String> clientDelete(String route) throws IOException, InterruptedException {
         String requestUrl = makeUrl(route);
         HttpRequest request = builderWithHeaders()

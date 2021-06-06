@@ -47,9 +47,7 @@ public class PartialReadableResolvedTrade {
 
     public Timestamp getDateResolved() { return dateResolved; }
 
-    public UUID getBuyTradeId() {
-        return buyTradeId;
-    }
+    public UUID getBuyTradeId() { return buyTradeId; }
 
     public UUID getSellTradeId() { return sellTradeId; }
 

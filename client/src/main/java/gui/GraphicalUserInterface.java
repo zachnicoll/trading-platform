@@ -16,16 +16,12 @@ import java.util.Timer;
  */
 public class GraphicalUserInterface extends Application {
 
-    private ClientInfo clientInfo;
-
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-
-        clientInfo = clientInfo.getInstance();
+        ClientInfo clientInfo = ClientInfo.getInstance();
         clientInfo.resetClientInfo();
 
-        final Integer authResolvePeriod = 1000 * 43200; //refresh every 12 hours
+        final int authResolvePeriod = 1000 * 43200; //refresh every 12 hours
 
         // Start Trade Resolver Task
         Timer time = new Timer();

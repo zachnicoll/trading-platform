@@ -47,10 +47,8 @@ public class LoginController {
 
     @FXML
     private TextField txtFile;
-
     @FXML
     private JFXButton btnBrowse;
-
     @FXML
     private BorderPane loginBorderId;
 
@@ -87,8 +85,8 @@ public class LoginController {
             Client.setBaseUrl(String.format("http://%s:%s", ipAddress, portNumber));
 
         } catch (IOException e) {
-           Alert alert = new Alert(AlertType.ERROR, "Error occurred while importing server config file");
-           alert.showAndWait();
+            Alert alert = new Alert(AlertType.ERROR, "Error occurred while importing server config file");
+            alert.showAndWait();
         }
 
         if (file != null) {

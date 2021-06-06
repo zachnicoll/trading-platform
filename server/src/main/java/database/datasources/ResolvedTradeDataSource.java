@@ -37,7 +37,9 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                 results.getFloat("price"),
                 results.getTimestamp("dateResolved"),
                 results.getString("buyOrgName"),
-                results.getString("sellOrgName")
+                results.getString("sellOrgName"),
+                UUID.fromString(results.getString("sellOrgUnitId")),
+                UUID.fromString(results.getString("buyOrgUnitId"))
         );
     }
 
@@ -86,8 +88,10 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                          select\s
                         	    rt."buyTradeId",
                         	    rt."sellTradeId",
-                        	    sellOrg."sellorgname",
-                        	    buyOrg."buyorgname",
+                        	    sellOrg."sellOrgName",
+                        	    buyOrg."buyOrgName",
+                        	    buyOrg."buyOrgUnitId",
+                        	    sellOrg."sellOrgUnitId",
                         	    rt.price,
                         	    rt.quantity,
                         	    rt."dateResolved",
@@ -99,7 +103,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                          	    rt."buyTradeId",
                         	        rt."sellTradeId",
                         	        rt."buyOrgUnitId",\s
-                        	        ou."organisationalUnitName" as buyOrgName
+                        	        ou."organisationalUnitName" as "buyOrgName"
                              from "resolvedTrades" rt
                              join "organisationalUnits" ou on rt."buyOrgUnitId" = ou."organisationalUnitId") buyOrg
                         on rt."sellTradeId" = buyOrg."sellTradeId" and rt."buyTradeId" = buyOrg."buyTradeId"\s
@@ -107,7 +111,7 @@ public class ResolvedTradeDataSource extends AbstractDataSource<ResolvedTrade> {
                         	        rt."buyTradeId",
                         	        rt."sellTradeId",
                              	rt."sellOrgUnitId",\s
-                        	        ou."organisationalUnitName" as sellOrgName
+                        	        ou."organisationalUnitName" as "sellOrgName"
                              from "resolvedTrades" rt
                              join "organisationalUnits" ou on rt."sellOrgUnitId" = ou."organisationalUnitId") sellOrg
                         on rt."sellTradeId" = sellOrg."sellTradeId" and rt."buyTradeId" = sellOrg."buyTradeId"

@@ -2,7 +2,9 @@ package gui;
 
 import com.jfoenix.controls.JFXButton;
 import helpers.ClientInfo;
+import helpers.NotificationChecker;
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -50,6 +52,8 @@ public class UserMainMenuController {
         ClientInfo clientInfo = ClientInfo.getInstance();
         lblWelcome.setText("Welcome to the Trading Platform, " + clientInfo.getCurrentUser().getUsername() + "!");
 
+        // Set the NotificationChecker's window reference for displaying notification boxes
+        NotificationChecker.getInstance().setCurrentWindow(UserMainPane);
     }
 
     /* Sets up each page of the user GUI

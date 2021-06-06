@@ -222,7 +222,7 @@ public class UserHandlerTests {
 
         // Test that returned error information is correct/reflects what was sent in request
         JsonError responseError = gson.fromJson(response.body(), JsonError.class);
-        assertEquals(new JsonError("User not found").getError(), responseError.getError());
+        assertEquals(new JsonError("User does not exist").getError(), responseError.getError());
     }
 
 

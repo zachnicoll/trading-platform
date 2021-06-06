@@ -33,11 +33,13 @@ public class TradesHandler extends AbstractRequestHandler {
         String[] params = exchange.getRequestURI().getRawPath().split("/");
 
         if (params.length == 3 && params[2].equals("history")) {
+            // URL equals /trades/history
             ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
             ArrayList<PartialReadableResolvedTrade> readableResolvedTrades;
             readableResolvedTrades = resolvedTradeDataSource.getAllReadable();
             writeResponseBody(exchange, readableResolvedTrades);
         } else if (params.length == 4 && params[3].equals("history")) {
+            // URL equals /trades/<assetTypeId>/history
             ResolvedTradeDataSource resolvedTradeDataSource = new ResolvedTradeDataSource();
             UUID assetTypeId = UUID.fromString(params[2]);
 
@@ -45,15 +47,9 @@ public class TradesHandler extends AbstractRequestHandler {
                 //get all resolved trades by assetTypeId
                 ArrayList<PartialReadableResolvedTrade> readableResolvedTrades;
                 readableResolvedTrades = resolvedTradeDataSource.getAllByAssetReadable(assetTypeId);
-                if (readableResolvedTrades.size() > 0) {
-                    writeResponseBody(exchange, readableResolvedTrades);
-                } else {
-                    writeResponseBody(exchange, new JsonError("There are no resolved trades involving the selected assetType"), 400);
-                    return;
-                }
+                writeResponseBody(exchange, readableResolvedTrades);
             } else {
-                writeResponseBody(exchange, new JsonError("Selected assetTypeId does not exist"), 404);
-                return;
+                writeResponseBody(exchange, new JsonError("Selected assetTypeId does not exist, or there are no resolved trades involving the selected assetType"), 404);
             }
         } else if (params.length == 3) {
             //get all current trades by assetTypeId (params[2] = assetTypeId) -- not sure if we need this
@@ -66,8 +62,6 @@ public class TradesHandler extends AbstractRequestHandler {
             readableOpenTrades = openTradeDataSource.getAllReadable();
             writeResponseBody(exchange, readableOpenTrades);
         }
-
-
     }
 
     @Override
@@ -165,15 +159,23 @@ public class TradesHandler extends AbstractRequestHandler {
             OpenTradeDataSource openTradeDataSource = new OpenTradeDataSource();
             UUID openTradeId = UUID.fromString(params[2]);
 
-            // Get organisational unit for the given open trade
-            OpenTrade openTrade = openTradeDataSource.getById(openTradeId);
+            OpenTrade openTrade;
+            try {
+                openTrade = openTradeDataSource.getById(openTradeId);
+            } catch (SQLException e) {
+                JsonError jsonError = new JsonError("OpenTrade not found");
+                writeResponseBody(exchange, jsonError, 404);
+                return;
+            }
 
+            // Get organisational unit for the given open trade
             OrganisationalUnitDataSource organisationalUnitDataSource = new OrganisationalUnitDataSource();
             OrganisationalUnit organisationalUnit = organisationalUnitDataSource.getById(openTrade.getOrganisationalUnit());
 
             // Check that the User making the request belongs to the Organisational Unit
             UserDataSource userDataSource = new UserDataSource();
-            UUID userOrgUnitId = userDataSource.getById(UUID.fromString(getUserId(exchange))).getOrganisationalUnitId();
+            UUID userId = UUID.fromString(getUserId(exchange));
+            UUID userOrgUnitId = userDataSource.getById(userId).getOrganisationalUnitId();
 
             if (organisationalUnit.getUnitId().equals(userOrgUnitId)) {
                 openTradeDataSource.deleteById(openTradeId);

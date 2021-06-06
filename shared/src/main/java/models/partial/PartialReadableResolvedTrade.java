@@ -14,12 +14,14 @@ public class PartialReadableResolvedTrade {
     private final UUID sellTradeId;
     private final String boughtFrom;
     private final String soldTo;
+    private final UUID boughtFromId;
+    private final UUID soldToId;
     private final String assetTypeName;
     private final Integer quantity;
     private final Float price;
     private final Timestamp dateResolved;
 
-    public PartialReadableResolvedTrade (UUID buyTradeId, UUID sellTradeId, String assetTypeName, Integer quantity, Float price, Timestamp dateResolved, String boughtFrom, String soldTo) {
+    public PartialReadableResolvedTrade (UUID buyTradeId, UUID sellTradeId, String assetTypeName, Integer quantity, Float price, Timestamp dateResolved, String boughtFrom, String soldTo, UUID boughtFromId, UUID soldToId) {
         this.assetTypeName = assetTypeName;
         this.quantity = quantity;
         this.price = price;
@@ -28,6 +30,8 @@ public class PartialReadableResolvedTrade {
         this.sellTradeId = sellTradeId;
         this.boughtFrom = boughtFrom;
         this.soldTo = soldTo;
+        this.boughtFromId = boughtFromId;
+        this.soldToId = soldToId;
     }
 
 
@@ -50,4 +54,8 @@ public class PartialReadableResolvedTrade {
     public String getBoughtFrom() { return boughtFrom; }
 
     public String getSoldTo() { return soldTo; }
+
+    public UUID getBoughtFromId() { return boughtFromId; }
+
+    public UUID getSoldToId() { return soldToId; }
 }

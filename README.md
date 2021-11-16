@@ -1,8 +1,11 @@
-# CAB302 - Electronic Trading Platform
-## Group of Three #10
-- Zachary Nicoll, n10214453
-- Nicholas Ilii, n10223436
-- Rory Denis, n10468391
+# Electronic Trading Platform
+
+This project served as a learning experience for developing a full-stack application in Java. The application itself is a mock trading platform for use within an organisation that wishes to trade resources between departments. Each department is assigned a number of "credits" that they can spend on resources being sold by other departments.
+
+- JavaFX has been used to create the GUI
+- A Rest API has been implemented from scratch using Java's HttpServer package
+- PostgreSQL has been used for information retrieval and storage
+- GitHub Actions have been implemented to automate testing and building of the application
 
 ### Dependencies
 Gradle is the build tool used to handle dependencies for each package. Dependencies should therefore be automatically handled when the packages are built.

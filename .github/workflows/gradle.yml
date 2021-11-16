@@ -15,7 +15,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:latest
+        image: postgres:13
         env:
           POSTGRES_DB: cab302
           POSTGRES_PASSWORD: postgres
